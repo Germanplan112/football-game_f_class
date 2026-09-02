@@ -1,0 +1,21 @@
+{
+  "short_name": "Football Duel",
+  "name": "Football Duel - Local Multiplayer",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#2d3436",
+  "theme_color": "#00b894",
+  "orientation": "landscape"
+}
