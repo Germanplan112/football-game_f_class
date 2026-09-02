@@ -14,7 +14,7 @@ function handleTouchStart(e){
     for(let t of e.changedTouches) checkZone(t.clientX, t.clientY, true);
 }
 function handleTouchMove(e){
-    for(let t of e.changedTouches) checkZone(t.clientX, t.clientY, false);
+    for(let t of e.changedTouches) checkZone(t.clientX, t.changedTouches[0].clientY, false);
 }
 function handleTouchEnd(e){
     keys['ArrowLeft'] = false; 
@@ -30,8 +30,8 @@ function checkZone(x, y, isStart){
     // Левая половина экрана — Игрок 1
     if (x < width / 2) {
         if (y > height / 2 + 60) { // Нижняя зона
-            keys['ArrowLeft'] = isStart && (x < width / 4);
-            keys['ArrowRight'] = isStart && (x >= width / 4);
+            keys['ArrowLeft'] = isStart && (x < width / 4); // Влево
+            keys['ArrowRight'] = isStart && (x >= width / 4); // Вправо
         } else { // Верхняя зона — удар
             keys['Space'] = isStart;
         }
@@ -45,6 +45,12 @@ function checkZone(x, y, isStart){
     }
 }
 
+// Функция для расчёта расстояния между двумя точками
+// Это было упущено ранее
+function dist(x1,y1,x2,y2){
+    return Math.sqrt((x1-x2)**2 + (y1-y2)**2);
+}
+
 // Объекты
 const p1 = {x: 100, y: 0, w: 50, h: 50, speed: 9};
 const p2 = {x: 100, y: 0, w: 50, h: 50, speed: 9}; // Скорость увеличена
@@ -55,13 +61,6 @@ const goalR = {x: width, y: height/2 - 50, w: 10, h: 100};
 let scoreL = 0, scoreR = 0;
 let gameMode = 'menu'; // menu, pvp, bot
 let frameCount = 0;
-let audioKick = new Audio('kick.mp3'); // Новый звук!
-
-// Функция для расчёта расстояния между двумя точками
-// Это было упущено в предыдущем варианте
-function dist(x1,y1,x2,y2){
-    return Math.sqrt((x1-x2)**2 + (y1-y2)**2);
-}
 
 // Инициализация кнопок
 document.getElementById('pvp-btn').onclick = () => startGame('pvp');
@@ -121,7 +120,7 @@ function update(){
 
     // Улучшенный бот
     let targetX = ball.x - 25;
-    if(ball.heldBy !== 'p2'){ // Если мяч у противника или свободен
+    if(ball.heldBy !== 'p2' || ball.heldBy === null){ // Если мяч у противника или свободен
         // Защита: стоит перед воротами
         targetX = width * 0.75 - 25;
     }
@@ -147,7 +146,7 @@ function update(){
     } else {
         ball.x += ball.vx;
         ball.y += ball.vy;
-        ball.vy += 0.4; // Увеличенная гравитация для динамики
+        ball.vy += 0.4; // Гравитация
 
         // Отскок от пола/потолка
         if(ball.y + ball.r > height) { ball.y = height - ball.r; ball.vy *= -0.7; }
@@ -182,7 +181,6 @@ function update(){
 }
 
 function kickBall(byPlayer){
-    audioKick.play(); // Добавил звук
     const angle = byPlayer === 'p1' ? -Math.PI/2 : Math.PI/2;
     const power = 15;
     ball.vx = Math.cos(angle) * power;
@@ -197,7 +195,7 @@ function render(){
     // Ворота
     ctx.fillStyle = '#dfe6e9';
     ctx.fillRect(goalL.x, goalL.y, goalL.w, goalL.h);
-    ctx.fillRect(goalR.x, goalR.y, goalR.w, goalR.h);
+    ctx.fillRect(goalR.x, 生成.y, goalR.w, goalR.h);
     
     // Игроки
     drawPlayer(p1, '#e17055', "1");
