@@ -4,7 +4,7 @@ let width, height;
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
-// Управление
+// Управление через джойстики
 const keys = {};
 document.body.addEventListener('touchstart', handleTouchStart, {passive:false});
 document.body.addEventListener('touchmove', handleTouchMove, {passive:false});
@@ -22,39 +22,46 @@ function handleTouchEnd(e){
     keys['KeyA'] = false; // Для второго игрока
     keys['KeyD'] = false;
 }
+
+/**
+ * Проверка зон по твоему джойстику:
+ * Левая половина: движение внизу, удар вверху.
+ */
 function checkZone(x, y, isStart){
     const rect = canvas.getBoundingClientRect();
     x = ((x - rect.left) / rect.width) * width;
     y = ((y - rect.top) / rect.height) * height;
     
     if(gameMode === 'pvp'){ // Если играют два человека
-        if(x < width / 2 && y > height / 2 + 60) {
+        // Левый игрок
+        if(x < width / 2 && y > height / 2 + 50) {
             keys['ArrowLeft'] = isStart && (x < width / 4); // Влево
             keys['ArrowRight'] = isStart && (x >= width / 4); // Вправо
-        } else if(x > width / 2 && y > height / 2 + 60) {
-            keys['KeyA'] = isStart && (x < 3 * width / 4); // Влево
-            keys['KeyD'] = isStart && (x >= 3 * width / 4); // Вправо
+        } else if(x < width / 2 && y <= height / 2 + 50) {
+            kickBall('p1'); // Удар
         }
         
-        // Удары
-        if(y <= height / 2 + 50) {
-            if(x < width / 2) kickBall('p1'); // Левый игрок
-            else kickBall('p2');                // Правый игрок
+        // Правый игрок
+        if(x > width / 2 && y > height / 2 + 50) {
+            keys['KeyA'] = isStart && (x < 3 * width / 4); // Влево
+            keys['KeyD'] = isStart && (x >= 3 * width / 4); // Вправо
+        } else if(x > width / 2 && y <= height / 2 + 50) {
+            kickBall('p2'); // Удар
         }
-    } else { // Игра с ботом: левый игрок двигается вручную
-        // Движение левого игрока
-        if(x < width / 2 && y > height / 2 + 60) {
+    } else { // Игра с ботом
+        // Только левый игрок двигается вручную
+        if(x < width / 2 && y > height / 2 + 50) {
             keys['ArrowLeft'] = isStart && (x < width / 4); // Влево
             keys['ArrowRight'] = isStart && (x >= width / 4); // Вправо
         }
 
         // Прыжок левого игрока
-        if(x < width / 2 && y > height / 2 && y <= height / 2 + 60) {
-            p1.vy = -9;
+        if(x < width / 2 && y > height / 2 && y <= height / 2 + 50) {
+            p1.vy = -8;
         }
 
         // Удар по мячу
-        if(y <= height / 2 + 50) {
+        if(x < width / 2 && y <= height / 2 + 50) {
             kickBall('p1'); // Только левым игроком
         }
     }
@@ -173,6 +180,11 @@ function update(){
         if(ball.y - ball.r < 0) { ball.y = ball.r; ball.vy *= -0.7; }
 
         // Подбор мяча игроками
+        // ⚠️ Вот это исправленное место — добавлена функция dist()
+        function dist(x1,y1,x2,y2){
+            return Math.sqrt((x1-x2)**2 + (y1-y2)**2);
+        }
+
         if(dist(p1.x+25, p1.y, ball.x, ball.y) < 40) ball.heldBy = 'p1';
         if(dist(p2.x+25, p2.y, ball.x, ball.y) < 40) ball.heldBy = 'p2';
 
@@ -198,9 +210,12 @@ function update(){
     frameCount++;
 }
 
-// Функция для расчёта расстояния между двумя точками
-function dist(x1,y1,x2,y2){
-    return Math.sqrt((x1-x2)**2 + (y1-y2)**2);
+// Расчёт угла к цели (для паса)
+function getAngleToTarget(target){
+    const playerPos = ball.heldBy === 'p1' ? p1 : p2;
+    const dx = target.x + target.w/2 - playerPos.x - playerPos.w/2;
+    const dy = target.y + target.h/2 - playerPos.y - playerPos.h/2;
+    return Math.atan2(dy, dx);
 }
 
 function kickBall(byPlayer){
@@ -213,14 +228,6 @@ function kickBall(byPlayer){
     ball.vx = Math.cos(angle) * power;
     ball.vy = Math.sin(angle) * power - 5;
     ball.heldBy = null;
-}
-
-// Расчёт угла к цели (для паса)
-function getAngleToTarget(target){
-    const playerPos = ball.heldBy === 'p1' ? p1 : p2;
-    const dx = target.x + target.w/2 - playerPos.x - playerPos.w/2;
-    const dy = target.y + target.h/2 - playerPos.y - playerPos.h/2;
-    return Math.atan2(dy, dx);
 }
 
 // ОТРИСОВКА
