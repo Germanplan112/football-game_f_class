@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>Football Duel</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href="style.css">
     <!-- PWA -->
+    <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#6c5ce7">
 </head>
@@ -16,10 +16,13 @@
     <button id="bot-btn">Играть с ботом</button>
 </div>
 
-<div id="game-screen" style="display:none;">
+<div id="game-screen">
     <canvas id="field"></canvas>
     <div id="scoreboard"><span id="score-left">0</span> : <span id="score-right">0</span></div>
     <button class="exit-btn" id="back-menu">В меню</button>
+    
+    <!-- Скрытый элемент для загрузки картинки мяча -->
+    <img src="goal-ball.png" alt="" id="goal-anim-ball">
 </div>
 
 <script src="app.js"></script>
