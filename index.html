@@ -7,55 +7,29 @@
     <link rel="stylesheet" href="style.css">
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon-192.png">
     <meta name="theme-color" content="#6c5ce7">
 </head>
 <body>
-    <div id="menu-screen">
-        <h1>Football Duel</h1>
-        <button id="pvp-btn">2 игрока (один экран)</button>
-        <button id="bot-btn">Играть с ботом</button>
-    </div>
+<div id="menu-screen">
+    <h1>Football Duel</h1>
+    <button id="pvp-btn">2 игрока (один экран)</button>
+    <button id="bot-btn">Играть с ботом</button>
+</div>
 
-    <div id="game-screen" style="display:none;">
-        <canvas id="field"></canvas>
-        <div id="scoreboard">
-            <span id="score-left">0</span> : <span id="score-right">0</span>
-        </div>
-        <button id="back-menu" class="exit-btn">В меню</button>
-    </div>
+<div id="game-screen" style="display:none;">
+    <canvas id="field"></canvas>
+    <div id="scoreboard"><span id="score-left">0</span> : <span id="score-right">0</span></div>
+    <button class="exit-btn" id="back-menu">В меню</button>
+</div>
 
-    <script src="app.js"></script>
-    <script>
+<script src="app.js"></script>
+<!-- Регистрация Service Worker для офлайн-работы -->
+<script>
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(registration => {
-        console.log('SW зарегистрирован с областью:', registration.scope);
-        
-        // Проверка: ждет ли браузер подтверждения установки?
-        if (navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
-          return; // Уже установлено
-        }
-
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-          e.preventDefault();
-          deferredPrompt = e;
-          
-          // В реальном проекте здесь показывают кастомную кнопку "Install".
-          // Так как мы не делали дизайн кнопки, браузер покажет свою системную подсказку сам 
-          // при выполнении условий ниже.
-        });
-
-      })
-      .catch(err => console.log('Ошибка SW:', err));
-  });
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js');
+    });
 }
 </script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
-        }
-    </script>
 </body>
 </html>
