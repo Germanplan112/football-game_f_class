@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Football Duel</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    
     <!-- PWA -->
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
@@ -12,14 +13,14 @@
 <body>
 <div id="menu-screen">
     <h1>Football Duel</h1>
-    <button id="pvp-btn">2 игрока (один экран)</button>
-    <button id="bot-btn">Играть с ботом</button>
+    <div class="button">2 игрока (один экран)</div>
+    <div class="button">Играть с ботом</div>
 </div>
 
 <div id="game-screen">
     <canvas id="field"></canvas>
     <div id="scoreboard"><span id="score-left">0</span> : <span id="score-right">0</span></div>
-    <button class="exit-btn" id="back-menu">В меню</button>
+    <div class="exit-btn">В меню</div>
     
     <!-- Скрытый элемент для загрузки картинки мяча -->
     <img src="goal-ball.png" alt="" id="goal-anim-ball">
