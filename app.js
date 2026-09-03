@@ -57,7 +57,7 @@ function checkZone(x, y, isStart){
 
         // Прыжок левого игрока
         if(x < width / 2 && y > height / 2 && y <= height / 2 + 50) {
-            p1.vy = -8;
+            p1.vy = -9;
         }
 
         // Удар по мячу
@@ -80,9 +80,10 @@ let frameCount = 0;
 let animationGoal = null; // Анимация гола
 
 // Инициализация кнопок
-document.getElementById('pvp-btn').onclick = () => startGame('pvp');
-document.getElementById('bot-btn').onclick = () => startGame('bot');
-document.getElementById('back-menu').onclick = goMenu;
+document.querySelectorAll('#menu-screen .button').forEach(btn => {
+    btn.onclick = () => startGame(btn.textContent.includes('ботом') ? 'bot' : 'pvp');
+});
+document.querySelector('.exit-btn').onclick = goMenu;
 
 function resizeCanvas(){
     width = window.innerWidth;
@@ -105,7 +106,7 @@ function startGame(mode){
     scoreL = 0; scoreR = 0;
     updateScore();
     document.getElementById('menu-screen').style.display = 'none';
-    document.getElementById('game-screen').style.display = 'block';
+    document.getElementById('game-screen').style.display = '';
     keys['ArrowLeft']=false; keys['ArrowRight']=false; keys['KeyA']=false; keys['KeyD']=false;
     resetPositions();
     loop();
@@ -113,8 +114,8 @@ function startGame(mode){
 
 function goMenu(){
     gameMode = 'menu';
-    document.getElementById('menu-screen').style.display = 'flex';
-    document.getElementById('game-screen').display = 'none';
+    document.getElementById('menu-screen').style.display = '';
+    document.getElementById('game-screen').style.display = 'none';
 }
 
 function updateScore(){
@@ -180,8 +181,7 @@ function update(){
         if(ball.y - ball.r < 0) { ball.y = ball.r; ball.vy *= -0.7; }
 
         // Подбор мяча игроками
-        // ⚠️ Вот это исправленное место — добавлена функция dist()
-        function dist(x1,y1,x2,y2){
+        function dist(x1,y1,x2,y2){ // Функция расстояния теперь внутри
             return Math.sqrt((x1-x2)**2 + (y1-y2)**2);
         }
 
@@ -259,7 +259,7 @@ function drawPlayer(obj, color, num){
     ctx.fillStyle = 'white';
     ctx.font = 'bold 16px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText(num, obj.x + 25, obj.y + 35);
+    ctx.fillText(num, obj.x + 25, obj.x + 35);
 }
 
 // ⚽️ Анимация гола
@@ -278,7 +278,7 @@ function goalAnim(time=0){
     ctx.lineWidth = 5;
     ctx.beginPath();
     ctx.moveTo(player.x + 25, player.y - 20);
-    ctx.lineTo(goal.x + goal.w/2, goal.y + goal.h/2);
+    ctx.lineTo(goal.x + goal.w/2, goal.y + goal.w/2);
     ctx.stroke(); // Линия полёта мяча
 
     if(time < 100) animationGoal = requestAnimationFrame(()=>goalAnim(time+1));
