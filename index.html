@@ -8,230 +8,327 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: #0a2a0a;
+    background: #1a1a2e;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     font-family: Arial, sans-serif;
-    color: white;
     overflow: hidden;
     user-select: none;
     touch-action: none;
-    -webkit-tap-highlight-color: transparent;
   }
 
   #game {
     position: relative;
     width: 100%;
-    max-width: 800px;
+    max-width: 900px;
     height: 100vh;
-    max-height: 500px;
-    background: #4a90d9;
+    max-height: 520px;
     overflow: hidden;
-    border-radius: 15px;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
   }
 
-  /* ===== ФОН: трибуны и небо ===== */
   #sky {
     position: absolute;
-    inset: 0 0 60% 0;
-    background: linear-gradient(180deg, #87ceeb 0%, #b0e0f5 100%);
+    top: 0; left: 0; right: 0;
+    height: 45%;
+    background: linear-gradient(180deg, #87ceeb 0%, #b5e0f5 100%);
   }
 
-  /* Трибуны */
   #stands {
     position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 25%;
-    background:
-      repeating-linear-gradient(90deg,
-        #d32f2f 0 6px,
-        #fff 6px 12px,
-        #1976d2 12px 18px,
-        #fff 18px 24px);
-    opacity: 0.9;
-    border-bottom: 4px solid #333;
+    top: 8%; left: 0; right: 0;
+    height: 38%;
+    background: linear-gradient(180deg, #708090 0%, #4a5568 100%);
+    overflow: hidden;
+    border-radius: 50% 50% 0 0 / 12% 12% 0 0;
   }
 
-  /* Люди на трибунах (мелкие точки) */
-  #stands::after {
-    content: '';
+  #crowd {
     position: absolute;
-    inset: 0;
+    inset: 8% 4% 0 4%;
     background-image:
-      radial-gradient(circle, #222 1px, transparent 1.5px),
-      radial-gradient(circle, #444 1px, transparent 1.5px);
-    background-size: 16px 16px, 22px 22px;
-    background-position: 0 0, 8px 8px;
-    opacity: 0.6;
+      radial-gradient(circle, #e53e3e 2px, transparent 3px),
+      radial-gradient(circle, #3182ce 2px, transparent 3px),
+      radial-gradient(circle, #38a169 2px, transparent 3px),
+      radial-gradient(circle, #d69e2e 2px, transparent 3px),
+      radial-gradient(circle, #805ad5 2px, transparent 3px),
+      radial-gradient(circle, #dd6b20 2px, transparent 3px);
+    background-size: 14px 14px, 18px 18px, 16px 16px, 20px 20px, 15px 15px, 17px 17px;
+    background-position: 0 0, 7px 7px, 3px 10px, 12px 4px, 8px 12px, 5px 2px;
+    opacity: 0.85;
   }
 
-  /* Земля (газон) */
-  #ground {
+  #roof {
     position: absolute;
-    inset: 60% 0 0 0;
-    background:
-      repeating-linear-gradient(90deg,
-        #2d8a2d 0 50px,
-        #33993a 50px 100px);
-  }
-
-  /* Горизонт */
-  #horizon {
-    position: absolute;
-    top: 60%; left: 0; right: 0;
-    height: 4px;
-    background: #1a5c1a;
+    top: 8%; left: 0; right: 0;
+    height: 5%;
+    background: linear-gradient(180deg, #cbd5e0 0%, #94a3b8 100%);
     z-index: 2;
   }
 
-  /* ===== ВОРОТА ===== */
-  .goal {
+  #field {
     position: absolute;
-    bottom: 15%;
-    width: 60px;
-    height: 90px;
+    top: 45%; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(90deg, #4a9d4a 0 60px, #56ab56 60px 120px);
+  }
+
+  .field-line {
+    position: absolute;
+    background: rgba(255,255,255,0.85);
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  #line-center {
+    top: 45%; bottom: 0;
+    left: 50%;
+    width: 4px;
+    transform: translateX(-50%);
+  }
+
+  #circle-center {
+    position: absolute;
+    top: 65%; left: 50%;
+    width: 130px; height: 130px;
+    border: 4px solid rgba(255,255,255,0.85);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .penalty {
+    position: absolute;
+    top: 45%; bottom: 0;
+    width: 90px;
+    border: 4px solid rgba(255,255,255,0.85);
+    border-top: none;
     z-index: 3;
   }
+  #penalty-left { left: 0; border-left: none; }
+  #penalty-right { right: 0; border-right: none; }
 
-  .goal-frame {
+  .goal {
+    position: absolute;
+    bottom: 12%;
+    width: 70px;
+    height: 130px;
+    z-index: 5;
+  }
+  #goal-left { left: 5px; }
+  #goal-right { right: 5px; }
+
+  .goal-net {
     position: absolute;
     inset: 0;
-    border: 4px solid #fff;
+    border: 5px solid #fff;
     border-bottom: none;
-    background: repeating-linear-gradient(
-      45deg,
-      transparent 0 5px,
-      rgba(255,255,255,0.4) 5px 6px,
-      transparent 6px 11px,
-      rgba(255,255,255,0.4) 11px 12px
-    );
+    border-radius: 4px 4px 0 0;
+    background:
+      repeating-linear-gradient(90deg, transparent 0 6px, rgba(255,255,255,0.6) 6px 7px),
+      repeating-linear-gradient(0deg, transparent 0 6px, rgba(255,255,255,0.6) 6px 7px);
+    box-shadow: inset 0 0 15px rgba(255,255,255,0.5), 0 0 20px rgba(255,255,255,0.3);
   }
 
-  #goal-left { left: 10px; }
-  #goal-right { right: 10px; }
-
-  /* ===== ИГРОКИ (стикмены) ===== */
   .player {
     position: absolute;
-    width: 40px;
-    height: 70px;
+    width: 50px;
+    height: 75px;
     z-index: 10;
-    transform-origin: bottom center;
   }
 
-  /* Голова */
   .head {
     position: absolute;
-    top: 0;
-    left: 50%;
+    top: 0; left: 50%;
     transform: translateX(-50%);
-    width: 20px;
-    height: 20px;
+    width: 22px; height: 22px;
     border-radius: 50%;
-    border: 3px solid #222;
+    background: #f4c299;
+    border: 2px solid #8b5a3c;
+    z-index: 2;
   }
-
-  /* Тело */
-  .body {
+  .head::before {
+    content: '';
     position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 6px;
-    height: 25px;
-    border-radius: 3px;
+    top: -3px; left: -2px; right: -2px;
+    height: 10px;
+    background: #3a2418;
+    border-radius: 50% 50% 30% 30%;
   }
 
-  /* Руки */
+  .eye {
+    position: absolute;
+    top: 8px;
+    width: 3px; height: 3px;
+    background: #000;
+    border-radius: 50%;
+  }
+  .eye.l { left: 5px; }
+  .eye.r { right: 5px; }
+
+  .torso {
+    position: absolute;
+    top: 20px; left: 50%;
+    transform: translateX(-50%);
+    width: 24px; height: 28px;
+    border-radius: 6px;
+    z-index: 1;
+  }
+
   .arm {
     position: absolute;
-    top: 24px;
-    width: 6px;
-    height: 22px;
+    top: 22px;
+    width: 7px; height: 24px;
+    border-radius: 4px;
+    transform-origin: top center;
+  }
+  .arm.l { left: 0; transform: rotate(12deg); }
+  .arm.r { right: 0; transform: rotate(-12deg); }
+
+  .shorts {
+    position: absolute;
+    top: 46px; left: 50%;
+    transform: translateX(-50%);
+    width: 22px; height: 12px;
     border-radius: 3px;
   }
-  .arm.left  { left: 6px; transform: rotate(15deg); transform-origin: top center; }
-  .arm.right { right: 6px; transform: rotate(-15deg); transform-origin: top center; }
 
-  /* Ноги */
   .leg {
     position: absolute;
-    top: 42px;
-    width: 6px;
-    height: 26px;
+    top: 56px;
+    width: 7px; height: 18px;
     border-radius: 3px;
   }
-  .leg.left  { left: 11px; }
-  .leg.right { right: 11px; }
-
-  /* Цвета команд */
-  #p1 .head { background: #f5c9a0; }
-  #p1 .body, #p1 .arm, #p1 .leg { background: #1a5fb4; }
-  #p1 .body { box-shadow: 0 0 10px rgba(74,158,255,0.8); }
-
-  #p2 .head { background: #f5c9a0; }
-  #p2 .body, #p2 .arm, #p2 .leg { background: #b41a1a; }
-  #p2 .body { box-shadow: 0 0 10px rgba(255,107,107,0.8); }
-
-  /* ===== МЯЧ ===== */
-  #ball {
+  .leg.l { left: 12px; }
+  .leg.r { right: 12px; }
+  .leg::after {
+    content: '';
     position: absolute;
-    width: 22px;
-    height: 22px;
-    background:
-      radial-gradient(circle at 30% 30%, #fff 0%, #ddd 100%);
-    border: 2px solid #222;
-    border-radius: 50%;
-    z-index: 9;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.4);
-    transition: transform 0.2s linear;
+    bottom: -2px; left: -2px; right: -2px;
+    height: 5px;
+    background: #222;
+    border-radius: 2px 4px 2px 2px;
   }
 
-  /* Узоры на мяче */
-  #ball::before,
-  #ball::after {
+  #p1 .torso, #p1 .arm { background: #2b6cb0; border: 1px solid #1a4a82; }
+  #p1 .shorts { background: #fff; border: 1px solid #999; }
+  #p1 .leg { background: #f4c299; }
+
+  #p2 .torso, #p2 .arm { background: #c53030; border: 1px solid #8b1a1a; }
+  #p2 .shorts { background: #fff; border: 1px solid #999; }
+  #p2 .leg { background: #f4c299; }
+
+  #ball {
+    position: absolute;
+    width: 24px; height: 24px;
+    background: radial-gradient(circle at 35% 30%, #fff 0%, #e0e0e0 70%, #bbb 100%);
+    border: 2px solid #222;
+    border-radius: 50%;
+    z-index: 11;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.5);
+  }
+  #ball::before, #ball::after {
     content: '';
     position: absolute;
     background: #222;
     border-radius: 50%;
   }
-  #ball::before {
-    width: 6px; height: 6px;
-    top: 4px; left: 8px;
-  }
-  #ball::after {
-    width: 4px; height: 4px;
-    bottom: 3px; left: 4px;
-  }
+  #ball::before { width: 7px; height: 7px; top: 5px; left: 8px; }
+  #ball::after  { width: 5px; height: 5px; bottom: 4px; left: 5px; }
 
-  /* ===== СЧЁТ ===== */
-  #score {
+  #scoreboard-top {
     position: absolute;
-    top: 10px;
-    left: 50%;
+    top: 8px; left: 50%;
     transform: translateX(-50%);
-    background: rgba(0,0,0,0.85);
-    padding: 8px 22px;
-    border-radius: 20px;
-    font-size: 20px;
-    font-weight: bold;
-    border: 2px solid white;
+    background: #2d3748;
+    border: 4px solid #4a5568;
+    border-radius: 8px;
+    padding: 8px 20px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.5);
     z-index: 20;
-    white-space: nowrap;
-    font-family: 'Courier New', monospace;
   }
-  .blue { color: #4a9eff; }
-  .red { color: #ff6b6b; }
 
-  /* ===== СООБЩЕНИЕ ===== */
+  #timer {
+    color: #ff4444;
+    font-family: 'Courier New', monospace;
+    font-size: 26px;
+    font-weight: bold;
+    text-shadow: 0 0 10px #ff4444;
+    letter-spacing: 2px;
+  }
+
+  #score-bottom {
+    position: absolute;
+    bottom: 12px; left: 50%;
+    transform: translateX(-50%);
+    background: #8b5a3c;
+    border: 4px solid #fff;
+    border-radius: 12px;
+    padding: 6px 16px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    z-index: 20;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+  }
+  #score-bottom .num {
+    color: #ffd700;
+    font-family: 'Courier New', monospace;
+    font-size: 24px;
+    font-weight: bold;
+    min-width: 30px;
+    text-align: center;
+  }
+  #score-bottom .dash { color: #fff; font-size: 22px; font-weight: bold; }
+  #score-bottom .icon { font-size: 20px; }
+
+  #controls-p1, #controls-p2 {
+    position: absolute;
+    bottom: 15px;
+    width: 180px;
+    height: 120px;
+    z-index: 25;
+  }
+  #controls-p1 { left: 15px; }
+  #controls-p2 { right: 15px; }
+
+  .ctrl-btn {
+    position: absolute;
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    touch-action: none;
+    user-select: none;
+    transition: all 0.05s;
+  }
+  .ctrl-btn:active, .ctrl-btn.pressed {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.5);
+  }
+  .btn-blue { background: radial-gradient(circle at 30% 30%, #4a9eff, #1a5fb4); }
+  .btn-red  { background: radial-gradient(circle at 30% 30%, #ff6b6b, #b41a1a); }
+
+  .pos-up    { top: 0;    left: 65px; }
+  .pos-left  { top: 55px; left: 10px; }
+  .pos-down  { top: 55px; left: 65px; }
+  .pos-right { top: 55px; left: 120px; }
+
   #msg {
     position: absolute;
-    top: 35%;
-    left: 0; right: 0;
+    top: 35%; left: 0; right: 0;
     text-align: center;
-    font-size: 40px;
+    font-size: 42px;
     font-weight: bold;
     color: #ffd93d;
     text-shadow: 0 0 20px black, 0 0 40px #ffd93d;
@@ -239,45 +336,12 @@
     transition: opacity 0.3s;
     z-index: 30;
     pointer-events: none;
-    padding: 0 10px;
-    font-family: Arial, sans-serif;
   }
-  #msg.show { opacity: 1; }
 
-  /* ===== КНОПКИ ===== */
-  .btn {
-    position: absolute;
-    width: 60px;
-    height: 60px;
-    font-size: 26px;
-    border: 3px solid white;
-    border-radius: 15px;
-    cursor: pointer;
-    color: white;
-    font-weight: bold;
-    box-shadow: 0 4px 0 rgba(0,0,0,0.4);
-    -webkit-tap-highlight-color: transparent;
-    z-index: 15;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    touch-action: none;
-    font-family: Arial, sans-serif;
-  }
-  .btn:active, .btn.pressed {
-    transform: translateY(3px);
-    box-shadow: 0 1px 0 rgba(0,0,0,0.4);
-  }
-  .btn-l { background: #1a5fb4; }
-  .btn-r { background: #b41a1a; }
-
-  /* ===== КАМЕРА ===== */
   #cam {
     position: absolute;
-    top: 60px;
-    left: 10px;
-    width: 70px;
-    height: 90px;
+    top: 60px; left: 10px;
+    width: 70px; height: 90px;
     border: 3px solid #ffd93d;
     border-radius: 10px;
     overflow: hidden;
@@ -286,40 +350,32 @@
     display: none;
   }
   #cam video {
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     object-fit: cover;
     transform: scaleX(-1);
   }
 
-  /* ===== МЕНЮ ===== */
   #overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0, 20, 0, 0.95);
+    background: rgba(10, 20, 10, 0.95);
     z-index: 100;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 25px;
+    padding: 20px;
     text-align: center;
+    color: white;
     overflow-y: auto;
   }
-
   #overlay h1 {
-    font-size: 26px;
+    font-size: 28px;
     color: #ffd93d;
     margin-bottom: 18px;
-    text-shadow: 0 0 15px rgba(255,217,61,0.8);
+    text-shadow: 0 0 20px rgba(255,217,61,0.8);
   }
-
-  #overlay p {
-    font-size: 15px;
-    margin-bottom: 10px;
-    line-height: 1.5;
-  }
-
+  #overlay p { font-size: 15px; margin-bottom: 10px; color: #e0e0e0; }
   #overlay .mode-btn {
     margin: 6px 0;
     padding: 16px 25px;
@@ -330,58 +386,41 @@
     border: 3px solid white;
     border-radius: 14px;
     cursor: pointer;
-    box-shadow: 0 5px 0 rgba(0,0,0,0.4);
-    min-width: 260px;
+    box-shadow: 0 5px 0 rgba(0,0,0,0.5);
+    min-width: 280px;
     text-align: left;
   }
-  #overlay .mode-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,0.4); }
-  #overlay .mode-btn small {
-    display: block; font-size: 12px; opacity: 0.85;
-    margin-top: 3px; font-weight: normal;
+  #overlay .mode-btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 rgba(0,0,0,0.5);
   }
-
-  .mode-bot { background: linear-gradient(135deg, #a855f7, #7c3aed); }
-  .mode-split { background: linear-gradient(135deg, #f59e0b, #d97706); }
+  #overlay .mode-btn small {
+    display: block;
+    font-size: 12px;
+    opacity: 0.9;
+    margin-top: 3px;
+    font-weight: normal;
+  }
+  .mode-bot    { background: linear-gradient(135deg, #a855f7, #7c3aed); }
+  .mode-split  { background: linear-gradient(135deg, #f59e0b, #d97706); }
   .mode-online { background: linear-gradient(135deg, #4ade80, #22c55e); }
 
   #overlay input {
     width: 100%;
-    max-width: 260px;
+    max-width: 280px;
     padding: 14px;
     font-size: 22px;
     text-align: center;
-    font-family: inherit;
     font-weight: bold;
     letter-spacing: 4px;
     text-transform: uppercase;
-    background: rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.15);
     border: 3px solid #4a9eff;
     border-radius: 12px;
     color: white;
     outline: none;
     margin: 8px 0;
-  }
-
-  #overlay .action-btn {
-    margin: 8px 0;
-    padding: 15px 30px;
-    font-size: 18px;
-    font-weight: bold;
     font-family: inherit;
-    background: linear-gradient(135deg, #4ade80, #22c55e);
-    color: white;
-    border: 3px solid white;
-    border-radius: 14px;
-    cursor: pointer;
-    box-shadow: 0 5px 0 rgba(0,0,0,0.4);
-    min-width: 240px;
-  }
-  #overlay .action-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,0.4); }
-
-  #overlay .back-btn {
-    background: linear-gradient(135deg, #94a3b8, #64748b);
-    min-width: 200px;
-    margin-top: 15px;
   }
 
   #overlay .code-box {
@@ -405,74 +444,76 @@
     margin-top: 12px;
     min-height: 20px;
   }
-  #overlay .error { color: #ff6b6b; }
+  #overlay .status.error { color: #ff6b6b; }
 
   .hidden { display: none !important; }
-
-  /* На маленьких экранах — телефон держим вертикально как "широкий" */
-  @media (max-aspect-ratio: 1/1) {
-    #game {
-      max-width: 100vw;
-      max-height: 60vh;
-      height: 60vh;
-    }
-  }
 </style>
 </head>
 <body>
 
 <div id="game">
   <div id="sky"></div>
-  <div id="stands"></div>
-  <div id="ground"></div>
-  <div id="horizon"></div>
+  <div id="roof"></div>
+  <div id="stands"><div id="crowd"></div></div>
 
-  <!-- Ворота -->
-  <div class="goal" id="goal-left">
-    <div class="goal-frame"></div>
+  <div id="field"></div>
+  <div class="field-line" id="line-center"></div>
+  <div id="circle-center"></div>
+  <div class="penalty" id="penalty-left"></div>
+  <div class="penalty" id="penalty-right"></div>
+
+  <div class="goal" id="goal-left"><div class="goal-net"></div></div>
+  <div class="goal" id="goal-right"><div class="goal-net"></div></div>
+
+  <div id="scoreboard-top"><div id="timer">00:00</div></div>
+
+  <div id="score-bottom">
+    <span class="icon">⚽</span>
+    <span class="num" id="s1">0</span>
+    <span class="dash">-</span>
+    <span class="num" id="s2">0</span>
+    <span class="icon">⚽</span>
   </div>
-  <div class="goal" id="goal-right">
-    <div class="goal-frame"></div>
-  </div>
+
+  <div id="msg"></div>
 
   <div id="cam"><video id="camVideo" autoplay muted playsinline></video></div>
 
-  <div id="score">🔵 <span class="blue" id="s1">0</span> : <span class="red" id="s2">0</span> 🔴</div>
-  <div id="msg"></div>
-
-  <!-- Игрок 1 — синие -->
   <div class="player" id="p1">
-    <div class="head"></div>
-    <div class="body"></div>
-    <div class="arm left"></div>
-    <div class="arm right"></div>
-    <div class="leg left"></div>
-    <div class="leg right"></div>
+    <div class="head"><div class="eye l"></div><div class="eye r"></div></div>
+    <div class="arm l"></div>
+    <div class="arm r"></div>
+    <div class="torso"></div>
+    <div class="shorts"></div>
+    <div class="leg l"></div>
+    <div class="leg r"></div>
   </div>
 
-  <!-- Игрок 2 — красные -->
   <div class="player" id="p2">
-    <div class="head"></div>
-    <div class="body"></div>
-    <div class="arm left"></div>
-    <div class="arm right"></div>
-    <div class="leg left"></div>
-    <div class="leg right"></div>
+    <div class="head"><div class="eye l"></div><div class="eye r"></div></div>
+    <div class="arm l"></div>
+    <div class="arm r"></div>
+    <div class="torso"></div>
+    <div class="shorts"></div>
+    <div class="leg l"></div>
+    <div class="leg r"></div>
   </div>
 
   <div id="ball"></div>
 
-  <!-- Кнопки игрока 1 (слева) -->
-  <button class="btn btn-l" id="bl-up"    style="left:10px; bottom:150px;">⬆</button>
-  <button class="btn btn-l" id="bl-left"  style="left:10px; bottom:80px;">⬅</button>
-  <button class="btn btn-l" id="bl-down"  style="left:10px; bottom:10px;">⬇</button>
-  <button class="btn btn-l" id="bl-right" style="left:80px; bottom:80px;">➡</button>
+  <div id="controls-p1" class="hidden">
+    <button class="ctrl-btn btn-blue pos-up"    id="b1-up">W</button>
+    <button class="ctrl-btn btn-blue pos-left"  id="b1-left">A</button>
+    <button class="ctrl-btn btn-blue pos-down"  id="b1-down">S</button>
+    <button class="ctrl-btn btn-blue pos-right" id="b1-right">D</button>
+  </div>
 
-  <!-- Кнопки игрока 2 (справа) -->
-  <button class="btn btn-r" id="br-up"    style="right:10px; bottom:150px;">⬆</button>
-  <button class="btn btn-r" id="br-left"  style="right:80px; bottom:80px;">⬅</button>
-  <button class="btn btn-r" id="br-down"  style="right:10px; bottom:10px;">⬇</button>
-  <button class="btn btn-r" id="br-right" style="right:10px; bottom:80px;">➡</button>
+  <div id="controls-p2" class="hidden">
+    <button class="ctrl-btn btn-red pos-up"    id="b2-up">⬆</button>
+    <button class="ctrl-btn btn-red pos-left"  id="b2-left">⬅</button>
+    <button class="ctrl-btn btn-red pos-down"  id="b2-down">⬇</button>
+    <button class="ctrl-btn btn-red pos-right" id="b2-right">➡</button>
+  </div>
 
   <div id="overlay"></div>
 </div>
@@ -487,43 +528,40 @@
   const s2El = document.getElementById('s2');
   const msgEl = document.getElementById('msg');
   const overlay = document.getElementById('overlay');
-  const goalLeft = document.getElementById('goal-left');
-  const goalRight = document.getElementById('goal-right');
+  const timerEl = document.getElementById('timer');
+  const ctrl1 = document.getElementById('controls-p1');
+  const ctrl2 = document.getElementById('controls-p2');
   const camBox = document.getElementById('cam');
   const camVideo = document.getElementById('camVideo');
-
-  const sideButtons = ['bl-up','bl-left','bl-down','bl-right','br-up','br-left','br-down','br-right']
-    .map(id => document.getElementById(id));
 
   let W, H;
   let mode = null;
   let myRole = null;
   let peer = null, conn = null, myPeerId = null;
+  let running = false;
+  let FL, FR, FT, FB;
 
-  // Размеры поля
-  // Игровое поле — газон (нижняя часть)
-  const P1 = { x: 0, y: 0, vx: 0, vy: 0, speed: 3.4, size: 40 };
-  const P2 = { x: 0, y: 0, vx: 0, vy: 0, speed: 3.4, size: 40 };
-  const B  = { x: 0, y: 0, vx: 0, vy: 0, size: 22, fr: 0.985 };
+  const P1 = { x: 0, y: 0, vx: 0, vy: 0, speed: 3.5, size: 40 };
+  const P2 = { x: 0, y: 0, vx: 0, vy: 0, speed: 3.5, size: 40 };
+  const B  = { x: 0, y: 0, vx: 0, vy: 0, size: 24, fr: 0.985 };
 
   let s1 = 0, s2 = 0;
   let keys = {};
-  let running = false;
   let lastT = 0;
   const WIN_SCORE = 3;
-  let botTargetX = 0, botThink = 0;
+  let matchSeconds = 0;
+  let matchTimer = null;
 
-  // Границы газона
-  let groundTop, groundBottom, groundLeft, groundRight;
+  // 🔒 ЗАЩИТА ОТ МНОГОКРАТНОГО ГОЛА
+  let goalLock = false;
 
   function resize() {
     W = game.clientWidth;
     H = game.clientHeight;
-    // газон — от 60% до низа, но оставим место под кнопки справа/слева
-    groundTop = H * 0.55;
-    groundBottom = H - 30;  // немного над нижним краем
-    groundLeft = 20;
-    groundRight = W - 20;
+    FT = H * 0.45;
+    FB = H * 0.88;
+    FL = 30;
+    FR = W - 30;
   }
   window.addEventListener('resize', resize);
   resize();
@@ -540,6 +578,7 @@
 
   function bindBtn(id, key) {
     const btn = document.getElementById(id);
+    if (!btn) return;
     const press = e => { e.preventDefault(); keys[key] = true; btn.classList.add('pressed'); };
     const rel = e => { e.preventDefault(); keys[key] = false; btn.classList.remove('pressed'); };
     btn.addEventListener('mousedown', press);
@@ -550,16 +589,18 @@
     btn.addEventListener('touchcancel', rel);
   }
 
-  bindBtn('bl-up', 'w'); bindBtn('bl-left', 'a');
-  bindBtn('bl-down', 's'); bindBtn('bl-right', 'd');
-  bindBtn('br-up', 'ArrowUp'); bindBtn('br-left', 'ArrowLeft');
-  bindBtn('br-down', 'ArrowDown'); bindBtn('br-right', 'ArrowRight');
+  bindBtn('b1-up', 'w'); bindBtn('b1-left', 'a');
+  bindBtn('b1-down', 's'); bindBtn('b1-right', 'd');
+  bindBtn('b2-up', 'ArrowUp'); bindBtn('b2-left', 'ArrowLeft');
+  bindBtn('b2-down', 'ArrowDown'); bindBtn('b2-right', 'ArrowRight');
 
   // ===== МЕНЮ =====
   function showMenu() {
     mode = null;
     running = false;
-    hideSideButtons();
+    if (matchTimer) { clearInterval(matchTimer); matchTimer = null; }
+    ctrl1.classList.add('hidden');
+    ctrl2.classList.add('hidden');
     camBox.style.display = 'none';
     overlay.classList.remove('hidden');
     overlay.innerHTML = `
@@ -577,8 +618,8 @@
         🌐 ПО КОДУ
         <small>Играть с другом по Wi-Fi</small>
       </button>
-      <p style="font-size: 12px; opacity: 0.7; margin-top: 20px;">
-        ⚽ Забей 3 гола и победи!
+      <p style="font-size:12px;opacity:0.7;margin-top:20px;">
+        ⚽ Забей 3 гола и победи!<br>Матч — 2 минуты (30:00 игровых).
       </p>
     `;
   }
@@ -587,26 +628,25 @@
     overlay.innerHTML = `
       <h1>🌐 Онлайн-игра</h1>
       <p>Один создаёт комнату, второй вводит код</p>
-      <button class="action-btn" onclick="createRoom()">🏠 Создать комнату</button>
+      <button class="mode-btn mode-online" onclick="createRoom()">🏠 Создать комнату</button>
       <p style="margin: 12px 0; opacity: 0.7;">— или —</p>
       <input type="text" id="codeInput" placeholder="КОД" maxlength="6">
-      <button class="action-btn" onclick="joinRoom()">🔗 Подключиться</button>
+      <button class="mode-btn mode-bot" onclick="joinRoom()">🔗 Подключиться</button>
       <div class="status" id="status"></div>
-      <button class="action-btn back-btn" onclick="showMenu()">← Назад</button>
+      <button class="mode-btn" style="background:linear-gradient(135deg,#94a3b8,#64748b);min-width:200px;" onclick="showMenu()">← Назад</button>
     `;
   }
-
-  function hideSideButtons() { sideButtons.forEach(b => b.classList.add('hidden')); }
-  function showLeftButtons() { sideButtons.slice(0,4).forEach(b => b.classList.remove('hidden')); }
-  function showBothButtons() { sideButtons.forEach(b => b.classList.remove('hidden')); }
 
   // ===== РЕЖИМЫ =====
   function startBotMode() {
     mode = 'bot'; myRole = 'host';
     s1 = 0; s2 = 0; s1El.textContent = 0; s2El.textContent = 0;
+    goalLock = false;
     overlay.classList.add('hidden');
-    showLeftButtons();
+    ctrl1.classList.remove('hidden');
+    ctrl2.classList.add('hidden');
     resize(); reset();
+    startMatchTimer();
     running = true; lastT = performance.now();
     requestAnimationFrame(loop);
   }
@@ -614,14 +654,17 @@
   function startSplitMode() {
     mode = 'split'; myRole = 'host';
     s1 = 0; s2 = 0; s1El.textContent = 0; s2El.textContent = 0;
+    goalLock = false;
     overlay.classList.add('hidden');
-    showBothButtons();
+    ctrl1.classList.remove('hidden');
+    ctrl2.classList.remove('hidden');
     resize(); reset();
+    startMatchTimer();
     running = true; lastT = performance.now();
     requestAnimationFrame(loop);
   }
 
-  // Онлайн
+  // ===== ОНЛАЙН =====
   function generateCode() {
     const L = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let c = 'FB';
@@ -650,6 +693,7 @@
   function createRoom() {
     mode = 'online'; myRole = 'host';
     s1 = 0; s2 = 0;
+    goalLock = false;
     const code = generateCode();
     const st = document.getElementById('status');
     st.textContent = 'Создаём комнату...';
@@ -661,10 +705,10 @@
           <h1>🏠 Комната создана!</h1>
           <p>Скажи другу этот код:</p>
           <div class="code-box" onclick="copyCode('${code}')">${code}</div>
-          <p style="font-size: 12px; opacity: 0.7;">👆 нажми чтобы скопировать</p>
+          <p style="font-size: 12px; opacity: 0.7;">👆 нажми, чтобы скопировать</p>
           <p style="font-size: 13px; opacity: 0.8;">Ждём второго игрока...</p>
           <div class="status">⏳ Ожидание...</div>
-          <button class="action-btn back-btn" onclick="location.reload()">← Отмена</button>
+          <button class="mode-btn" style="background:linear-gradient(135deg,#94a3b8,#64748b);min-width:200px;" onclick="location.reload()">← Отмена</button>
         `;
       }
     }, 100);
@@ -673,10 +717,13 @@
   function joinRoom() {
     mode = 'online'; myRole = 'guest';
     s1 = 0; s2 = 0;
+    goalLock = false;
     let code = document.getElementById('codeInput').value.trim().toUpperCase();
     if (code.length < 4) {
       const st = document.getElementById('status');
-      st.textContent = 'Введи код'; st.className = 'status error'; return;
+      st.textContent = 'Введи код';
+      st.className = 'status error';
+      return;
     }
     if (!code.startsWith('FB')) code = 'FB' + code;
     const st = document.getElementById('status');
@@ -697,7 +744,7 @@
     conn.on('close', () => {
       running = false;
       msgEl.textContent = '⚠️ Соперник вышел';
-      msgEl.classList.add('show');
+      msgEl.style.opacity = 1;
       setTimeout(() => location.reload(), 2500);
     });
   }
@@ -711,7 +758,8 @@
 
   async function startOnlineMatch() {
     overlay.classList.add('hidden');
-    showLeftButtons();
+    ctrl1.classList.remove('hidden');
+    ctrl2.classList.add('hidden');
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: 'user', width: 320, height: 400 }, audio: false
@@ -720,17 +768,52 @@
       camBox.style.display = 'block';
     } catch (e) {}
     resize(); reset();
+    startMatchTimer();
     running = true; lastT = performance.now();
     requestAnimationFrame(loop);
   }
 
+  // ===== ТАЙМЕР =====
+  function startMatchTimer() {
+    matchSeconds = 0;
+    updateTimer();
+    if (matchTimer) clearInterval(matchTimer);
+    matchTimer = setInterval(() => {
+      matchSeconds++;
+      updateTimer();
+      if (matchSeconds >= 60) {
+        clearInterval(matchTimer);
+        endMatch();
+      }
+    }, 1000);
+  }
+
+  function updateTimer() {
+    const gameTime = matchSeconds * 30;
+    const m = Math.floor(gameTime / 60);
+    const s = gameTime % 60;
+    timerEl.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  }
+
+  function endMatch() {
+    running = false;
+    goalLock = true;
+    let winner = 'НИЧЬЯ!';
+    if (s1 > s2) winner = '🔵 СИНИЕ ПОБЕДИЛИ!';
+    else if (s2 > s1) winner = '🔴 КРАСНЫЕ ПОБЕДИЛИ!';
+    msgEl.textContent = winner;
+    msgEl.style.opacity = 1;
+    setTimeout(() => location.reload(), 3500);
+  }
+
   // ===== ИГРА =====
   function reset() {
-    P1.x = W * 0.25; P1.y = (groundTop + groundBottom) / 2;
-    P2.x = W * 0.75; P2.y = (groundTop + groundBottom) / 2;
+    P1.x = W * 0.25; P1.y = (FT + FB) / 2;
+    P2.x = W * 0.75; P2.y = (FT + FB) / 2;
     P1.vx = P1.vy = 0; P2.vx = P2.vy = 0;
-    B.x = W / 2; B.y = groundBottom - 25;
+    B.x = W / 2; B.y = FB - 30;
     B.vx = B.vy = 0;
+    goalLock = false;
   }
 
   function move(P, ax, ay, dt) {
@@ -739,8 +822,8 @@
     P.x += P.vx;
     P.y += P.vy;
     const r = P.size / 2;
-    P.x = Math.max(groundLeft + r, Math.min(groundRight - r, P.x));
-    P.y = Math.max(groundTop + r, Math.min(groundBottom - r, P.y));
+    P.x = Math.max(FL + r, Math.min(FR - r, P.x));
+    P.y = Math.max(FT + r, Math.min(FB - r, P.y));
   }
 
   function coll(P) {
@@ -756,22 +839,26 @@
     }
   }
 
+  // 🔒 ИСПРАВЛЕНО: гол засчитывается 1 раз
   function goal(side) {
-    if (side === 'left') { s2++; s2El.textContent = s2; show('🔴 КРАСНЫЕ!'); }
-    else { s1++; s1El.textContent = s1; show('🔵 СИНИЕ!'); }
+    if (goalLock) return;
+    goalLock = true;
+
+    if (side === 'left') { s2++; s2El.textContent = s2; showMsg('🔴 ГОЛ!'); }
+    else { s1++; s1El.textContent = s1; showMsg('🔵 ГОЛ!'); }
+
     if (mode === 'online') sendData({ type: 'goal', side, s1, s2 });
   }
 
-  function show(t) {
+  function showMsg(t) {
     msgEl.textContent = t;
-    msgEl.classList.add('show');
+    msgEl.style.opacity = 1;
     B.vx = 0; B.vy = 0;
+
     setTimeout(() => {
-      msgEl.classList.remove('show');
+      msgEl.style.opacity = 0;
       if (s1 >= WIN_SCORE || s2 >= WIN_SCORE) {
-        msgEl.textContent = s1 >= WIN_SCORE ? '🔵 СИНИЕ ПОБЕДИЛИ!' : '🔴 КРАСНЫЕ ПОБЕДИЛИ!';
-        msgEl.classList.add('show');
-        setTimeout(() => location.reload(), 3000);
+        endMatch();
       } else {
         reset();
         if (mode === 'online' && myRole === 'host') sendData({ type: 'reset', s1, s2 });
@@ -790,27 +877,37 @@
       s1 = data.s1; s2 = data.s2;
       s1El.textContent = s1; s2El.textContent = s2;
     } else if (data.type === 'goal') {
+      if (goalLock) return;
+      goalLock = true;
       s1 = data.s1; s2 = data.s2;
       s1El.textContent = s1; s2El.textContent = s2;
-      show(data.side === 'left' ? '🔴 КРАСНЫЕ!' : '🔵 СИНИЕ!');
+      showMsg(data.side === 'left' ? '🔴 ГОЛ!' : '🔵 ГОЛ!');
     } else if (data.type === 'reset') {
-      B.x = W / 2; B.y = groundBottom - 25; B.vx = 0; B.vy = 0;
+      B.x = W / 2; B.y = FB - 30; B.vx = 0; B.vy = 0;
       s1 = data.s1; s2 = data.s2;
       s1El.textContent = s1; s2El.textContent = s2;
+      goalLock = false;
     }
   }
 
+  function sendState() {
+    const data = {
+      type: 'state',
+      bx: B.x, by: B.y, bvx: B.vx, bvy: B.vy,
+      s1: s1, s2: s2
+    };
+    if (myRole === 'host') { data.p1x = P1.x; data.p1y = P1.y; }
+    else { data.p2x = P2.x; data.p2y = P2.y; }
+    sendData(data);
+  }
+
   function updateBot(dt) {
-    botThink -= dt;
-    if (botThink <= 0) {
-      botThink = 5;
-      botTargetX = Math.max(W * 0.5, Math.min(groundRight - 30, B.x + 30));
-      botTargetX += B.vx * 5;
-    }
-    let ax = 0;
-    const dx = botTargetX - P2.x;
-    if (Math.abs(dx) > 5) ax = dx > 0 ? 1 : -1;
-    move(P2, ax, 0, dt);
+    const targetX = Math.max(W * 0.5, Math.min(FR - 30, B.x + 25));
+    const targetY = B.y;
+    let ax = 0, ay = 0;
+    if (Math.abs(targetX - P2.x) > 5) ax = targetX > P2.x ? 1 : -1;
+    if (Math.abs(targetY - P2.y) > 5) ay = targetY > P2.y ? 1 : -1;
+    move(P2, ax, ay, dt);
   }
 
   function loop(now) {
@@ -819,35 +916,54 @@
     lastT = now;
 
     if (mode === 'bot') {
-      updateP1ByKeys(dt); updateBot(dt); physics(dt); draw();
+      let ax = 0, ay = 0;
+      if (keys['w'] || keys['ц']) ay -= 1;
+      if (keys['s'] || keys['ы']) ay += 1;
+      if (keys['a'] || keys['ф']) ax -= 1;
+      if (keys['d'] || keys['в']) ax += 1;
+      move(P1, ax, ay, dt);
+      updateBot(dt);
+      physics(dt);
     } else if (mode === 'split') {
-      updateP1ByKeys(dt); updateP2ByKeys(dt); physics(dt); draw();
+      let ax = 0, ay = 0;
+      if (keys['w'] || keys['ц']) ay -= 1;
+      if (keys['s'] || keys['ы']) ay += 1;
+      if (keys['a'] || keys['ф']) ax -= 1;
+      if (keys['d'] || keys['в']) ax += 1;
+      move(P1, ax, ay, dt);
+
+      let ax2 = 0, ay2 = 0;
+      if (keys['ArrowUp']) ay2 -= 1;
+      if (keys['ArrowDown']) ay2 += 1;
+      if (keys['ArrowLeft']) ax2 -= 1;
+      if (keys['ArrowRight']) ax2 += 1;
+      move(P2, ax2, ay2, dt);
+
+      physics(dt);
     } else if (mode === 'online') {
       if (myRole === 'host') {
-        updateP1ByKeys(dt); physics(dt); draw(); sendState();
+        let ax = 0, ay = 0;
+        if (keys['w'] || keys['ц']) ay -= 1;
+        if (keys['s'] || keys['ы']) ay += 1;
+        if (keys['a'] || keys['ф']) ax -= 1;
+        if (keys['d'] || keys['в']) ax += 1;
+        move(P1, ax, ay, dt);
+        physics(dt);
+        sendState();
       } else {
-        updateP2ByKeys(dt); physics(dt); draw(); sendState();
+        let ax2 = 0, ay2 = 0;
+        if (keys['ArrowUp']) ay2 -= 1;
+        if (keys['ArrowDown']) ay2 += 1;
+        if (keys['ArrowLeft']) ax2 -= 1;
+        if (keys['ArrowRight']) ax2 += 1;
+        move(P2, ax2, ay2, dt);
+        physics(dt);
+        sendState();
       }
     }
+
+    draw();
     requestAnimationFrame(loop);
-  }
-
-  function updateP1ByKeys(dt) {
-    let ax = 0, ay = 0;
-    if (keys['w'] || keys['ц']) ay -= 1;
-    if (keys['s'] || keys['ы']) ay += 1;
-    if (keys['a'] || keys['ф']) ax -= 1;
-    if (keys['d'] || keys['в']) ax += 1;
-    move(P1, ax, ay, dt);
-  }
-
-  function updateP2ByKeys(dt) {
-    let ax = 0, ay = 0;
-    if (keys['ArrowUp']) ay -= 1;
-    if (keys['ArrowDown']) ay += 1;
-    if (keys['ArrowLeft']) ax -= 1;
-    if (keys['ArrowRight']) ax += 1;
-    move(P2, ax, ay, dt);
   }
 
   function physics(dt) {
@@ -860,4 +976,46 @@
     if (Math.abs(B.vx) < 0.05) B.vx = 0;
     if (Math.abs(B.vy) < 0.05) B.vy = 0;
 
-    const r
+    const r = B.size / 2;
+
+    if (B.y - r < FT) { B.y = FT + r; B.vy = -B.vy * 0.7; }
+    if (B.y + r > FB) { B.y = FB - r; B.vy = -B.vy * 0.7; }
+
+    const goalHeight = (FB - FT) * 0.35;
+    const gT = FB - goalHeight;
+    const gB = FB;
+    const goalDepth = 35;
+
+    // Левые ворота
+    if (B.x - r < goalDepth && B.y > gT && B.y < gB) {
+      if (!goalLock) goal('left');
+      return;
+    }
+    // Правые ворота
+    if (B.x + r > W - goalDepth && B.y > gT && B.y < gB) {
+      if (!goalLock) goal('right');
+      return;
+    }
+
+    if (B.x - r < FL) { B.x = FL + r; B.vx = -B.vx * 0.7; }
+    if (B.x + r > FR) { B.x = FR - r; B.vx = -B.vx * 0.7; }
+
+    coll(P1);
+    coll(P2);
+  }
+
+  function draw() {
+    p1.style.left = (P1.x - 25) + 'px';
+    p1.style.top  = (P1.y - 60) + 'px';
+    p2.style.left = (P2.x - 25) + 'px';
+    p2.style.top  = (P2.y - 60) + 'px';
+    ballEl.style.left = (B.x - 12) + 'px';
+    ballEl.style.top  = (B.y - 12) + 'px';
+  }
+
+  resize();
+  reset();
+  showMenu();
+</script>
+</body>
+</html>
