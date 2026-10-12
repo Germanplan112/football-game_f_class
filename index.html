@@ -31,7 +31,6 @@
     box-shadow: 0 10px 40px rgba(0,0,0,0.6);
   }
 
-  /* Подсказка для телефона в портретном режиме */
   #rotate-hint {
     display: none;
     position: fixed;
@@ -579,6 +578,30 @@
 
   let goalLock = false;
 
+  // 🔧 НАДЁЖНАЯ КОНФИГУРАЦИЯ ICE
+  const ICE_CONFIG = {
+    iceServers: [
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'stun:stun1.l.google.com:19302' },
+      { urls: 'stun:stun2.l.google.com:19302' },
+      {
+        urls: 'turn:openrelay.metered.ca:80',
+        username: 'openrelayproject',
+        credential: 'openrelayproject'
+      },
+      {
+        urls: 'turn:openrelay.metered.ca:443',
+        username: 'openrelayproject',
+        credential: 'openrelayproject'
+      },
+      {
+        urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+        username: 'openrelayproject',
+        credential: 'openrelayproject'
+      }
+    ]
+  };
+
   function resize() {
     W = game.clientWidth;
     H = game.clientHeight;
@@ -618,6 +641,7 @@
   bindBtn('b2-up', 'ArrowUp'); bindBtn('b2-left', 'ArrowLeft');
   bindBtn('b2-down', 'ArrowDown'); bindBtn('b2-right', 'ArrowRight');
 
+  // ===== МЕНЮ =====
   function showMenu() {
     mode = null;
     running = false;
@@ -660,6 +684,7 @@
     `;
   }
 
+  // ===== РЕЖИМЫ =====
   function startBotMode() {
     mode = 'bot'; myRole = 'host';
     s1 = 0; s2 = 0; s1El.textContent = 0; s2El.textContent = 0;
@@ -686,6 +711,7 @@
     requestAnimationFrame(loop);
   }
 
+  // ===== ОНЛАЙН =====
   function generateCode() {
     const L = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let c = 'FB';
@@ -695,19 +721,66 @@
 
   function initPeer(customId = null) {
     const id = customId || ('fb-' + Math.random().toString(36).substring(2, 12));
+
+    // 🔧 Используем более надёжный сервер 1.peerjs.com
     peer = new Peer(id, {
-      config: { iceServers: [
-        { urls: 'stun:stun.l.google.com:19302' },
-        { urls: 'stun:stun1.l.google.com:19302' }
-      ]}
+      host: '1.peerjs.com',
+      port: 443,
+      path: '/',
+      secure: true,
+      debug: 2,
+      config: ICE_CONFIG
     });
-    peer.on('open', id => { myPeerId = id; });
+
+    // Таймаут 15 секунд — если сервер не ответил, перезапуск
+    const timeout = setTimeout(() => {
+      if (!myPeerId) {
+        const st = document.getElementById('status');
+        if (st) {
+          st.textContent = 'Сервер долго не отвечает. Пробуем ещё раз...';
+          st.className = 'status error';
+        }
+        // Пересоздаём peer
+        try { peer.destroy(); } catch(e) {}
+        setTimeout(() => initPeer(customId), 2000);
+      }
+    }, 15000);
+
+    peer.on('open', id => {
+      clearTimeout(timeout);
+      myPeerId = id;
+      const st = document.getElementById('status');
+      if (st) {
+        st.textContent = '✅ Готово!';
+        st.className = 'status';
+      }
+    });
+
     peer.on('error', err => {
+      clearTimeout(timeout);
       const st = document.getElementById('status');
       if (!st) return;
-      st.textContent = 'Ошибка: ' + err.type;
-      st.className = 'status error';
+
+      if (err.type === 'network') {
+        st.textContent = '⚠️ Сервер не отвечает. Ждём 5 сек и пробуем снова...';
+        st.className = 'status error';
+        setTimeout(() => {
+          try {
+            if (peer && !peer.destroyed) peer.reconnect();
+          } catch(e) {}
+        }, 5000);
+      } else if (err.type === 'peer-unavailable') {
+        st.textContent = '❌ Комната не найдена. Проверь код.';
+        st.className = 'status error';
+      } else if (err.type === 'unavailable-id') {
+        st.textContent = '❌ Код занят. Попробуй создать ещё раз.';
+        st.className = 'status error';
+      } else {
+        st.textContent = '⚠️ Ошибка: ' + err.type;
+        st.className = 'status error';
+      }
     });
+
     peer.on('connection', c => { conn = c; setupConnection(); });
   }
 
@@ -794,6 +867,7 @@
     requestAnimationFrame(loop);
   }
 
+  // ===== ТАЙМЕР =====
   function startMatchTimer() {
     matchSeconds = 0;
     updateTimer();
@@ -826,6 +900,7 @@
     setTimeout(() => location.reload(), 3500);
   }
 
+  // ===== ИГРА =====
   function reset() {
     P1.x = W * 0.25; P1.y = (FT + FB) / 2;
     P2.x = W * 0.75; P2.y = (FT + FB) / 2;
