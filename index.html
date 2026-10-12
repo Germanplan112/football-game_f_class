@@ -17,6 +17,7 @@
     overflow: hidden;
     user-select: none;
     touch-action: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
   #game {
@@ -28,6 +29,28 @@
     overflow: hidden;
     border-radius: 12px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+  }
+
+  /* Подсказка для телефона в портретном режиме */
+  #rotate-hint {
+    display: none;
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffd93d;
+    color: #1a3d1a;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 12px;
+    z-index: 200;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  }
+
+  @media (max-aspect-ratio: 1/1) {
+    #rotate-hint { display: block; }
   }
 
   #sky {
@@ -451,6 +474,8 @@
 </head>
 <body>
 
+<div id="rotate-hint">📱 Поверни телефон горизонтально</div>
+
 <div id="game">
   <div id="sky"></div>
   <div id="roof"></div>
@@ -552,7 +577,6 @@
   let matchSeconds = 0;
   let matchTimer = null;
 
-  // 🔒 ЗАЩИТА ОТ МНОГОКРАТНОГО ГОЛА
   let goalLock = false;
 
   function resize() {
@@ -594,7 +618,6 @@
   bindBtn('b2-up', 'ArrowUp'); bindBtn('b2-left', 'ArrowLeft');
   bindBtn('b2-down', 'ArrowDown'); bindBtn('b2-right', 'ArrowRight');
 
-  // ===== МЕНЮ =====
   function showMenu() {
     mode = null;
     running = false;
@@ -619,7 +642,7 @@
         <small>Играть с другом по Wi-Fi</small>
       </button>
       <p style="font-size:12px;opacity:0.7;margin-top:20px;">
-        ⚽ Забей 3 гола и победи!<br>Матч — 2 минуты (30:00 игровых).
+        ⚽ Забей 3 гола и победи!<br>Матч — 2 минуты.
       </p>
     `;
   }
@@ -637,7 +660,6 @@
     `;
   }
 
-  // ===== РЕЖИМЫ =====
   function startBotMode() {
     mode = 'bot'; myRole = 'host';
     s1 = 0; s2 = 0; s1El.textContent = 0; s2El.textContent = 0;
@@ -664,7 +686,6 @@
     requestAnimationFrame(loop);
   }
 
-  // ===== ОНЛАЙН =====
   function generateCode() {
     const L = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let c = 'FB';
@@ -773,7 +794,6 @@
     requestAnimationFrame(loop);
   }
 
-  // ===== ТАЙМЕР =====
   function startMatchTimer() {
     matchSeconds = 0;
     updateTimer();
@@ -806,7 +826,6 @@
     setTimeout(() => location.reload(), 3500);
   }
 
-  // ===== ИГРА =====
   function reset() {
     P1.x = W * 0.25; P1.y = (FT + FB) / 2;
     P2.x = W * 0.75; P2.y = (FT + FB) / 2;
@@ -839,7 +858,6 @@
     }
   }
 
-  // 🔒 ИСПРАВЛЕНО: гол засчитывается 1 раз
   function goal(side) {
     if (goalLock) return;
     goalLock = true;
@@ -986,12 +1004,10 @@
     const gB = FB;
     const goalDepth = 35;
 
-    // Левые ворота
     if (B.x - r < goalDepth && B.y > gT && B.y < gB) {
       if (!goalLock) goal('left');
       return;
     }
-    // Правые ворота
     if (B.x + r > W - goalDepth && B.y > gT && B.y < gB) {
       if (!goalLock) goal('right');
       return;
