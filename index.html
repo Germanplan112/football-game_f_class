@@ -369,7 +369,6 @@
   #score-bottom .dash { color: #fff; font-size: 22px; font-weight: bold; }
   #score-bottom .icon { font-size: 20px; }
 
-  /* КНОПКИ — ВСЕГДА ВИДНЫ */
   #controls-p1, #controls-p2 {
     position: absolute;
     bottom: 15px;
@@ -573,7 +572,6 @@
 
   <div id="ball"><div class="ball-ball"></div></div>
 
-  <!-- КНОПКИ — ВСЕГДА ВИДНЫ -->
   <div id="controls-p1">
     <button class="ctrl-btn btn-blue pos-up"    data-key="w">▲</button>
     <button class="ctrl-btn btn-blue pos-left"  data-key="a">◀</button>
@@ -635,7 +633,6 @@
   window.addEventListener('resize', resize);
   resize();
 
-  // ===== КЛАВИАТУРА =====
   document.addEventListener('keydown', e => {
     keys[e.key] = true;
     keys[e.key.toLowerCase()] = true;
@@ -646,44 +643,24 @@
     keys[e.key.toLowerCase()] = false;
   });
 
-  // ===== КНОПКИ — ЧЕРЕЗ POINTER EVENTS =====
   function bindBtn(btn) {
     const key = btn.dataset.key;
     if (!key) return;
-
-    const press = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      keys[key] = true;
-      btn.classList.add('pressed');
-    };
-    const release = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      keys[key] = false;
-      btn.classList.remove('pressed');
-    };
-
-    // Pointer events — работают и с мышью, и с тачем
+    const press = (e) => { e.preventDefault(); e.stopPropagation(); keys[key] = true; btn.classList.add('pressed'); };
+    const release = (e) => { e.preventDefault(); e.stopPropagation(); keys[key] = false; btn.classList.remove('pressed'); };
     btn.addEventListener('pointerdown', press);
     btn.addEventListener('pointerup', release);
     btn.addEventListener('pointercancel', release);
     btn.addEventListener('pointerleave', release);
-
-    // Страховка для старых браузеров
     btn.addEventListener('touchstart', press, { passive: false });
     btn.addEventListener('touchend', release);
     btn.addEventListener('mousedown', press);
     btn.addEventListener('mouseup', release);
     btn.addEventListener('mouseleave', release);
-
-    // Отключаем контекстное меню при долгом нажатии
     btn.addEventListener('contextmenu', e => e.preventDefault());
   }
-
   document.querySelectorAll('.ctrl-btn').forEach(bindBtn);
 
-  // ===== МЕНЮ =====
   function showMenu() {
     mode = null;
     running = false;
@@ -750,7 +727,6 @@
     requestAnimationFrame(loop);
   }
 
-  // ===== ОНЛАЙН =====
   function generateCode() {
     const L = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let c = 'FB';
@@ -935,16 +911,35 @@
     else if (P.vx < -0.1) el.classList.remove('facing-right');
   }
 
+  // ✅ УЛУЧШЕНО: столкновение мяча с игроком
   function coll(P) {
-    const dx = B.x - P.x, dy = B.y - P.y;
+    const pr = P.size / 2;
+    const br = B.size / 2;
+    const dx = B.x - P.x;
+    const dy = B.y - P.y;
     const d = Math.hypot(dx, dy);
-    const md = (B.size + P.size) / 2 + 2;
-    if (d < md && d > 0) {
-      const nx = dx / d, ny = dy / d;
-      B.x = P.x + nx * md;
-      B.y = P.y + ny * md;
-      B.vx = nx * 7 + P.vx * 0.5;
-      B.vy = ny * 7 + P.vy * 0.5;
+    const minDist = pr + br + 2;
+
+    if (d < minDist && d > 0) {
+      const nx = dx / d;
+      const ny = dy / d;
+
+      // Выталкиваем мяч наружу
+      B.x = P.x + nx * minDist;
+      B.y = P.y + ny * minDist;
+
+      // Импульс — зависит от скорости игрока
+      const basePower = 8;
+      B.vx = nx * basePower + P.vx * 1.2;
+      B.vy = ny * basePower + P.vy * 1.2;
+
+      // Ограничиваем максимальную скорость
+      const maxSpeed = 18;
+      const sp = Math.hypot(B.vx, B.vy);
+      if (sp > maxSpeed) {
+        B.vx = B.vx / sp * maxSpeed;
+        B.vy = B.vy / sp * maxSpeed;
+      }
     }
   }
 
@@ -1066,39 +1061,49 @@
     requestAnimationFrame(loop);
   }
 
+  // ✅ УЛУЧШЕНО: физика с подшагами (мяч не проскакивает сквозь игроков)
   function physics(dt) {
     if (mode === 'online' && myRole !== 'host') return;
 
-    B.x += B.vx * dt;
-    B.y += B.vy * dt;
+    // Разбиваем на подшаги, чтобы мяч не перескакивал
+    const steps = Math.max(1, Math.ceil(Math.hypot(B.vx, B.vy) * dt / 4));
+    const subDt = dt / steps;
+
+    for (let i = 0; i < steps; i++) {
+      B.x += B.vx * subDt;
+      B.y += B.vy * subDt;
+
+      // Столкновения проверяем на каждом шаге
+      coll(P1);
+      coll(P2);
+
+      const r = B.size / 2;
+      if (B.y - r < FT) { B.y = FT + r; B.vy = -B.vy * 0.7; }
+      if (B.y + r > FB) { B.y = FB - r; B.vy = -B.vy * 0.7; }
+      if (B.x - r < FL) { B.x = FL + r; B.vx = -B.vx * 0.7; }
+      if (B.x + r > FR) { B.x = FR - r; B.vx = -B.vx * 0.7; }
+
+      // Голы
+      const goalHeight = (FB - FT) * 0.5;
+      const gT = FB - goalHeight;
+      const gB = FB;
+      const goalDepth = 40;
+
+      if (B.x - r < goalDepth && B.y > gT && B.y < gB) {
+        if (!goalLock) goal('left');
+        return;
+      }
+      if (B.x + r > W - goalDepth && B.y > gT && B.y < gB) {
+        if (!goalLock) goal('right');
+        return;
+      }
+    }
+
+    // Трение
     B.vx *= Math.pow(B.fr, dt);
     B.vy *= Math.pow(B.fr, dt);
     if (Math.abs(B.vx) < 0.05) B.vx = 0;
     if (Math.abs(B.vy) < 0.05) B.vy = 0;
-
-    const r = B.size / 2;
-    if (B.y - r < FT) { B.y = FT + r; B.vy = -B.vy * 0.7; }
-    if (B.y + r > FB) { B.y = FB - r; B.vy = -B.vy * 0.7; }
-
-    const goalHeight = (FB - FT) * 0.5;
-    const gT = FB - goalHeight;
-    const gB = FB;
-    const goalDepth = 40;
-
-    if (B.x - r < goalDepth && B.y > gT && B.y < gB) {
-      if (!goalLock) goal('left');
-      return;
-    }
-    if (B.x + r > W - goalDepth && B.y > gT && B.y < gB) {
-      if (!goalLock) goal('right');
-      return;
-    }
-
-    if (B.x - r < FL) { B.x = FL + r; B.vx = -B.vx * 0.7; }
-    if (B.x + r > FR) { B.x = FR - r; B.vx = -B.vx * 0.7; }
-
-    coll(P1);
-    coll(P2);
   }
 
   function draw() {
