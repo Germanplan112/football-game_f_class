@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>⚽ Футбол 2D</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a2a0a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Comic Sans MS', sans-serif;
+    color: white;
+    overflow: hidden;
+    touch-action: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  #game {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    height: 100vh;
+    max-height: 800px;
+    background: #2d8a2d;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
+    touch-action: none;
+  }
+
+  #field {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(90deg,
+      #2d8a2d 0 40px,
+      #33993a 40px 80px);
+  }
+
+  .line {
+    position: absolute;
+    background: white;
+    opacity: 0.9;
+    pointer-events: none;
+  }
+
+  #center-line {
+    left: 50%; top: 0; bottom: 0;
+    width: 3px;
+    transform: translateX(-50%);
+  }
+
+  #center-circle {
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 90px; height: 90px;
+    border: 3px solid white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.9;
+    pointer-events: none;
+  }
+
+  .goal {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 120px;
+    background: white;
+    opacity: 0.9;
+    border-radius: 3px;
+  }
+  #goal-left { left: 0; }
+  #goal-right { right: 0; }
+
+  .my-goal {
+    box-shadow: 0 0 25px 6px #ffd93d;
+    animation: pulseGoal 1.5s infinite;
+  }
+  @keyframes pulseGoal {
+    0%, 100% { opacity: 0.9; }
+    50% { opacity: 1; box-shadow: 0 0 35px 10px #ffd93d; }
+  }
+
+  #scoreboard {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    z-index: 20;
+    border: 2px solid white;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    white-space: nowrap;
+  }
+  .blue { color: #4a9eff; }
+  .red  { color: #ff6b6b; }
+
+  .player {
+    position: absolute;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    z-index: 10;
+    border: 3px solid white;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    pointer-events: none;
+  }
+  #p1 { background: radial-gradient(circle at 30% 30%, #6bb3ff, #1a5fb4); }
+  #p2 { background: radial-gradient(circle at 30% 30%, #ff8a8a, #b41a1a); }
+
+  #ball {
+    position: absolute;
+    width: 26px; height: 26px;
+    font-size: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9;
+    filter: drop-shadow(2px 3px 4px rgba(0,0,0,0.5));
+    pointer-events: none;
+  }
+
+  #goal-flash {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(255,217,61,0.7), transparent);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    z-index: 30;
+  }
+  #goal-flash.show { opacity: 1; }
+
+  #goal-text {
+    position: absolute;
+    top: 35%;
+    left: 0; right: 0;
+    text-align: center;
+    font-size: 34px;
+    font-weight: bold;
+    color: #ffd93d;
+    text-shadow: 0 0 20px black, 0 0 40px #ffd93d;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 40;
+    pointer-events: none;
+    transform: scale(0.5);
+    padding: 0 15px;
+  }
+  #goal-text.show { opacity: 1; transform: scale(1); }
+
+  #controls-left {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 15;
+  }
+
+  #controls-right {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 15;
+  }
+
+  .btn {
+    width: 62px;
+    height: 62px;
+    font-size: 30px;
+    font-weight: bold;
+    font-family: inherit;
+    border: 3px solid white;
+    border-radius: 16px;
+    cursor: pointer;
+    box-shadow: 0 5px 0 rgba(0,0,0,0.4);
+    transition: all 0.05s;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: none;
+    user-select: none;
+  }
+
+  .btn:active, .btn.pressed {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.4);
+    filter: brightness(1.5);
+  }
+
+  .btn-blue { background: linear-gradient(180deg, #4a9eff, #1a5fb4); }
+  .btn-red  { background: linear-gradient(180deg, #ff6b6b, #b41a1a); }
+
+  #cam-preview {
+    position: absolute;
+    top: 50px;
+    left: 10px;
+    width: 80px;
+    height: 100px;
+    border: 3px solid #ffd93d;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+    z-index: 25;
+    box-shadow: 0 0 15px rgba(255,217,61,0.6);
+  }
+
+  #cam-preview video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1);
+  }
+
+  #cam-label {
+    position: absolute;
+    bottom: -22px;
+    left: 0; right: 0;
+    text-align: center;
+    font-size: 11px;
+    color: #ffd93d;
+    font-weight: bold;
+  }
+
+  #you {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0,0,0,0.75);
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    z-index: 26;
+    border: 2px solid white;
+    font-weight: bold;
+  }
+
+  #overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 20, 0, 0.94);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 25px;
+    text-align: center;
+    overflow-y: auto;
+  }
+
+  #overlay h1 {
+    font-size: 26px;
+    color: #ffd93d;
+    margin-bottom: 18px;
+    text-shadow: 0 0 15px rgba(255,217,61,0.8);
+  }
+
+  #overlay p {
+    font-size: 15px;
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+
+  #overlay .mode-btn {
+    margin: 6px 0;
+    padding: 18px 25px;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: inherit;
+    color: white;
+    border: 3px solid white;
+    border-radius: 14px;
+    cursor: pointer;
+    box-shadow: 0 5px 0 rgba(0,0,0,0.4);
+    min-width: 260px;
+    text-align: left;
+    transition: transform 0.1s;
+  }
+
+  #overlay .mode-btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 rgba(0,0,0,0.4);
+  }
+
+  #overlay .mode-btn small {
+    display: block;
+    font-size: 12px;
+    opacity: 0.85;
+    margin-top: 3px;
+    font-weight: normal;
+  }
+
+  .mode-bot     { background: linear-gradient(135deg, #a855f7, #7c3aed); }
+  .mode-split   { background: linear-gradient(135deg, #f59e0b, #d97706); }
+  .mode-online  { background: linear-gradient(135deg, #4ade80, #22c55e); }
+
+  #overlay input {
+    width: 100%;
+    max-width: 260px;
+    padding: 14px;
+    font-size: 24px;
+    text-align: center;
+    font-family: inherit;
+    font-weight: bold;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.12);
+    border: 3px solid #4a9eff;
+    border-radius: 12px;
+    color: white;
+    outline: none;
+    margin: 8px 0;
+  }
+
+  #overlay input:focus {
+    border-color: #ffd93d;
+    box-shadow: 0 0 15px rgba(255,217,61,0.6);
+  }
+
+  #overlay .action-btn {
+    margin: 8px 0;
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: inherit;
+    background: linear-gradient(135deg, #4ade80, #22c55e);
+    color: white;
+    border: 3px solid white;
+    border-radius: 14px;
+    cursor: pointer;
+    box-shadow: 0 5px 0 rgba(0,0,0,0.4);
+    min-width: 240px;
+  }
+
+  #overlay .action-btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 rgba(0,0,0,0.4);
+  }
+
+  #overlay .back-btn {
+    background: linear-gradient(135deg, #94a3b8, #64748b);
+    min-width: 200px;
+    margin-top: 15px;
+  }
+
+  #overlay .code-box {
+    background: #ffd93d;
+    color: #1a3d1a;
+    font-size: 38px;
+    font-weight: bold;
+    padding: 15px 25px;
+    border-radius: 15px;
+    margin: 15px 0;
+    letter-spacing: 6px;
+    font-family: monospace;
+    box-shadow: 0 0 25px rgba(255,217,61,0.8);
+    cursor: pointer;
+  }
+
+  #overlay .status {
+    font-size: 15px;
+    color: #4ade80;
+    margin-top: 12px;
+    min-height: 20px;
+  }
+
+  #overlay .error { color: #ff6b6b; }
+
+  #overlay .divider {
+    width: 100%;
+    max-width: 260px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #888;
+    margin: 12px 0;
+    font-size: 14px;
+  }
+  #overlay .divider::before,
+  #overlay .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #555;
+  }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div id="game">
+  <div id="field"></div>
+  <div class="line" id="center-line"></div>
+  <div id="center-circle"></div>
+  <div class="goal" id="goal-left"></div>
+  <div class="goal" id="goal-right"></div>
+
+  <div id="you" class="hidden">ТЫ: <span id="you-color">—</span></div>
+
+  <div id="cam-preview" class="hidden">
+    <video id="cam" autoplay muted playsinline></video>
+    <div id="cam-label">ТЫ 📹</div>
+  </div>
+
+  <div id="scoreboard">
+    <span class="blue">🔵 <b id="s1">0</b></span>
+    <span style="color:#ffd93d;">:</span>
+    <span class="red"><b id="s2">0</b> 🔴</span>
+  </div>
+
+  <div class="player" id="p1">😎</div>
+  <div class="player" id="p2">😡</div>
+  <div id="ball">⚽</div>
+
+  <div id="goal-flash"></div>
+  <div id="goal-text">ГОООЛ!</div>
+
+  <div id="controls-left" class="hidden">
+    <button class="btn btn-blue" id="btn-l-up">⬆</button>
+    <button class="btn btn-blue" id="btn-l-left">⬅</button>
+    <button class="btn btn-blue" id="btn-l-down">⬇</button>
+    <button class="btn btn-blue" id="btn-l-right">➡</button>
+  </div>
+
+  <div id="controls-right" class="hidden">
+    <button class="btn btn-red" id="btn-r-up">⬆</button>
+    <button class="btn btn-red" id="btn-r-left">⬅</button>
+    <button class="btn btn-red" id="btn-r-down">⬇</button>
+    <button class="btn btn-red" id="btn-r-right">➡</button>
+  </div>
+
+  <div id="overlay"></div>
+</div>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+
+<script>
+  const game = document.getElementById('game');
+  const p1 = document.getElementById('p1');
+  const p2 = document.getElementById('p2');
+  const ballEl = document.getElementById('ball');
+  const s1El = document.getElementById('s1');
+  const s2El = document.getElementById('s2');
+  const overlay = document.getElementById('overlay');
+  const goalFlash = document.getElementById('goal-flash');
+  const goalText = document.getElementById('goal-text');
+  const controlsLeft = document.getElementById('controls-left');
+  const controlsRight = document.getElementById('controls-right');
+  const youBadge = document.getElementById('you');
+  const youColor = document.getElementById('you-color');
+  const camPreview = document.getElementById('cam-preview');
+  const camVideo = document.getElementById('cam');
+  const goalLeft = document.getElementById('goal-left');
+  const goalRight = document.getElementById('goal-right');
+
+  let W, H;
+  let mode = null;
+  let myRole = null;
+  let peer = null;
+  let conn = null;
+  let myPeerId = null;
+
+  const player1 = { x: 0, y: 0, vx: 0, vy: 0, speed: 3.2, size: 44 };
+  const player2 = { x: 0, y: 0, vx: 0, vy: 0, speed: 3.2, size: 44 };
+  const ball = { x: 0, y: 0, vx: 0, vy: 0, size: 26, friction: 0.985 };
+
+  let score1 = 0, score2 = 0;
+  let running = false;
+  let pressed = {};
+  const WIN_SCORE = 3;
+  let lastTime = 0;
+
+  let botTargetX = 0, botTargetY = 0, botThink = 0;
+
+  function resize() {
+    W = game.clientWidth;
+    H = game.clientHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  document.addEventListener('keydown', (e) => {
+    pressed[e.key] = true;
+    pressed[e.key.toLowerCase()] = true;
+    if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) {
+      e.preventDefault();
+    }
+  });
+  document.addEventListener('keyup', (e) => {
+    pressed[e.key] = false;
+    pressed[e.key.toLowerCase()] = false;
+  });
+
+  function bindBtn(id, key) {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    const press = (e) => {
+      e.preventDefault();
+      pressed[key] = true;
+      btn.classList.add('pressed');
+    };
+    const release = (e) => {
+      e.preventDefault();
+      pressed[key] = false;
+      btn.classList.remove('pressed');
+    };
+    btn.addEventListener('mousedown', press);
+    btn.addEventListener('mouseup', release);
+    btn.addEventListener('mouseleave', release);
+    btn.addEventListener('touchstart', press, { passive: false });
+    btn.addEventListener('touchend', release);
+    btn.addEventListener('touchcancel', release);
+  }
+
+  bindBtn('btn-l-up', 'w');
+  bindBtn('btn-l-left', 'a');
+  bindBtn('btn-l-down', 's');
+  bindBtn('btn-l-right', 'd');
+
+  bindBtn('btn-r-up', 'ArrowUp');
+  bindBtn('btn-r-left', 'ArrowLeft');
+  bindBtn('btn-r-down', 'ArrowDown');
+  bindBtn('btn-r-right', 'ArrowRight');
+
+  async function startCamera() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: 320, height: 400 },
+        audio: false
+      });
+      camVideo.srcObject = stream;
+      camPreview.classList.remove('hidden');
+    } catch (err) {
+      console.log('Камера недоступна:', err.message);
+    }
+  }
+
+  // ===== МЕНЮ =====
+  function showMenu() {
+    mode = null;
+    running = false;
+    controlsLeft.classList.add('hidden');
+    controlsRight.classList.add('hidden');
+    youBadge.classList.add('hidden');
+    camPreview.classList.add('hidden');
+    goalLeft.classList.remove('my-goal');
+    goalRight.classList.remove('my-goal');
+
+    overlay.classList.remove('hidden');
+    overlay.innerHTML = `
+      <h1>⚽ ФУТБОЛ 2D</h1>
+      <p>Выбери режим игры:</p>
+      <button class="mode-btn mode-bot" onclick="startBotMode()">
+        🤖 С БОТОМ
+        <small>Играй против компьютера</small>
+      </button>
+      <button class="mode-btn mode-split" onclick="startSplitMode()">
+        👥 ОДИН ЭКРАН
+        <small>Двое на одном устройстве</small>
+      </button>
+      <button class="mode-btn mode-online" onclick="showOnlineMenu()">
+        🌐 ПО КОДУ
+        <small>Играть с другом по Wi-Fi</small>
+      </button>
+      <p style="font-size: 12px; opacity: 0.7; margin-top: 20px;">
+        ⚽ Забей 3 гола и победи!
+      </p>
+    `;
+  }
+
+  function showOnlineMenu() {
+    overlay.innerHTML = `
+      <h1>🌐 Онлайн-игра</h1>
+      <p>Один создаёт комнату, второй вводит код</p>
+      <button class="action-btn" onclick="createRoom()">🏠 Создать комнату</button>
+      <div class="divider">или</div>
+      <input type="text" id="code-input" placeholder="КОД" maxlength="6" inputmode="text">
+      <button class="action-btn" onclick="joinRoom()">🔗 Подключиться</button>
+      <div class="status" id="status"></div>
+      <button class="action-btn back-btn" onclick="showMenu()">← Назад</button>
+    `;
+  }
+
+  // ===== РЕЖИМ 1: БОТ =====
+  function startBotMode() {
+    mode = 'bot';
+    myRole = 'host';
+    score1 = 0; score2 = 0;
+    s1El.textContent = 0; s2El.textContent = 0;
+    overlay.classList.add('hidden');
+    controlsLeft.classList.remove('hidden');
+    controlsRight.classList.add('hidden');
+    youBadge.classList.remove('hidden');
+    youColor.textContent = '🔵 ТЫ vs 🤖 БОТ';
+    youColor.style.color = '#4a9eff';
+    goalLeft.classList.add('my-goal');
+
+    resize();
+    resetPositions();
+    running = true;
+    lastTime = performance.now();
+    requestAnimationFrame(loop);
+  }
+
+  // ===== РЕЖИМ 2: ОДИН ЭКРАН =====
+  function startSplitMode() {
+    mode = 'split';
+    myRole = 'host';
+    score1 = 0; score2 = 0;
+    s1El.textContent = 0; s2El.textContent = 0;
+    overlay.classList.add('hidden');
+    controlsLeft.classList.remove('hidden');
+    controlsRight.classList.remove('hidden');
+    youBadge.classList.remove('hidden');
+    youColor.textContent = '🔵 P1 vs 🔴 P2';
+    youColor.style.color = '#ffd93d';
+    goalLeft.classList.remove('my-goal');
+    goalRight.classList.remove('my-goal');
+
+    resize();
+    resetPositions();
+    running = true;
+    lastTime = performance.now();
+    requestAnimationFrame(loop);
+  }
+
+  // ===== РЕЖИМ 3: ОНЛАЙН =====
+  function generateCode() {
+    const letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = 'FB';
+    for (let i = 0; i < 4; i++) {
+      code += letters[Math.floor(Math.random() * letters.length)];
+    }
+    return code;
+  }
+
+  function initPeer(customId = null) {
+    const id = customId || ('fb-' + Math.random().toString(36).substring(2, 12));
+    peer = new Peer(id, {
+      debug: 1,
+      config: {
+        iceServers: [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:stun1.l.google.com:19302' }
+        ]
+      }
+    });
+
+    peer.on('open', (id) => { myPeerId = id; });
+
+    peer.on('error', (err) => {
+      const st = document.getElementById('status');
+      if (!st) return;
+      if (err.type === 'unavailable-id') {
+        st.textContent = 'Код занят, попробуй ещё';
+        st.className = 'status error';
+      } else if (err.type === 'peer-unavailable') {
+        st.textContent = 'Комната не найдена';
+        st.className = 'status error';
+      } else {
+        st.textContent = 'Ошибка: ' + err.type;
+        st.className = 'status error';
+      }
+    });
+
+    peer.on('connection', (connection) => {
+      conn = connection;
+      setupConnection();
+    });
+
+    return peer;
+  }
+
+  function createRoom() {
+    mode = 'online';
+    myRole = 'host';
+    score1 = 0; score2 = 0;
+    const code = generateCode();
+    const st = document.getElementById('status');
+    st.textContent = 'Создаём комнату...';
+    st.className = 'status';
+
+    initPeer(code);
+
+    const waitOpen = setInterval(() => {
+      if (myPeerId) {
+        clearInterval(waitOpen);
+        showWaitingRoom(code);
+      }
+    }, 100);
+  }
+
+  function joinRoom() {
+    mode = 'online';
+    myRole = 'guest';
+    score1 = 0; score2 = 0;
+    let code = document.getElementById('code-input').value.trim().toUpperCase();
+    if (code.length < 4) {
+      const st = document.getElementById('status');
+      st.textContent = 'Введи код';
+      st.className = 'status error';
+      return;
+    }
+    if (!code.startsWith('FB')) code = 'FB' + code;
+
+    const st = document.getElementById('status');
+    st.textContent = 'Подключаемся...';
+    st.className = 'status';
+
+    initPeer();
+
+    const waitOpen = setInterval(() => {
+      if (peer && peer.open) {
+        clearInterval(waitOpen);
+        conn = peer.connect(code, { reliable: true });
+        setupConnection();
+      }
+    }, 100);
+  }
+
+  function setupConnection() {
+    conn.on('open', () => {
+      console.log('Соединение установлено!');
+      startOnlineMatch();
+    });
+    conn.on('data', (data) => handleData(data));
+    conn.on('close', () => {
+      running = false;
+      goalText.textContent = '⚠️ Соперник вышел';
+      goalText.classList.add('show');
+      setTimeout(() => location.reload(), 2500);
+    });
+  }
+
+  function showWaitingRoom(code) {
+    overlay.innerHTML = `
+      <h1>🏠 Комната создана!</h1>
+      <p>Скажи другу этот код:</p>
+      <div class="code-box" onclick="copyCode('${code}')">${code}</div>
+      <p style="font-size: 12px; opacity: 0.7;">👆 нажми, чтобы скопировать</p>
+      <p style="font-size: 13px; opacity: 0.8;">Ждём второго игрока...</p>
+      <div class="status" id="status">⏳ Ожидание...</div>
+      <button class="action-btn back-btn" onclick="location.reload()">← Отмена</button>
+    `;
+  }
+
+  function copyCode(code) {
+    navigator.clipboard?.writeText(code);
+    const el = document.querySelector('.code-box');
+    el.textContent = '✓ Скопировано!';
+    setTimeout(() => { el.textContent = code; }, 1000);
+  }
+
+  async function startOnlineMatch() {
+    overlay.classList.add('hidden');
+    controlsLeft.classList.remove('hidden');
+    controlsRight.classList.add('hidden');
+    youBadge.classList.remove('hidden');
+
+    if (myRole === 'host') {
+      youColor.textContent = '🔵 СИНИЕ';
+      youColor.style.color = '#4a9eff';
+      goalLeft.classList.add('my-goal');
+    } else {
+      youColor.textContent = '🔴 КРАСНЫЕ';
+      youColor.style.color = '#ff6b6b';
+      goalRight.classList.add('my-goal');
+    }
+
+    await startCamera();
+    resize();
+    resetPositions();
+    running = true;
+    lastTime = performance.now();
+    requestAnimationFrame(loop);
+  }
+
+  function resetPositions() {
+    player1.x = W * 0.25;
+    player1.y = H * 0.5;
+    player1.vx = 0; player1.vy = 0;
+
+    player2.x = W * 0.75;
+    player2.y = H * 0.5;
+    player2.vx = 0; player2.vy = 0;
+
+    ball.x = W / 2;
+    ball.y = H / 2;
+    ball.vx = 0;
+    ball.vy = 0;
+  }
+
+  function loop(now) {
+    if (!running) return;
+    const dt = Math.min(2, (now - lastTime) / 16.67);
+    lastTime = now;
+
+    if (mode === 'bot') {
+      updatePlayer1(dt);
+      updateBot(dt);
+      updateBallPhysics(dt);
+      draw();
+    } else if (mode === 'split') {
+      updatePlayer1(dt);
+      updatePlayer2(dt);
+      updateBallPhysics(dt);
+      draw();
+    } else if (mode === 'online') {
+      if (myRole === 'host') {
+        updatePlayer1(dt);
+        updateBallPhysics(dt);
+        draw();
+        sendState();
+      } else {
+        updatePlayer2(dt);
+        updateBallPhysics(dt);
+        draw();
+        sendState();
+      }
+    }
+
+    requestAnimationFrame(loop);
+  }
+
+  function updatePlayer1(dt) {
+    let ax = 0, ay = 0;
+    if (pressed['w'] || pressed['W'] || pressed['ц'] || pressed['Ц']) ay -= 1;
+    if (pressed['s'] || pressed['S'] || pressed['ы'] || pressed['Ы']) ay += 1;
+    if (pressed['a'] || pressed['A'] || pressed['ф'] || pressed['Ф']) ax -= 1;
+    if (pressed['d'] || pressed['D'] || pressed['в'] || pressed['В']) ax += 1;
+    movePlayer(player1, ax, ay, dt);
+  }
+
+  function updatePlayer2(dt) {
+    let ax = 0, ay = 0;
+    if (pressed['ArrowUp']) ay -= 1;
+    if (pressed['ArrowDown']) ay += 1;
+    if (pressed['ArrowLeft']) ax -= 1;
+    if (pressed['ArrowRight']) ax += 1;
+    movePlayer(player2, ax, ay, dt);
+  }
+
+  function movePlayer(player, ax, ay, dt) {
+    player.vx = ax * player.speed * dt;
+    player.vy = ay * player.speed * dt;
+    player.x += player.vx;
+    player.y += player.vy;
+    const r = player.size / 2;
+    player.x = Math.max(r, Math.min(W - r, player.x));
+    player.y = Math.max(r + 30, Math.min(H - r - 30, player.y));
+  }
+
+  function updateBot(dt) {
+    botThink -= dt;
+    if (botThink <= 0) {
+      botThink = 5;
+      botTargetX = Math.max(W * 0.4, Math.min(W - 30, ball.x + 30));
+      botTargetY = ball.y;
+      botTargetX += ball.vx * 5;
+      botTargetY += ball.vy * 5;
+    }
+
+    let ax = 0, ay = 0;
+    const dx = botTargetX - player2.x;
+    const dy = botTargetY - player2.y;
+    if (Math.abs(dx) > 5) ax = dx > 0 ? 1 : -1;
+    if (Math.abs(dy) > 5) ay = dy > 0 ? 1 : -1;
+    movePlayer(player2, ax, ay, dt);
+  }
+
+  function updateBallPhysics(dt) {
+    if (mode === 'online' && myRole !== 'host') return;
+
+    ball.x += ball.vx * dt;
+    ball.y += ball.vy * dt;
+    ball.vx *= Math.pow(ball.friction, dt);
+    ball.vy *= Math.pow(ball.friction, dt);
+    if (Math.abs(ball.vx) < 0.05) ball.vx = 0;
+    if (Math.abs(ball.vy) < 0.05) ball.vy = 0;
+
+    const r = ball.size / 2;
+
+    if (ball.y - r < 30) { ball.y = 30 + r; ball.vy = -ball.vy * 0.7; }
+    if (ball.y + r > H - 30) { ball.y = H - 30 - r; ball.vy = -ball.vy * 0.7; }
+
+    const goalTop = H / 2 - 60;
+    const goalBottom = H / 2 + 60;
+
+    if (ball.x - r < 14 && ball.y > goalTop && ball.y < goalBottom) {
+      score2++;
+      s2El.textContent = score2;
+      if (mode === 'online' && myRole === 'host') {
+        sendData({ type: 'goal', side: 'left', s1: score1, s2: score2 });
+      }
+      showGoal('🔴 КРАСНЫЕ ЗАБИЛИ!');
+      return;
+    }
+    if (ball.x + r > W - 14 && ball.y > goalTop && ball.y < goalBottom) {
+      score1++;
+      s1El.textContent = score1;
+      if (mode === 'online' && myRole === 'host') {
+        sendData({ type: 'goal', side: 'right', s1: score1, s2: score2 });
+      }
+      showGoal('🔵 СИНИЕ ЗАБИЛИ!');
+      return;
+    }
+
+    if (ball.x - r < 0) { ball.x = r; ball.vx = -ball.vx * 0.7; }
+    if (ball.x + r > W) { ball.x = W - r; ball.vx = -ball.vx * 0.7; }
+
+    checkCollision(player1);
+    checkCollision(player2);
+  }
+
+  function checkCollision(player) {
+    const dx = ball.x - player.x;
+    const dy = ball.y - player.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const minDist = (ball.size + player.size) / 2 + 2;
+    if (dist < minDist && dist > 0) {
+      const nx = dx / dist;
+      const ny = dy / dist;
+      ball.x = player.x + nx * minDist;
+      ball.y = player.y + ny * minDist;
+      const power = 7;
+      ball.vx = nx * power + player.vx * 0.5;
+      ball.vy = ny * power + player.vy * 0.5;
+    }
+  }
+
+  function sendData(data) {
+    if (conn && conn.open) conn.send(data);
+  }
+
+  function sendState() {
+    const data = {
+      type: 'state',
+      bx: ball.x, by: ball.y, bvx: ball.vx, bvy: ball.vy,
+      s1: score1, s2: score2
+    };
+    if (myRole === 'host') {
+      data.p1x = player1.x; data.p1y = player1.y;
+    } else {
+      data.p2x =
