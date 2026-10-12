@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>⚽ Футбол 2D</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -31,27 +31,7 @@
     box-shadow: 0 10px 40px rgba(0,0,0,0.6);
   }
 
-  #rotate-hint {
-    display: none;
-    position: fixed;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #ffd93d;
-    color: #1a3d1a;
-    padding: 8px 16px;
-    border-radius: 10px;
-    font-weight: bold;
-    font-size: 12px;
-    z-index: 200;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-  }
-
-  @media (max-aspect-ratio: 1/1) {
-    #rotate-hint { display: block; }
-  }
-
+  /* ===== ФОН ===== */
   #sky {
     position: absolute;
     top: 0; left: 0; right: 0;
@@ -122,17 +102,6 @@
     pointer-events: none;
   }
 
-  .penalty {
-    position: absolute;
-    top: 45%; bottom: 0;
-    width: 90px;
-    border: 4px solid rgba(255,255,255,0.85);
-    border-top: none;
-    z-index: 3;
-  }
-  #penalty-left { left: 0; border-left: none; }
-  #penalty-right { right: 0; border-right: none; }
-
   .goal {
     position: absolute;
     bottom: 12%;
@@ -152,9 +121,10 @@
     background:
       repeating-linear-gradient(90deg, transparent 0 6px, rgba(255,255,255,0.6) 6px 7px),
       repeating-linear-gradient(0deg, transparent 0 6px, rgba(255,255,255,0.6) 6px 7px);
-    box-shadow: inset 0 0 15px rgba(255,255,255,0.5), 0 0 20px rgba(255,255,255,0.3);
+    box-shadow: inset 0 0 15px rgba(255,255,255,0.5);
   }
 
+  /* ===== ИГРОКИ ===== */
   .player {
     position: absolute;
     width: 50px;
@@ -197,7 +167,6 @@
     transform: translateX(-50%);
     width: 24px; height: 28px;
     border-radius: 6px;
-    z-index: 1;
   }
 
   .arm {
@@ -307,44 +276,50 @@
   #score-bottom .dash { color: #fff; font-size: 22px; font-weight: bold; }
   #score-bottom .icon { font-size: 20px; }
 
+  /* ===== КНОПКИ УПРАВЛЕНИЯ ===== */
   #controls-p1, #controls-p2 {
     position: absolute;
     bottom: 15px;
-    width: 180px;
-    height: 120px;
+    width: 190px;
+    height: 130px;
     z-index: 25;
+    display: none;
   }
   #controls-p1 { left: 15px; }
   #controls-p2 { right: 15px; }
 
+  #controls-p1.active, #controls-p2.active {
+    display: block;
+  }
+
   .ctrl-btn {
     position: absolute;
-    width: 50px; height: 50px;
+    width: 58px; height: 58px;
     border-radius: 50%;
     border: 3px solid #fff;
-    font-size: 18px;
+    font-size: 22px;
     font-weight: bold;
     color: white;
     cursor: pointer;
-    box-shadow: 0 4px 0 rgba(0,0,0,0.5);
+    box-shadow: 0 5px 0 rgba(0,0,0,0.5);
     display: flex;
     justify-content: center;
     align-items: center;
     touch-action: none;
     user-select: none;
-    transition: all 0.05s;
+    transition: transform 0.05s, box-shadow 0.05s;
   }
   .ctrl-btn:active, .ctrl-btn.pressed {
-    transform: translateY(3px);
+    transform: translateY(4px);
     box-shadow: 0 1px 0 rgba(0,0,0,0.5);
   }
   .btn-blue { background: radial-gradient(circle at 30% 30%, #4a9eff, #1a5fb4); }
   .btn-red  { background: radial-gradient(circle at 30% 30%, #ff6b6b, #b41a1a); }
 
-  .pos-up    { top: 0;    left: 65px; }
-  .pos-left  { top: 55px; left: 10px; }
-  .pos-down  { top: 55px; left: 65px; }
-  .pos-right { top: 55px; left: 120px; }
+  .pos-up    { top: 0;    left: 66px; }
+  .pos-left  { top: 66px; left: 8px; }
+  .pos-down  { top: 66px; left: 66px; }
+  .pos-right { top: 66px; left: 124px; }
 
   #msg {
     position: absolute;
@@ -377,6 +352,7 @@
     transform: scaleX(-1);
   }
 
+  /* ===== МЕНЮ ===== */
   #overlay {
     position: absolute;
     inset: 0;
@@ -411,6 +387,7 @@
     box-shadow: 0 5px 0 rgba(0,0,0,0.5);
     min-width: 280px;
     text-align: left;
+    transition: transform 0.1s;
   }
   #overlay .mode-btn:active {
     transform: translateY(3px);
@@ -426,6 +403,8 @@
   .mode-bot    { background: linear-gradient(135deg, #a855f7, #7c3aed); }
   .mode-split  { background: linear-gradient(135deg, #f59e0b, #d97706); }
   .mode-online { background: linear-gradient(135deg, #4ade80, #22c55e); }
+  .mode-phone  { background: linear-gradient(135deg, #0ea5e9, #0369a1); }
+  .mode-pc     { background: linear-gradient(135deg, #64748b, #334155); }
 
   #overlay input {
     width: 100%;
@@ -473,8 +452,6 @@
 </head>
 <body>
 
-<div id="rotate-hint">📱 Поверни телефон горизонтально</div>
-
 <div id="game">
   <div id="sky"></div>
   <div id="roof"></div>
@@ -483,8 +460,6 @@
   <div id="field"></div>
   <div class="field-line" id="line-center"></div>
   <div id="circle-center"></div>
-  <div class="penalty" id="penalty-left"></div>
-  <div class="penalty" id="penalty-right"></div>
 
   <div class="goal" id="goal-left"><div class="goal-net"></div></div>
   <div class="goal" id="goal-right"><div class="goal-net"></div></div>
@@ -525,18 +500,18 @@
 
   <div id="ball"></div>
 
-  <div id="controls-p1" class="hidden">
-    <button class="ctrl-btn btn-blue pos-up"    id="b1-up">W</button>
-    <button class="ctrl-btn btn-blue pos-left"  id="b1-left">A</button>
-    <button class="ctrl-btn btn-blue pos-down"  id="b1-down">S</button>
-    <button class="ctrl-btn btn-blue pos-right" id="b1-right">D</button>
+  <div id="controls-p1">
+    <button class="ctrl-btn btn-blue pos-up"    id="b1-up">▲</button>
+    <button class="ctrl-btn btn-blue pos-left"  id="b1-left">◀</button>
+    <button class="ctrl-btn btn-blue pos-down"  id="b1-down">▼</button>
+    <button class="ctrl-btn btn-blue pos-right" id="b1-right">▶</button>
   </div>
 
-  <div id="controls-p2" class="hidden">
-    <button class="ctrl-btn btn-red pos-up"    id="b2-up">⬆</button>
-    <button class="ctrl-btn btn-red pos-left"  id="b2-left">⬅</button>
-    <button class="ctrl-btn btn-red pos-down"  id="b2-down">⬇</button>
-    <button class="ctrl-btn btn-red pos-right" id="b2-right">➡</button>
+  <div id="controls-p2">
+    <button class="ctrl-btn btn-red pos-up"    id="b2-up">▲</button>
+    <button class="ctrl-btn btn-red pos-left"  id="b2-left">◀</button>
+    <button class="ctrl-btn btn-red pos-down"  id="b2-down">▼</button>
+    <button class="ctrl-btn btn-red pos-right" id="b2-right">▶</button>
   </div>
 
   <div id="overlay"></div>
@@ -565,6 +540,21 @@
   let running = false;
   let FL, FR, FT, FB;
 
+  // ===== ОПРЕДЕЛЕНИЕ УСТРОЙСТВА =====
+  let device = null;  // 'phone' | 'pc'
+
+  function detectDevice() {
+    const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+    const isSmallScreen = window.innerWidth < 900 || window.innerHeight < 600;
+    const isMobileUA = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    if (isTouch && (isSmallScreen || isMobileUA)) return 'phone';
+    if (isMobileUA) return 'phone';
+    return 'pc';
+  }
+
+  // Если телефон — крутим горизонтально, если компьютер — ок
+  device = detectDevice();
+
   const P1 = { x: 0, y: 0, vx: 0, vy: 0, speed: 3.5, size: 40 };
   const P2 = { x: 0, y: 0, vx: 0, vy: 0, speed: 3.5, size: 40 };
   const B  = { x: 0, y: 0, vx: 0, vy: 0, size: 24, fr: 0.985 };
@@ -575,15 +565,12 @@
   const WIN_SCORE = 3;
   let matchSeconds = 0;
   let matchTimer = null;
-
   let goalLock = false;
 
-  // 🔧 НАДЁЖНАЯ КОНФИГУРАЦИЯ ICE
   const ICE_CONFIG = {
     iceServers: [
       { urls: 'stun:stun.l.google.com:19302' },
       { urls: 'stun:stun1.l.google.com:19302' },
-      { urls: 'stun:stun2.l.google.com:19302' },
       {
         urls: 'turn:openrelay.metered.ca:80',
         username: 'openrelayproject',
@@ -591,11 +578,6 @@
       },
       {
         urls: 'turn:openrelay.metered.ca:443',
-        username: 'openrelayproject',
-        credential: 'openrelayproject'
-      },
-      {
-        urls: 'turn:openrelay.metered.ca:443?transport=tcp',
         username: 'openrelayproject',
         credential: 'openrelayproject'
       }
@@ -641,32 +623,62 @@
   bindBtn('b2-up', 'ArrowUp'); bindBtn('b2-left', 'ArrowLeft');
   bindBtn('b2-down', 'ArrowDown'); bindBtn('b2-right', 'ArrowRight');
 
+  // ===== ЭКРАН ВЫБОРА УСТРОЙСТВА =====
+  function showDeviceScreen() {
+    overlay.classList.remove('hidden');
+    overlay.innerHTML = `
+      <h1>⚽ ФУТБОЛ 2D</h1>
+      <p>Определили твоё устройство:</p>
+      <p style="font-size: 20px; color: #ffd93d; margin: 10px 0;">
+        ${device === 'phone' ? '📱 Телефон / Планшет' : '💻 Компьютер / Ноутбук'}
+      </p>
+      <p style="font-size: 13px; opacity: 0.75; margin-top: 15px;">Это твоё устройство?</p>
+      <button class="mode-btn mode-phone" onclick="setDevice('phone')">
+        📱 Да, я на телефоне
+        <small>Кнопки на экране</small>
+      </button>
+      <button class="mode-btn mode-pc" onclick="setDevice('pc')">
+        💻 Да, я на компьютере
+        <small>Управление WASD / стрелками</small>
+      </button>
+    `;
+  }
+
+  function setDevice(d) {
+    device = d;
+    showMenu();
+  }
+
   // ===== МЕНЮ =====
   function showMenu() {
     mode = null;
     running = false;
     if (matchTimer) { clearInterval(matchTimer); matchTimer = null; }
-    ctrl1.classList.add('hidden');
-    ctrl2.classList.add('hidden');
+    ctrl1.classList.remove('active');
+    ctrl2.classList.remove('active');
     camBox.style.display = 'none';
     overlay.classList.remove('hidden');
     overlay.innerHTML = `
       <h1>⚽ ФУТБОЛ 2D</h1>
-      <p>Выбери режим игры:</p>
+      <p>Устройство: ${device === 'phone' ? '📱 Телефон' : '💻 Компьютер'}</p>
+      <p>Выбери режим:</p>
       <button class="mode-btn mode-bot" onclick="startBotMode()">
         🤖 С БОТОМ
         <small>Играй против компьютера</small>
       </button>
       <button class="mode-btn mode-split" onclick="startSplitMode()">
         👥 ОДИН ЭКРАН
-        <small>Двое на одном устройстве</small>
+        <small>${device === 'phone' ? 'Двое на одном телефоне' : 'Двое на одном ПК'}</small>
       </button>
       <button class="mode-btn mode-online" onclick="showOnlineMenu()">
         🌐 ПО КОДУ
         <small>Играть с другом по Wi-Fi</small>
       </button>
-      <p style="font-size:12px;opacity:0.7;margin-top:20px;">
-        ⚽ Забей 3 гола и победи!<br>Матч — 2 минуты.
+      <button class="mode-btn mode-pc" onclick="showDeviceScreen()" style="margin-top: 12px; min-width: 200px; text-align: center;">
+        🔄 Сменить устройство
+      </button>
+      <p style="font-size:12px;opacity:0.7;margin-top:15px;">
+        ⚽ Забей 3 гола — победи!
       </p>
     `;
   }
@@ -690,8 +702,9 @@
     s1 = 0; s2 = 0; s1El.textContent = 0; s2El.textContent = 0;
     goalLock = false;
     overlay.classList.add('hidden');
-    ctrl1.classList.remove('hidden');
-    ctrl2.classList.add('hidden');
+    // На телефоне показываем кнопки, на ПК — нет
+    if (device === 'phone') ctrl1.classList.add('active');
+    ctrl2.classList.remove('active');
     resize(); reset();
     startMatchTimer();
     running = true; lastT = performance.now();
@@ -703,8 +716,11 @@
     s1 = 0; s2 = 0; s1El.textContent = 0; s2El.textContent = 0;
     goalLock = false;
     overlay.classList.add('hidden');
-    ctrl1.classList.remove('hidden');
-    ctrl2.classList.remove('hidden');
+    // На телефоне — обе панели, на ПК — только клавиатура
+    if (device === 'phone') {
+      ctrl1.classList.add('active');
+      ctrl2.classList.add('active');
+    }
     resize(); reset();
     startMatchTimer();
     running = true; lastT = performance.now();
@@ -721,8 +737,6 @@
 
   function initPeer(customId = null) {
     const id = customId || ('fb-' + Math.random().toString(36).substring(2, 12));
-
-    // 🔧 Используем более надёжный сервер 1.peerjs.com
     peer = new Peer(id, {
       host: '1.peerjs.com',
       port: 443,
@@ -732,17 +746,15 @@
       config: ICE_CONFIG
     });
 
-    // Таймаут 15 секунд — если сервер не ответил, перезапуск
     const timeout = setTimeout(() => {
       if (!myPeerId) {
         const st = document.getElementById('status');
         if (st) {
-          st.textContent = 'Сервер долго не отвечает. Пробуем ещё раз...';
+          st.textContent = '⚠️ Сервер не отвечает. Пробуем снова через 5 сек...';
           st.className = 'status error';
         }
-        // Пересоздаём peer
         try { peer.destroy(); } catch(e) {}
-        setTimeout(() => initPeer(customId), 2000);
+        setTimeout(() => initPeer(customId), 5000);
       }
     }, 15000);
 
@@ -762,18 +774,16 @@
       if (!st) return;
 
       if (err.type === 'network') {
-        st.textContent = '⚠️ Сервер не отвечает. Ждём 5 сек и пробуем снова...';
+        st.textContent = '⚠️ Сервер не отвечает. Ждём...';
         st.className = 'status error';
         setTimeout(() => {
-          try {
-            if (peer && !peer.destroyed) peer.reconnect();
-          } catch(e) {}
+          try { if (peer && !peer.destroyed) peer.reconnect(); } catch(e) {}
         }, 5000);
       } else if (err.type === 'peer-unavailable') {
-        st.textContent = '❌ Комната не найдена. Проверь код.';
+        st.textContent = '❌ Комната не найдена';
         st.className = 'status error';
       } else if (err.type === 'unavailable-id') {
-        st.textContent = '❌ Код занят. Попробуй создать ещё раз.';
+        st.textContent = '❌ Код занят, попробуй ещё раз';
         st.className = 'status error';
       } else {
         st.textContent = '⚠️ Ошибка: ' + err.type;
@@ -852,8 +862,8 @@
 
   async function startOnlineMatch() {
     overlay.classList.add('hidden');
-    ctrl1.classList.remove('hidden');
-    ctrl2.classList.add('hidden');
+    if (device === 'phone') ctrl1.classList.add('active');
+    ctrl2.classList.remove('active');
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: 'user', width: 320, height: 400 }, audio: false
@@ -1106,7 +1116,7 @@
 
   resize();
   reset();
-  showMenu();
+  showDeviceScreen();
 </script>
 </body>
 </html>
