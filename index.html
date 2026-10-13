@@ -2,304 +2,647 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
 <title>⚽ Футбол 2D</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden}
 body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;font-family:Arial,sans-serif;user-select:none;touch-action:none;-webkit-tap-highlight-color:transparent}
-
 #game{position:relative;width:100vw;height:100vh;overflow:hidden;background:#2d8a2d;touch-action:none}
-@media (min-width:901px){#game{max-width:900px;max-height:520px;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.6)}}
-
-#sky{position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,#87ceeb 0%,#b5e0f5 70%,#d8f0ff 100%);transition:background 0.6s}
-#sky.cloudy{background:linear-gradient(180deg,#6b7a8a 0%,#8b9aa8 70%,#a8b5c0 100%)}
-#sky.rain{background:linear-gradient(180deg,#3a4550 0%,#4a5560 70%,#5a6570 100%)}
-#sky.snow{background:linear-gradient(180deg,#8ba0b8 0%,#b0c0d0 70%,#d0dce8 100%)}
-#sky.night{background:linear-gradient(180deg,#0a0a2e 0%,#1a1a4e 70%,#2a2a5e 100%)}
-#sky.sunset{background:linear-gradient(180deg,#ff7e5f 0%,#feb47b 70%,#ffd89b 100%)}
-
-#clouds{position:absolute;top:0;left:0;right:0;height:50%;pointer-events:none}
-.cloud{position:absolute;background:rgba(255,255,255,0.9);border-radius:50px;animation:cloudMove 40s linear infinite}
-.cloud::before,.cloud::after{content:'';position:absolute;background:inherit;border-radius:50%}
-.cloud::before{width:60%;height:130%;top:-50%;left:10%}
-.cloud::after{width:50%;height:110%;top:-30%;right:10%}
-@keyframes cloudMove{from{transform:translateX(-150px)}to{transform:translateX(calc(100vw + 150px))}}
-#sky.cloudy .cloud{background:rgba(200,210,220,0.95)}
-#sky.rain .cloud{background:rgba(80,90,100,0.95)}
-#sky.night .cloud{background:rgba(60,60,100,0.7)}
-
-#stars{position:absolute;top:0;left:0;right:0;height:50%;pointer-events:none;opacity:0;transition:opacity 0.5s}
-#sky.night~#stars{opacity:1}
-.star{position:absolute;background:white;border-radius:50%;animation:twinkle 2s ease-in-out infinite alternate}
-@keyframes twinkle{from{opacity:0.3}to{opacity:1}}
-
-#rain{position:absolute;inset:0;pointer-events:none;display:none;z-index:2}
-#sky.rain~#rain{display:block}
-.drop{position:absolute;width:2px;height:20px;background:linear-gradient(180deg,transparent,rgba(180,210,255,0.7));animation:rainFall linear infinite}
-@keyframes rainFall{from{transform:translateY(-30px)}to{transform:translateY(120vh)}}
-
-#snow{position:absolute;inset:0;pointer-events:none;display:none;z-index:2}
-#sky.snow~#snow{display:block}
-.flake{position:absolute;color:white;font-size:14px;opacity:0.9;animation:snowFall linear infinite}
-@keyframes snowFall{from{transform:translateY(-30px) rotate(0deg)}to{transform:translateY(120vh) rotate(720deg)}}
-
-#stands{position:absolute;top:10%;left:0;right:0;height:40%;background:linear-gradient(180deg,#708090 0%,#4a5568 100%);overflow:hidden;border-radius:50% 50% 0 0/15% 15% 0 0}
-#crowd{position:absolute;inset:8% 4% 0 4%;background-image:radial-gradient(circle,#e53e3e 2px,transparent 3px),radial-gradient(circle,#3182ce 2px,transparent 3px),radial-gradient(circle,#38a169 2px,transparent 3px),radial-gradient(circle,#d69e2e 2px,transparent 3px),radial-gradient(circle,#805ad5 2px,transparent 3px),radial-gradient(circle,#dd6b20 2px,transparent 3px);background-size:14px 14px,18px 18px,16px 16px,20px 20px,15px 15px,17px 17px;opacity:0.85;animation:crowdWave 3s ease-in-out infinite alternate}
-@keyframes crowdWave{from{transform:translateY(0)}to{transform:translateY(-3px)}}
-#roof{position:absolute;top:10%;left:0;right:0;height:4%;background:linear-gradient(180deg,#cbd5e0 0%,#94a3b8 100%);z-index:2}
-
-#field{position:absolute;top:50%;left:0;right:0;bottom:0;background:linear-gradient(180deg,#56ab56 0%,#4a9d4a 30%,#3d8a3d 100%);transition:background 0.5s}
-#field.winter{background:linear-gradient(180deg,#e8f0f8 0%,#d0dde8 30%,#b8c8d8 100%)}
-#field.sand{background:linear-gradient(180deg,#e8c88a 0%,#d8b070 30%,#c89858 100%)}
-#field.blue{background:linear-gradient(180deg,#5a8fc8 0%,#4a7fb8 30%,#3a6fa8 100%)}
-#field.dark{background:linear-gradient(180deg,#2a4a2a 0%,#1e3a1e 30%,#122a12 100%)}
-#field.purple{background:linear-gradient(180deg,#7a5a9a 0%,#6a4a8a 30%,#5a3a7a 100%)}
-#field::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent 0 40px,rgba(0,0,0,0.06) 40px 80px)}
+@media(min-width:901px){#game{max-width:900px;max-height:520px;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.6)}}
+#sky{position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,#87ceeb,#b5e0f5 70%,#d8f0ff)}
+#stands{position:absolute;top:10%;left:0;right:0;height:40%;background:linear-gradient(180deg,#708090,#4a5568);overflow:hidden;border-radius:50% 50% 0 0/15% 15% 0 0}
+#crowd{position:absolute;inset:8% 4% 0 4%;background-image:radial-gradient(circle,#e53e3e 2px,transparent 3px),radial-gradient(circle,#3182ce 2px,transparent 3px),radial-gradient(circle,#38a169 2px,transparent 3px),radial-gradient(circle,#d69e2e 2px,transparent 3px),radial-gradient(circle,#805ad5 2px,transparent 3px),radial-gradient(circle,#dd6b20 2px,transparent 3px);background-size:14px 14px,18px 18px,16px 16px,20px 20px,15px 15px,17px 17px;opacity:.85}
+#roof{position:absolute;top:10%;left:0;right:0;height:4%;background:linear-gradient(180deg,#cbd5e0,#94a3b8);z-index:2}
+#field{position:absolute;top:50%;left:0;right:0;bottom:0;background:linear-gradient(180deg,#56ab56,#4a9d4a 30%,#3d8a3d)}
+#field::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent 0 40px,rgba(0,0,0,.06) 40px 80px)}
 #horizon{position:absolute;top:50%;left:0;right:0;height:4px;background:#2a6e2a;z-index:3}
-#center-line{position:absolute;top:50%;bottom:12%;left:50%;width:3px;background:rgba(255,255,255,0.6);transform:translateX(-50%);z-index:4}
-#center-circle{position:absolute;top:68%;left:50%;width:180px;height:70px;border:3px solid rgba(255,255,255,0.6);border-radius:50%;transform:translate(-50%,-50%);z-index:4}
-
-.goal{position:absolute;bottom:8%;height:140px;width:90px;z-index:5;transition:width 0.3s,height 0.3s}
-#goal-left{left:15px}
-#goal-right{right:15px}
-.goal-net{position:absolute;inset:0;border:5px solid #fff;border-bottom:none;border-radius:4px 4px 0 0;background:repeating-linear-gradient(45deg,transparent 0 8px,rgba(255,255,255,0.5) 8px 9px),repeating-linear-gradient(-45deg,transparent 0 8px,rgba(255,255,255,0.5) 8px 9px);box-shadow:inset 0 0 20px rgba(255,255,255,0.4)}
+#cline{position:absolute;top:50%;bottom:12%;left:50%;width:3px;background:rgba(255,255,255,.6);transform:translateX(-50%);z-index:4}
+#ccircle{position:absolute;top:68%;left:50%;width:180px;height:70px;border:3px solid rgba(255,255,255,.6);border-radius:50%;transform:translate(-50%,-50%);z-index:4}
+.goal{position:absolute;bottom:8%;height:140px;width:90px;z-index:5}
+#gl{left:15px}#gr{right:15px}
+.gnet{position:absolute;inset:0;border:5px solid #fff;border-bottom:none;border-radius:4px 4px 0 0;background:repeating-linear-gradient(45deg,transparent 0 8px,rgba(255,255,255,.5) 8px 9px),repeating-linear-gradient(-45deg,transparent 0 8px,rgba(255,255,255,.5) 8px 9px);box-shadow:inset 0 0 20px rgba(255,255,255,.4)}
 .goal::before,.goal::after{content:'';position:absolute;top:0;bottom:-10px;width:6px;background:#fff;border-radius:3px}
-.goal::before{left:0}
-.goal::after{right:0}
-
-.player{position:absolute;width:45px;height:90px;z-index:10;transition:width 0.3s,height 0.3s,opacity 0.3s}
-.player.invisible{opacity:0.35}
-.player::after{content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:40px;height:10px;background:rgba(0,0,0,0.3);border-radius:50%;filter:blur(2px);z-index:-1}
-.body-wrap{position:absolute;inset:0;animation:idle 0.6s ease-in-out infinite}
-@keyframes idle{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
-.player.running .body-wrap{animation:runBounce 0.25s ease-in-out infinite}
-@keyframes runBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.goal::before{left:0}.goal::after{right:0}
+.player{position:absolute;width:45px;height:90px;z-index:10}
+.player::after{content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:40px;height:10px;background:rgba(0,0,0,.3);border-radius:50%;filter:blur(2px);z-index:-1}
+.bw{position:absolute;inset:0}
 .head{position:absolute;top:0;left:50%;transform:translateX(-50%);width:24px;height:24px;border-radius:50%;background:#f4c299;border:2px solid #8b5a3c;z-index:3}
 .head::before{content:'';position:absolute;top:-4px;left:2px;right:2px;height:12px;background:#2a1810;border-radius:50% 60% 20% 20%}
 .head::after{content:'';position:absolute;top:8px;right:-3px;width:5px;height:6px;background:#f4c299;border:1px solid #8b5a3c;border-radius:50%}
 .eye{position:absolute;top:9px;right:5px;width:3px;height:3px;background:#000;border-radius:50%}
-.torso{position:absolute;top:22px;left:50%;transform:translateX(-50%);width:26px;height:32px;border-radius:8px 8px 4px 4px;z-index:2;background:#2b6cb0;transition:background 0.3s}
-.arm-back,.arm-front{position:absolute;top:24px;width:8px;height:26px;border-radius:4px;transform-origin:top center;background:#2b6cb0;transition:background 0.3s}
-.arm-back{left:8px;z-index:1;animation:armBackIdle 0.6s ease-in-out infinite}
-.arm-front{right:8px;z-index:3;animation:armFrontIdle 0.6s ease-in-out infinite}
-@keyframes armBackIdle{0%,100%{transform:rotate(-15deg)}50%{transform:rotate(-25deg)}}
-@keyframes armFrontIdle{0%,100%{transform:rotate(15deg)}50%{transform:rotate(25deg)}}
-.player.running .arm-back{animation:armBackRun 0.25s ease-in-out infinite}
-.player.running .arm-front{animation:armFrontRun 0.25s ease-in-out infinite}
-@keyframes armBackRun{0%,100%{transform:rotate(-40deg)}50%{transform:rotate(10deg)}}
-@keyframes armFrontRun{0%,100%{transform:rotate(40deg)}50%{transform:rotate(-10deg)}}
+.torso{position:absolute;top:22px;left:50%;transform:translateX(-50%);width:26px;height:32px;border-radius:8px 8px 4px 4px;z-index:2;background:#2b6cb0}
+.arm-b,.arm-f{position:absolute;top:24px;width:8px;height:26px;border-radius:4px;transform-origin:top center;background:#2b6cb0}
+.arm-b{left:8px;z-index:1}
+.arm-f{right:8px;z-index:3}
 .shorts{position:absolute;top:50px;left:50%;transform:translateX(-50%);width:24px;height:14px;border-radius:4px;z-index:2;background:#fff;border:1px solid #999}
-.leg-back,.leg-front{position:absolute;top:62px;width:8px;height:22px;border-radius:4px;transform-origin:top center;background:#f4c299}
-.leg-back{left:14px;z-index:1;animation:legBackIdle 0.6s ease-in-out infinite}
-.leg-front{right:14px;z-index:3;animation:legFrontIdle 0.6s ease-in-out infinite}
-@keyframes legBackIdle{0%,100%{transform:rotate(5deg)}50%{transform:rotate(-5deg)}}
-@keyframes legFrontIdle{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
-.player.running .leg-back{animation:legBackRun 0.25s ease-in-out infinite}
-.player.running .leg-front{animation:legFrontRun 0.25s ease-in-out infinite}
-@keyframes legBackRun{0%,100%{transform:rotate(-35deg)}50%{transform:rotate(35deg)}}
-@keyframes legFrontRun{0%,100%{transform:rotate(35deg)}50%{transform:rotate(-35deg)}}
-.leg-back::after,.leg-front::after{content:'';position:absolute;bottom:-3px;left:-3px;right:-3px;height:7px;background:#1a1a1a;border-radius:3px 6px 4px 3px}
-.player.facing-right .body-wrap{transform:scaleX(-1)}
-.player.facing-right .eye{left:5px;right:auto}
-
+.leg-b,.leg-f{position:absolute;top:62px;width:8px;height:22px;border-radius:4px;transform-origin:top center;background:#f4c299}
+.leg-b{left:14px;z-index:1}
+.leg-f{right:14px;z-index:3}
+.leg-b::after,.leg-f::after{content:'';position:absolute;bottom:-3px;left:-3px;right:-3px;height:7px;background:#1a1a1a;border-radius:3px 6px 4px 3px}
+.player.fr .bw{transform:scaleX(-1)}
+.player.fr .eye{left:5px;right:auto}
 #ball{position:absolute;width:26px;height:26px;z-index:9}
-#ball::before{content:'';position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:20px;height:6px;background:rgba(0,0,0,0.3);border-radius:50%;filter:blur(2px)}
-.ball-ball{width:100%;height:100%;border:2px solid #222;border-radius:50%;box-shadow:0 3px 6px rgba(0,0,0,0.5);position:relative;animation:ballSpin 2s linear infinite;background:radial-gradient(circle at 35% 30%,#fff 0%,#e0e0e0 60%,#bbb 100%);transition:background 0.3s}
-.ball-ball.orange{background:radial-gradient(circle at 35% 30%,#ffb84d 0%,#ff8c1a 60%,#cc6600 100%)}
-.ball-ball.red{background:radial-gradient(circle at 35% 30%,#ff6b6b 0%,#c53030 60%,#8b1a1a 100%)}
-.ball-ball.rainbow{background:conic-gradient(red,orange,yellow,lime,cyan,blue,magenta,red);animation:ballSpin 2s linear infinite,rainbowGlow 1s ease-in-out infinite alternate}
-@keyframes rainbowGlow{from{box-shadow:0 0 10px rgba(255,255,255,0.5)}to{box-shadow:0 0 25px rgba(255,255,255,0.9)}}
-.ball-ball.fast-spin{animation-duration:0.5s,0.3s}
-@keyframes ballSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.ball-ball::before,.ball-ball::after{content:'';position:absolute;background:#222;border-radius:50%}
-.ball-ball.rainbow::before,.ball-ball.rainbow::after{background:rgba(0,0,0,0.5)}
-.ball-ball::before{width:8px;height:8px;top:5px;left:8px}
-.ball-ball::after{width:5px;height:5px;bottom:4px;left:6px}
-
-.ball-trail{position:absolute;border-radius:50%;pointer-events:none;z-index:8;animation:trailFade 0.5s ease-out forwards}
-@keyframes trailFade{from{opacity:0.7;transform:scale(1)}to{opacity:0;transform:scale(0.2)}}
-.hit-spark{position:absolute;width:30px;height:30px;pointer-events:none;z-index:12;font-size:24px;animation:sparkFade 0.4s ease-out forwards;transform:translate(-50%,-50%)}
-@keyframes sparkFade{from{opacity:1;transform:translate(-50%,-50%) scale(0.5)}to{opacity:0;transform:translate(-50%,-50%) scale(2)}}
-
-#scoreboard-top{position:absolute;top:8px;left:50%;transform:translateX(-50%);background:#2d3748;border:4px solid #4a5568;border-radius:8px;padding:6px 16px;z-index:20}
+#ball::before{content:'';position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:20px;height:6px;background:rgba(0,0,0,.3);border-radius:50%;filter:blur(2px)}
+.bb{width:100%;height:100%;border:2px solid #222;border-radius:50%;box-shadow:0 3px 6px rgba(0,0,0,.5);background:radial-gradient(circle at 35% 30%,#fff,#e0e0e0 60%,#bbb);animation:bsp 2s linear infinite}
+.bb.rainbow{background:conic-gradient(red,orange,yellow,lime,cyan,blue,magenta,red);animation:bsp 2s linear infinite}
+@keyframes bsp{to{transform:rotate(360deg)}}
+.bb::before,.bb::after{content:'';position:absolute;background:#222;border-radius:50%}
+.bb.rainbow::before,.bb.rainbow::after{background:rgba(0,0,0,.4)}
+.bb::before{width:8px;height:8px;top:5px;left:8px}
+.bb::after{width:5px;height:5px;bottom:4px;left:6px}
+.tr{position:absolute;border-radius:50%;pointer-events:none;z-index:8;animation:tf .5s ease-out forwards;background:rgba(255,255,255,.7)}
+@keyframes tf{from{opacity:.7;transform:scale(1)}to{opacity:0;transform:scale(.2)}}
+.sp{position:absolute;width:30px;height:30px;pointer-events:none;z-index:12;font-size:24px;animation:spf .4s ease-out forwards;transform:translate(-50%,-50%)}
+@keyframes spf{from{opacity:1;transform:translate(-50%,-50%) scale(.5)}to{opacity:0;transform:translate(-50%,-50%) scale(2)}}
+#sbtop{position:absolute;top:8px;left:50%;transform:translateX(-50%);background:#2d3748;border:4px solid #4a5568;border-radius:8px;padding:6px 16px;z-index:20}
 #timer{color:#ff4444;font-family:'Courier New',monospace;font-size:22px;font-weight:bold;letter-spacing:2px}
-#score-bottom{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:#8b5a3c;border:4px solid #fff;border-radius:12px;padding:5px 14px;display:flex;gap:12px;align-items:center;z-index:20}
-#score-bottom .num{color:#ffd700;font-family:'Courier New',monospace;font-size:22px;font-weight:bold;min-width:28px;text-align:center}
-#score-bottom .dash{color:#fff;font-size:20px;font-weight:bold}
-#score-bottom .icon{font-size:18px}
-#goal-info{position:absolute;top:50px;left:50%;transform:translateX(-50%);color:#fff;font-size:11px;font-weight:bold;background:rgba(0,0,0,0.4);padding:3px 10px;border-radius:10px;z-index:20}
-#record-info{position:absolute;top:75px;left:50%;transform:translateX(-50%);color:#ffd93d;font-size:11px;font-weight:bold;background:rgba(0,0,0,0.4);padding:3px 10px;border-radius:10px;z-index:20;display:none}
-
-#controls-p1,#controls-p2{position:absolute;bottom:15px;width:190px;height:140px;z-index:50}
-#controls-p1{left:15px}
-#controls-p2{right:15px}
-.ctrl-btn{position:absolute;width:60px;height:60px;border-radius:50%;border:3px solid #fff;font-size:24px;font-weight:bold;color:white;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,0.5);display:flex;justify-content:center;align-items:center;touch-action:none;user-select:none;transition:transform 0.05s,box-shadow 0.05s;z-index:51}
-.ctrl-btn:active,.ctrl-btn.pressed{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,0.5);filter:brightness(1.4)}
-.btn-blue{background:radial-gradient(circle at 30% 30%,#4a9eff,#1a5fb4)}
-.btn-red{background:radial-gradient(circle at 30% 30%,#ff6b6b,#b41a1a)}
-.pos-up{top:0;left:65px}
-.pos-left{top:65px;left:5px}
-.pos-down{top:65px;left:65px}
-.pos-right{top:65px;left:125px}
-
-@media (max-width:900px),(pointer:coarse){
-  .ctrl-btn{width:70px;height:70px;font-size:28px}
-  .pos-up{top:0;left:75px}
-  .pos-left{top:75px;left:5px}
-  .pos-down{top:75px;left:75px}
-  .pos-right{top:75px;left:145px}
-  #controls-p1,#controls-p2{width:220px;height:160px}
-}
-
-#msg{position:absolute;top:35%;left:0;right:0;text-align:center;font-size:42px;font-weight:bold;color:#ffd93d;text-shadow:0 0 20px black,0 0 40px #ffd93d;opacity:0;transition:opacity 0.3s;z-index:30;pointer-events:none}
-
-.top-btn{position:absolute;top:8px;width:44px;height:44px;background:rgba(45,55,72,0.9);border:3px solid #fff;border-radius:50%;color:#fff;font-size:20px;cursor:pointer;display:flex;justify-content:center;align-items:center;z-index:60;box-shadow:0 4px 12px rgba(0,0,0,0.5)}
-#gear{right:8px}
-#pause{right:60px}
-#stats-btn{right:112px}
-#fullscreen{right:164px}
-#gear:hover{transform:rotate(90deg);transition:transform 0.3s}
-
-#overlay{position:absolute;inset:0;background:rgba(10,20,10,0.95);z-index:100;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;text-align:center;color:white;overflow-y:auto}
+#sbot{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:#8b5a3c;border:4px solid #fff;border-radius:12px;padding:5px 14px;display:flex;gap:12px;align-items:center;z-index:20}
+#sbot .num{color:#ffd700;font-family:'Courier New',monospace;font-size:22px;font-weight:bold;min-width:28px;text-align:center}
+#sbot .dash{color:#fff;font-size:20px;font-weight:bold}
+#sbot .icon{font-size:18px}
+#rinfo{position:absolute;top:50px;left:50%;transform:translateX(-50%);color:#ffd93d;font-size:11px;font-weight:bold;background:rgba(0,0,0,.4);padding:3px 10px;border-radius:10px;z-index:20}
+#c1,#c2{position:absolute;bottom:15px;width:190px;height:140px;z-index:50;display:none}
+#c1{left:15px}#c2{right:15px}
+.cb{position:absolute;width:60px;height:60px;border-radius:50%;border:3px solid #fff;font-size:24px;font-weight:bold;color:#fff;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.5);display:flex;justify-content:center;align-items:center;touch-action:none;user-select:none;z-index:51}
+.cb:active,.cb.pressed{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.5);filter:brightness(1.4)}
+.blue{background:radial-gradient(circle at 30% 30%,#4a9eff,#1a5fb4)}
+.red{background:radial-gradient(circle at 30% 30%,#ff6b6b,#b41a1a)}
+.pu{top:0;left:65px}.pl{top:65px;left:5px}.pd{top:65px;left:65px}.pr{top:65px;left:125px}
+#msg{position:absolute;top:35%;left:0;right:0;text-align:center;font-size:42px;font-weight:bold;color:#ffd93d;text-shadow:0 0 20px #000,0 0 40px #ffd93d;opacity:0;transition:opacity .3s;z-index:30;pointer-events:none;padding:0 20px}
+.tb{position:absolute;top:8px;width:44px;height:44px;background:rgba(45,55,72,.9);border:3px solid #fff;border-radius:50%;color:#fff;font-size:20px;cursor:pointer;display:flex;justify-content:center;align-items:center;z-index:60;box-shadow:0 4px 12px rgba(0,0,0,.5)}
+#gear{right:8px}#pause{right:60px}#statsbtn{right:112px}#fullscreen{right:164px}
+#overlay{position:absolute;inset:0;background:rgba(10,20,10,.95);z-index:100;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;text-align:center;color:#fff;overflow-y:auto}
+#overlay.hidden{display:none!important}
 #overlay h1{font-size:26px;color:#ffd93d;margin-bottom:15px}
-#overlay h2{font-size:18px;color:#ffd93d;margin:12px 0 6px}
 #overlay p{font-size:14px;margin-bottom:8px;color:#e0e0e0}
-#overlay .mode-btn{margin:5px 0;padding:14px 22px;font-size:16px;font-weight:bold;font-family:inherit;color:white;border:3px solid white;border-radius:14px;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,0.5);min-width:280px;text-align:left;transition:transform 0.1s}
-#overlay .mode-btn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,0.5)}
-#overlay .mode-btn small{display:block;font-size:12px;opacity:0.9;margin-top:3px;font-weight:normal}
-.mode-bot{background:linear-gradient(135deg,#a855f7,#7c3aed)}
-.mode-split{background:linear-gradient(135deg,#f59e0b,#d97706)}
-.mode-online{background:linear-gradient(135deg,#4ade80,#22c55e)}
-.mode-back{background:linear-gradient(135deg,#94a3b8,#64748b);min-width:200px;text-align:center !important}
-.mode-settings{background:linear-gradient(135deg,#0ea5e9,#0369a1)}
-
-.goal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:340px;margin:10px 0}
-.goal-btn{padding:18px 10px;border-radius:14px;border:3px solid white;font-size:22px;font-weight:bold;color:white;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,0.5);font-family:inherit}
-.goal-btn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,0.5)}
-.goal-btn small{display:block;font-size:11px;opacity:0.85;font-weight:normal;margin-top:4px}
+.mb{margin:5px 0;padding:14px 22px;font-size:16px;font-weight:bold;font-family:inherit;color:#fff;border:3px solid #fff;border-radius:14px;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.5);min-width:280px;text-align:left}
+.mb:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.5)}
+.mb small{display:block;font-size:12px;opacity:.9;margin-top:3px;font-weight:normal}
+.mb-bot{background:linear-gradient(135deg,#a855f7,#7c3aed)}
+.mb-split{background:linear-gradient(135deg,#f59e0b,#d97706)}
+.mb-online{background:linear-gradient(135deg,#4ade80,#22c55e)}
+.mb-back{background:linear-gradient(135deg,#94a3b8,#64748b);min-width:200px;text-align:center!important}
+.mb-set{background:linear-gradient(135deg,#0ea5e9,#0369a1)}
+.gg{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:340px;margin:10px 0}
+.gbtn{padding:18px 10px;border-radius:14px;border:3px solid #fff;font-size:22px;font-weight:bold;color:#fff;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.5);font-family:inherit}
+.gbtn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.5)}
+.gbtn small{display:block;font-size:11px;opacity:.85;font-weight:normal;margin-top:4px}
 .g1{background:linear-gradient(135deg,#4ade80,#22c55e)}
 .g3{background:linear-gradient(135deg,#0ea5e9,#0369a1)}
 .g5{background:linear-gradient(135deg,#f59e0b,#d97706)}
 .g10{background:linear-gradient(135deg,#a855f7,#7c3aed)}
-.g-endless{background:linear-gradient(135deg,#f43f5e,#9f1239);grid-column:1/-1}
-
-#overlay input{width:100%;max-width:280px;padding:14px;font-size:20px;text-align:center;font-weight:bold;letter-spacing:4px;background:rgba(255,255,255,0.15);border:3px solid #4a9eff;border-radius:12px;color:white;outline:none;margin:8px 0;font-family:inherit}
-#overlay .code-box{background:#ffd93d;color:#1a3d1a;font-size:32px;font-weight:bold;padding:15px 25px;border-radius:15px;margin:15px 0;letter-spacing:4px;font-family:monospace;cursor:pointer}
-#overlay .status{font-size:15px;color:#4ade80;margin-top:12px;min-height:20px}
-#overlay .status.error{color:#ff6b6b}
-
-.admin-panel{background:rgba(30,40,30,0.98);border:3px solid #4ade80;border-radius:16px;padding:20px 25px;max-width:480px;width:92%;max-height:92vh;overflow-y:auto;box-shadow:0 0 40px rgba(74,222,128,0.4);text-align:left}
-.admin-panel h1{color:#4ade80 !important;font-size:22px;margin-bottom:18px !important;text-align:center}
-.admin-section{background:rgba(0,0,0,0.3);border-radius:10px;padding:12px 14px;margin:10px 0;border-left:3px solid #4ade80}
-.admin-section h3{color:#4ade80;font-size:14px;margin-bottom:10px;font-weight:bold}
-.admin-field{text-align:left;margin:10px 0}
-.admin-field label{display:block;font-size:13px;color:#cbd5e0;margin-bottom:5px;font-weight:bold}
-.admin-field input[type=text],.admin-field input[type=password],.admin-field input[type=number],.admin-field select{width:100%;padding:10px 12px;font-size:15px;background:rgba(255,255,255,0.1);border:2px solid #4a5568;border-radius:8px;color:white;outline:none;font-family:inherit}
-.admin-field input[type=range]{width:100%;accent-color:#4ade80}
-.admin-field input[type=color]{width:100%;height:44px;border-radius:8px;border:2px solid #4a5568;background:transparent;cursor:pointer}
-.admin-field input:focus,.admin-field select:focus{border-color:#4ade80}
-.admin-field select option{background:#1a1a2e}
-.admin-field .hint{font-size:11px;color:#718096;margin-top:3px}
-.admin-field label.checkbox{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;color:#e0e0e0;font-weight:normal}
-.admin-field label.checkbox input{width:18px;height:18px;accent-color:#4ade80;cursor:pointer}
-.admin-btns{display:flex;gap:10px;margin-top:15px}
-.admin-btns button{flex:1;padding:12px;font-size:15px;font-weight:bold;font-family:inherit;border:none;border-radius:10px;cursor:pointer;color:white}
-.admin-save{background:linear-gradient(135deg,#4ade80,#22c55e)}
-.admin-cancel{background:linear-gradient(135deg,#94a3b8,#64748b)}
-.admin-reset{background:linear-gradient(135deg,#f43f5e,#9f1239);width:100%;margin-top:10px;padding:12px;font-size:15px;font-weight:bold;font-family:inherit;border:none;border-radius:10px;color:white;cursor:pointer}
-.admin-btns button:active,.admin-reset:active{transform:translateY(2px)}
-
-#countdown{position:absolute;inset:0;background:rgba(0,0,0,0.75);z-index:90;display:none;justify-content:center;align-items:center;color:#ffd93d;font-size:140px;font-weight:bold;text-shadow:0 0 40px #ffd93d,0 0 80px #ff4444;font-family:'Courier New',monospace}
-#countdown.active{display:flex}
-#countdown .num{animation:countPulse 1s ease-out}
-@keyframes countPulse{0%{transform:scale(0.3);opacity:0}50%{transform:scale(1.2);opacity:1}100%{transform:scale(1);opacity:1}}
-
-.hidden{display:none !important}
+.ge{background:linear-gradient(135deg,#f43f5e,#9f1239);grid-column:1/-1}
+#overlay input{width:100%;max-width:280px;padding:14px;font-size:20px;text-align:center;font-weight:bold;letter-spacing:4px;background:rgba(255,255,255,.15);border:3px solid #4a9eff;border-radius:12px;color:#fff;outline:none;margin:8px 0;font-family:inherit}
+.code-box{background:#ffd93d;color:#1a3d1a;font-size:32px;font-weight:bold;padding:15px 25px;border-radius:15px;margin:15px 0;letter-spacing:4px;font-family:monospace;cursor:pointer}
+.status{font-size:15px;color:#4ade80;margin-top:12px;min-height:20px}
+.status.error{color:#ff6b6b}
+.ap{background:rgba(30,40,30,.98);border:3px solid #4ade80;border-radius:16px;padding:20px 25px;max-width:480px;width:92%;max-height:92vh;overflow-y:auto;box-shadow:0 0 40px rgba(74,222,128,.4);text-align:left}
+.ap h1{color:#4ade80!important;font-size:22px;margin-bottom:18px!important;text-align:center}
+.as{background:rgba(0,0,0,.3);border-radius:10px;padding:12px 14px;margin:10px 0;border-left:3px solid #4ade80}
+.as h3{color:#4ade80;font-size:14px;margin-bottom:10px;font-weight:bold}
+.af{text-align:left;margin:10px 0}
+.af label{display:block;font-size:13px;color:#cbd5e0;margin-bottom:5px;font-weight:bold}
+.af input[type=text],.af input[type=password],.af input[type=number],.af select{width:100%;padding:10px 12px;font-size:15px;background:rgba(255,255,255,.1);border:2px solid #4a5568;border-radius:8px;color:#fff;outline:none;font-family:inherit}
+.af input[type=range]{width:100%;accent-color:#4ade80}
+.af select option{background:#1a1a2e}
+.af label.ck{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;color:#e0e0e0;font-weight:normal}
+.af label.ck input{width:18px;height:18px;accent-color:#4ade80;cursor:pointer}
+.abtns{display:flex;gap:10px;margin-top:15px}
+.abtns button{flex:1;padding:12px;font-size:15px;font-weight:bold;font-family:inherit;border:none;border-radius:10px;cursor:pointer;color:#fff}
+.asv{background:linear-gradient(135deg,#4ade80,#22c55e)}
+.acn{background:linear-gradient(135deg,#94a3b8,#64748b)}
+.ars{background:linear-gradient(135deg,#f43f5e,#9f1239);width:100%;margin-top:10px;padding:12px;font-size:15px;font-weight:bold;font-family:inherit;border:none;border-radius:10px;color:#fff;cursor:pointer}
+.abtns button:active,.ars:active{transform:translateY(2px)}
+#cd{position:absolute;inset:0;background:rgba(0,0,0,.75);z-index:90;display:none;justify-content:center;align-items:center;color:#ffd93d;font-size:140px;font-weight:bold;text-shadow:0 0 40px #ffd93d,0 0 80px #ff4444;font-family:'Courier New',monospace}
+#cd.on{display:flex}
+.hidden{display:none!important}
 </style>
 </head>
 <body>
-
 <div id="game">
-  <div id="sky"></div>
-  <div id="stars"></div>
-  <div id="clouds"></div>
-  <div id="rain"></div>
-  <div id="snow"></div>
-  <div id="roof"></div>
-  <div id="stands"><div id="crowd"></div></div>
-
-  <div id="field"></div>
-  <div id="horizon"></div>
-  <div id="center-line"></div>
-  <div id="center-circle"></div>
-
-  <div class="goal" id="goal-left"><div class="goal-net"></div></div>
-  <div class="goal" id="goal-right"><div class="goal-net"></div></div>
-
-  <div id="scoreboard-top"><div id="timer">00:00</div></div>
-  <div id="goal-info">До 3 голов</div>
-  <div id="record-info">🏆 Рекорд: 0</div>
-
-  <div id="score-bottom">
-    <span class="icon">⚽</span>
-    <span class="num" id="s1">0</span>
-    <span class="dash">-</span>
-    <span class="num" id="s2">0</span>
-    <span class="icon">⚽</span>
-  </div>
-
-  <div id="msg"></div>
-  <button id="fullscreen" class="top-btn" title="Полный экран">⛶</button>
-  <button id="stats-btn" class="top-btn" title="Статистика">📊</button>
-  <button id="pause" class="top-btn" title="Пауза">⏸️</button>
-  <button id="gear" class="top-btn" title="Настройки">⚙️</button>
-  <div id="countdown"><div class="num" id="countdown-num">3</div></div>
-
-  <div class="player" id="p1">
-    <div class="body-wrap">
-      <div class="arm-back"></div>
-      <div class="leg-back"></div>
-      <div class="head"><div class="eye"></div></div>
-      <div class="torso"></div>
-      <div class="shorts"></div>
-      <div class="leg-front"></div>
-      <div class="arm-front"></div>
-    </div>
-  </div>
-
-  <div class="player" id="p2">
-    <div class="body-wrap">
-      <div class="arm-back"></div>
-      <div class="leg-back"></div>
-      <div class="head"><div class="eye"></div></div>
-      <div class="torso"></div>
-      <div class="shorts"></div>
-      <div class="leg-front"></div>
-      <div class="arm-front"></div>
-    </div>
-  </div>
-
-  <div id="ball"><div class="ball-ball"></div></div>
-
-  <div id="controls-p1">
-    <button class="ctrl-btn btn-blue pos-up" data-key="w">▲</button>
-    <button class="ctrl-btn btn-blue pos-left" data-key="a">◀</button>
-    <button class="ctrl-btn btn-blue pos-down" data-key="s">▼</button>
-    <button class="ctrl-btn btn-blue pos-right" data-key="d">▶</button>
-  </div>
-
-  <div id="controls-p2">
-    <button class="ctrl-btn btn-red pos-up" data-key="ArrowUp">▲</button>
-    <button class="ctrl-btn btn-red pos-left" data-key="ArrowLeft">◀</button>
-    <button class="ctrl-btn btn-red pos-down" data-key="ArrowDown">▼</button>
-    <button class="ctrl-btn btn-red pos-right" data-key="ArrowRight">▶</button>
-  </div>
-
-  <div id="overlay"></div>
+<div id="sky"></div>
+<div id="roof"></div>
+<div id="stands"><div id="crowd"></div></div>
+<div id="field"></div>
+<div id="horizon"></div>
+<div id="cline"></div>
+<div id="ccircle"></div>
+<div class="goal" id="gl"><div class="gnet"></div></div>
+<div class="goal" id="gr"><div class="gnet"></div></div>
+<div id="sbtop"><div id="timer">00:00</div></div>
+<div id="rinfo">🏆 Рекорд: 0</div>
+<div id="sbot">
+<span class="icon">⚽</span>
+<span class="num" id="s1">0</span>
+<span class="dash">-</span>
+<span class="num" id="s2">0</span>
+<span class="icon">⚽</span>
 </div>
-
+<div id="msg"></div>
+<button id="fullscreen" class="tb" title="Полный экран">⛶</button>
+<button id="statsbtn" class="tb" title="Статистика">📊</button>
+<button id="pause" class="tb" title="Пауза">⏸️</button>
+<button id="gear" class="tb" title="Настройки">⚙️</button>
+<div id="cd"><div id="cdn" style="animation:none">3</div></div>
+<div class="player" id="p1"><div class="bw"><div class="arm-b"></div><div class="leg-b"></div><div class="head"><div class="eye"></div></div><div class="torso"></div><div class="shorts"></div><div class="leg-f"></div><div class="arm-f"></div></div></div>
+<div class="player" id="p2"><div class="bw"><div class="arm-b"></div><div class="leg-b"></div><div class="head"><div class="eye"></div></div><div class="torso"></div><div class="shorts"></div><div class="leg-f"></div><div class="arm-f"></div></div></div>
+<div id="ball"><div class="bb"></div></div>
+<div id="c1">
+<button class="cb blue pu" data-key="w">▲</button>
+<button class="cb blue pl" data-key="a">◀</button>
+<button class="cb blue pd" data-key="s">▼</button>
+<button class="cb blue pr" data-key="d">▶</button>
+</div>
+<div id="c2">
+<button class="cb red pu" data-key="ArrowUp">▲</button>
+<button class="cb red pl" data-key="ArrowLeft">◀</button>
+<button class="cb red pd" data-key="ArrowDown">▼</button>
+<button class="cb red pr" data-key="ArrowRight">▶</button>
+</div>
+<div id="overlay"></div>
+</div>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
+var $=function(id){return document.getElementById(id)};
+var game=$('game'),p1=$('p1'),p2=$('p2'),ballEl=$('ball'),bbEl=ballEl.querySelector('.bb');
+var s1El=$('s1'),s2El=$('s2'),msgEl=$('msg'),overlay=$('overlay'),timerEl=$('timer'),rinfoEl=$('rinfo');
+var c1=$('c1'),c2=$('c2'),gearBtn=$('gear'),pauseBtn=$('pause'),fsBtn=$('fullscreen'),statsBtn=$('statsbtn');
+var cdEl=$('cd'),cdnEl=$('cdn'),glEl=$('gl'),grEl=$('gr');
+
+var DEF={speed:4,duration:60,goals:3,power:8,botSpeed:3.5,maxBall:22,
+goalSize:'medium',playerSize:'medium',timeScale:30,sprint:false,autoPause:false,
+rainbow:false,trail:true,sparks:true,slowMo:false,showRecord:true};
+var S={};for(var k in DEF)S[k]=DEF[k];
+try{var sv=localStorage.getItem('fbS');if(sv){var p=JSON.parse(sv);for(var kk in p)S[kk]=p[kk]}}catch(e){}
+var best=parseInt(localStorage.getItem('fbRec')||'0');
+
+var W,H,mode=null,gMode=null,myRole=null,peer=null,conn=null,myPeerId=null;
+var running=false,paused=false,FL,FR,FT,FB;
+var P1={x:0,y:0,vx:0,vy:0,speed:4,size:40};
+var P2={x:0,y:0,vx:0,vy:0,speed:4,size:40};
+var B={x:0,y:0,vx:0,vy:0,size:26,fr:.985};
+var s1=0,s2=0,keys={},lastT=0,WIN=3,secs=0,mTimer=null,goalLock=false,cdT=null;
+var stat1=0,stat2=0,poss1=0,poss2=0,ticks=0;
+
+function applySizes(){
+  var ps={small:{w:34,h:68,r:30,oy:64},medium:{w:45,h:90,r:40,oy:85},large:{w:56,h:112,r:50,oy:105}}[S.playerSize]||{w:45,h:90,r:40,oy:85};
+  p1.style.width=ps.w+'px';p1.style.height=ps.h+'px';
+  p2.style.width=ps.w+'px';p2.style.height=ps.h+'px';
+  P1.size=ps.r;P2.size=ps.r;window._oy=ps.oy;
+  var gs={small:{w:60,h:100},medium:{w:90,h:140},large:{w:130,h:180}}[S.goalSize]||{w:90,h:140};
+  glEl.style.width=gs.w+'px';glEl.style.height=gs.h+'px';
+  grEl.style.width=gs.w+'px';grEl.style.height=gs.h+'px';
+}
+function applyBall(){
+  bbEl.className='bb';
+  if(S.rainbow)bbEl.classList.add('rainbow');
+}
+function applyAll(){
+  P1.speed=S.speed;P2.speed=S.botSpeed;
+  WIN=(gMode==='endless')?999999:S.goals;
+  applySizes();applyBall();
+  rinfoEl.style.display=S.showRecord?'block':'none';
+  rinfoEl.textContent='🏆 Рекорд: '+best;
+}
+function resize(){W=game.clientWidth;H=game.clientHeight;FT=H*.52;FB=H*.88;FL=30;FR=W-30}
+window.addEventListener('resize',resize);resize();
+
+document.addEventListener('keydown',function(e){keys[e.key]=true;keys[e.key.toLowerCase()]=true;
+  if(e.key.indexOf('Arrow')===0||e.key===' ')e.preventDefault()});
+document.addEventListener('keyup',function(e){keys[e.key]=false;keys[e.key.toLowerCase()]=false});
+
+function bindBtn(btn){
+  var k=btn.dataset.key;if(!k)return;
+  var pr=function(e){e.preventDefault();e.stopPropagation();keys[k]=true;btn.classList.add('pressed')};
+  var rl=function(e){e.preventDefault();e.stopPropagation();keys[k]=false;btn.classList.remove('pressed')};
+  btn.addEventListener('pointerdown',pr);btn.addEventListener('pointerup',rl);
+  btn.addEventListener('pointercancel',rl);btn.addEventListener('pointerleave',rl);
+  btn.addEventListener('touchstart',pr,{passive:false});btn.addEventListener('touchend',rl);
+  btn.addEventListener('mousedown',pr);btn.addEventListener('mouseup',rl);
+  btn.addEventListener('mouseleave',rl);btn.addEventListener('contextmenu',function(e){e.preventDefault()});
+}
+var allBtns=document.querySelectorAll('.cb');
+for(var i=0;i<allBtns.length;i++)bindBtn(allBtns[i]);
+
+fsBtn.addEventListener('click',function(){
+  if(!document.fullscreenElement){
+    var req=game.requestFullscreen||game.webkitRequestFullscreen||game.mozRequestFullScreen||game.msRequestFullscreen;
+    if(req)req.call(game).catch(function(){});
+    if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(function(){});
+  }else{
+    var ex=document.exitFullscreen||document.webkitExitFullscreen||document.mozCancelFullScreen||document.msExitFullscreen;
+    if(ex)ex.call(document);
+  }
+});
+document.addEventListener('fullscreenchange',function(){resize();setTimeout(resize,100)});
+
+pauseBtn.addEventListener('click',function(){
+  if(!running)return;paused=!paused;pauseBtn.textContent=paused?'▶️':'⏸️';
+  if(paused){msgEl.textContent='⏸️ ПАУЗА';msgEl.style.opacity=1;msgEl.style.color='#ffd93d'}
+  else{msgEl.style.opacity=0;lastT=performance.now()}
+});
+
+statsBtn.addEventListener('click',function(){
+  if(!running)return;var wp=paused;paused=true;
+  var p1p=ticks>0?Math.round(poss1/ticks*100):50,p2p=100-p1p;
+  msgEl.innerHTML='<div style="font-size:20px;line-height:1.6;color:#ffd93d">📊 Статистика<br><span style="color:#4a9eff">🔵 Синие:</span> '+stat1+' ударов, '+p1p+'%<br><span style="color:#ff6b6b">🔴 Красные:</span> '+stat2+' ударов, '+p2p+'%</div>';
+  msgEl.style.opacity=1;msgEl.style.color='#fff';statsBtn.textContent='✖';
+  statsBtn.onclick=function(){msgEl.style.opacity=0;statsBtn.textContent='📊';paused=wp;if(!paused)lastT=performance.now();statsBtn.onclick=null};
+});
+
+gearBtn.addEventListener('click',function(){var wr=running;running=false;showSettings(wr)});
+
+function showOverlay(html){overlay.classList.remove('hidden');overlay.style.display='flex';overlay.innerHTML=html}
+function hideOverlay(){overlay.classList.add('hidden');overlay.style.display='none'}
+
+function showSettings(wr){
+  showOverlay(
+  '<div class="ap" style="border-color:#4a9eff">'+
+    '<h1 style="color:#4a9eff!important">⚙️ Настройки</h1>'+
+    '<div class="as" style="border-color:#4a9eff"><h3 style="color:#4a9eff">📏 Размеры</h3>'+
+      '<div class="af"><label>🥅 Ворота</label><select id="sGs">'+
+        '<option value="small" '+(S.goalSize==='small'?'selected':'')+'>🔹 Маленькие</option>'+
+        '<option value="medium" '+(S.goalSize==='medium'?'selected':'')+'>🔸 Средние</option>'+
+        '<option value="large" '+(S.goalSize==='large'?'selected':'')+'>🔶 Большие</option>'+
+      '</select></div>'+
+      '<div class="af"><label>👤 Игроки</label><select id="sPs">'+
+        '<option value="small" '+(S.playerSize==='small'?'selected':'')+'>🔹 Маленькие</option>'+
+        '<option value="medium" '+(S.playerSize==='medium'?'selected':'')+'>🔸 Средние</option>'+
+        '<option value="large" '+(S.playerSize==='large'?'selected':'')+'>🔶 Большие</option>'+
+      '</select></div>'+
+    '</div>'+
+    '<div class="as" style="border-color:#4a9eff"><h3 style="color:#4a9eff">🏃 Скорости</h3>'+
+      '<div class="af"><label>Игроки: <b id="vSp">'+S.speed+'</b></label>'+
+        '<input type="range" id="sSp" min="1" max="10" step="0.5" value="'+S.speed+'" oninput="vSp.textContent=this.value"></div>'+
+      '<div class="af"><label>Бот: <b id="vBt">'+S.botSpeed+'</b></label>'+
+        '<input type="range" id="sBt" min="1" max="10" step="0.5" value="'+S.botSpeed+'" oninput="vBt.textContent=this.value"></div>'+
+    '</div>'+
+    '<div class="as" style="border-color:#4a9eff"><h3 style="color:#4a9eff">⏱️ Время</h3>'+
+      '<div class="af"><label>Длительность (сек)</label><input type="number" id="sDur" min="10" max="600" value="'+S.duration+'"></div>'+
+    '</div>'+
+    '<div class="as" style="border-color:#4a9eff"><h3 style="color:#4a9eff">💥 Физика</h3>'+
+      '<div class="af"><label>Сила удара: <b id="vPw">'+S.power+'</b></label>'+
+        '<input type="range" id="sPw" min="3" max="20" step="1" value="'+S.power+'" oninput="vPw.textContent=this.value"></div>'+
+    '</div>'+
+    '<div class="as" style="border-color:#4a9eff"><h3 style="color:#4a9eff">🎯 Управление</h3>'+
+      '<div class="af"><label class="ck"><input type="checkbox" id="sSr" '+(S.sprint?'checked':'')+'> ⚡ Спринт (Shift)</label></div>'+
+      '<div class="af"><label class="ck"><input type="checkbox" id="sAp" '+(S.autoPause?'checked':'')+'> ⏸️ Автопауза</label></div>'+
+    '</div>'+
+    '<div class="abtns"><button class="asv" onclick="saveSet('+wr+')">💾 Сохранить</button>'+
+    '<button class="acn" onclick="closeSet('+wr+')">← Закрыть</button></div>'+
+    '<button class="ars" onclick="resetSet()">🔄 Сброс</button>'+
+    '<button class="ars" style="background:linear-gradient(135deg,#f59e0b,#d97706);margin-top:8px" onclick="adminLogin('+wr+')">🔐 Админка</button>'+
+  '</div>');
+}
+function saveSet(wr){
+  S.goalSize=$('sGs').value;S.playerSize=$('sPs').value;
+  S.speed=parseFloat($('sSp').value);S.botSpeed=parseFloat($('sBt').value);
+  S.duration=parseInt($('sDur').value);S.power=parseFloat($('sPw').value);
+  S.sprint=$('sSr').checked;S.autoPause=$('sAp').checked;
+  try{localStorage.setItem('fbS',JSON.stringify(S))}catch(e){}
+  applyAll();closeSet(wr);
+}
+function resetSet(){if(!confirm('Сбросить?'))return;for(var k in DEF)S[k]=DEF[k];
+  try{localStorage.setItem('fbS',JSON.stringify(S))}catch(e){};applyAll();closeSet(false);showLobby()}
+function closeSet(wr){hideOverlay();if(wr){running=true;paused=false;lastT=performance.now();requestAnimationFrame(loop)}else showLobby()}
+
+function adminLogin(wr){
+  showOverlay(
+  '<div class="ap"><h1>🔐 Админ-панель</h1>'+
+    '<div class="af"><label>Логин</label><input type="text" id="aL"></div>'+
+    '<div class="af"><label>Пароль</label><input type="password" id="aP"></div>'+
+    '<div class="abtns"><button class="asv" onclick="tryAdm('+wr+')">Войти</button>'+
+    '<button class="acn" onclick="showSettings('+wr+')">← Назад</button></div>'+
+    '<div id="aE" style="color:#ff6b6b;font-size:13px;margin-top:12px;min-height:18px"></div>'+
+  '</div>');
+}
+function tryAdm(wr){
+  if($('aL').value.trim()==='german'&&$('aP').value.trim()==='r2d2c3po')showAdmin(wr);
+  else $('aE').textContent='❌ Неверный логин или пароль';
+}
+function showAdmin(wr){
+  showOverlay(
+  '<div class="ap"><h1>⚙️ Админка</h1>'+
+    '<div class="as"><h3>🎨 Эффекты</h3>'+
+      '<div class="af"><label class="ck"><input type="checkbox" id="aRb" '+(S.rainbow?'checked':'')+'> 🌈 Радужный мяч</label></div>'+
+      '<div class="af"><label class="ck"><input type="checkbox" id="aTr" '+(S.trail?'checked':'')+'> ✨ След мяча</label></div>'+
+      '<div class="af"><label class="ck"><input type="checkbox" id="aSp" '+(S.sparks?'checked':'')+'> 💥 Вспышки при ударе</label></div>'+
+      '<div class="af"><label class="ck"><input type="checkbox" id="aSm" '+(S.slowMo?'checked':'')+'> 🌀 Slow-mo при голе</label></div>'+
+    '</div>'+
+    '<div class="as"><h3>📏 Размеры</h3>'+
+      '<div class="af"><label>🥅 Ворота</label><select id="aGs">'+
+        '<option value="small" '+(S.goalSize==='small'?'selected':'')+'>🔹 Маленькие</option>'+
+        '<option value="medium" '+(S.goalSize==='medium'?'selected':'')+'>🔸 Средние</option>'+
+        '<option value="large" '+(S.goalSize==='large'?'selected':'')+'>🔶 Большие</option>'+
+      '</select></div>'+
+      '<div class="af"><label>👤 Игроки</label><select id="aPs">'+
+        '<option value="small" '+(S.playerSize==='small'?'selected':'')+'>🔹 Маленькие</option>'+
+        '<option value="medium" '+(S.playerSize==='medium'?'selected':'')+'>🔸 Средние</option>'+
+        '<option value="large" '+(S.playerSize==='large'?'selected':'')+'>🔶 Большие</option>'+
+      '</select></div>'+
+    '</div>'+
+    '<div class="as"><h3>🏆 Рекорды</h3>'+
+      '<div class="af"><label class="ck"><input type="checkbox" id="aRc" '+(S.showRecord?'checked':'')+'> 📊 Показывать рекорд</label></div>'+
+      '<div class="af"><label>Текущий рекорд: <b style="color:#ffd93d">'+best+'</b></label>'+
+        '<button class="ars" style="margin-top:6px" onclick="if(confirm(\'Сбросить рекорд?\')){best=0;localStorage.setItem(\'fbRec\',\'0\');showAdmin('+wr+')}">🗑️ Сбросить рекорд</button>'+
+      '</div>'+
+    '</div>'+
+    '<div class="abtns"><button class="asv" onclick="saveAdmin('+wr+')">💾 Сохранить</button>'+
+    '<button class="acn" onclick="showSettings('+wr+')">← Назад</button></div>'+
+  '</div>');
+}
+function saveAdmin(wr){
+  S.rainbow=$('aRb').checked;S.trail=$('aTr').checked;S.sparks=$('aSp').checked;S.slowMo=$('aSm').checked;
+  S.goalSize=$('aGs').value;S.playerSize=$('aPs').value;S.showRecord=$('aRc').checked;
+  try{localStorage.setItem('fbS',JSON.stringify(S))}catch(e){}
+  applyAll();alert('✅ Сохранено!');closeSet(wr);
+}
+
+function showLobby(){
+  mode=null;running=false;if(mTimer){clearInterval(mTimer);mTimer=null}
+  c1.style.display='none';c2.style.display='none';
+  showOverlay(
+  '<h1>⚽ ФУТБОЛ 2D</h1>'+
+  '<p>Выбери режим:</p>'+
+  '<button class="mb mb-bot" onclick="chMM(\'bot\')">🤖 С БОТОМ<small>Против компьютера</small></button>'+
+  '<button class="mb mb-split" onclick="chMM(\'split\')">👥 ОДИН ЭКРАН<small>Двое на одном устройстве</small></button>'+
+  '<button class="mb mb-online" onclick="chMM(\'online\')">🌐 ПО СЕТИ<small>Играть с другом</small></button>'+
+  '<button class="mb mb-set" onclick="showSettings(false)" style="margin-top:12px">⚙️ Настройки<small>Размеры, скорость</small></button>');
+}
+function chMM(m){
+  mode=m;
+  showOverlay(
+  '<h1>🏆 До скольки голов?</h1>'+
+  '<div class="gg">'+
+    '<button class="gbtn g1" onclick="chG(1)">1<small>Быстрый</small></button>'+
+    '<button class="gbtn g3" onclick="chG(3)">3<small>Классика</small></button>'+
+    '<button class="gbtn g5" onclick="chG(5)">5<small>Полный</small></button>'+
+    '<button class="gbtn g10" onclick="chG(10)">10<small>Марафон</small></button>'+
+    '<button class="gbtn ge" onclick="chG(\'endless\')">♾️ БЕСКОНЕЧНЫЙ<small>Без конца</small></button>'+
+  '</div>'+
+  '<button class="mb mb-back" onclick="showLobby()">← Назад</button>');
+}
+function chG(n){
+  if(n==='endless'){gMode='endless';WIN=999999}
+  else{gMode='target';WIN=n;S.goals=n}
+  applyAll();
+  if(mode==='bot')startBot();
+  else if(mode==='split')startSplit();
+  else if(mode==='online')onlineMenu();
+}
+function onlineMenu(){
+  showOverlay(
+  '<h1>🌐 Онлайн</h1>'+
+  '<button class="mb mb-online" onclick="createRoom()">🏠 Создать комнату</button>'+
+  '<p style="margin:12px 0;opacity:.7">— или —</p>'+
+  '<input type="text" id="ci" placeholder="КОД" maxlength="6">'+
+  '<button class="mb mb-bot" onclick="joinRoom()">🔗 Подключиться</button>'+
+  '<div class="status" id="st"></div>'+
+  '<button class="mb mb-back" onclick="chMM(\'online\')">← Назад</button>');
+}
+
+function startBot(){
+  hideOverlay();
+  mode='bot';myRole='host';resetScores();
+  c1.style.display='block';c2.style.display='none';
+  resize();reset();
+  runCD(function(){startTimer();running=true;lastT=performance.now();requestAnimationFrame(loop)});
+}
+function startSplit(){
+  hideOverlay();
+  mode='split';myRole='host';resetScores();
+  c1.style.display='block';c2.style.display='block';
+  resize();reset();
+  runCD(function(){startTimer();running=true;lastT=performance.now();requestAnimationFrame(loop)});
+}
+function resetScores(){s1=0;s2=0;s1El.textContent=0;s2El.textContent=0;goalLock=false;stat1=0;stat2=0;poss1=0;poss2=0;ticks=0;applyAll()}
+
+function runCD(cb){
+  var n=3;cdEl.classList.add('on');cdnEl.textContent=n;
+  function tick(){
+    if(n>0){cdnEl.textContent=n;n--;cdT=setTimeout(tick,1000)}
+    else{cdnEl.textContent='GO!';cdnEl.style.color='#4ade80';
+      cdT=setTimeout(function(){cdEl.classList.remove('on');cdnEl.style.color='#ffd93d';if(cb)cb()},600)}
+  }
+  tick();
+}
+
+function genCode(){var L='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';var c='FB';for(var i=0;i<4;i++)c+=L[Math.floor(Math.random()*L.length)];return c}
+function initPeer(cid){
+  var id=cid||('fb-'+Math.random().toString(36).substring(2,12));
+  peer=new Peer(id,{host:'1.peerjs.com',port:443,path:'/',secure:true,debug:0,
+    config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},
+    {urls:'turn:openrelay.metered.ca:80',username:'openrelayproject',credential:'openrelayproject'},
+    {urls:'turn:openrelay.metered.ca:443',username:'openrelayproject',credential:'openrelayproject'}]}});
+  setTimeout(function(){if(!myPeerId){var st=$('st');if(st){st.textContent='⚠️ Сервер не отвечает...';st.className='status error'}}},15000);
+  peer.on('open',function(id){myPeerId=id;var st=$('st');if(st){st.textContent='✅ Готово!';st.className='status'}});
+  peer.on('error',function(err){var st=$('st');if(!st)return;st.textContent='⚠️ '+err.type;st.className='status error'});
+  peer.on('connection',function(c){conn=c;setupConn()});
+}
+function createRoom(){
+  mode='online';myRole='host';resetScores();
+  var code=genCode();var st=$('st');st.textContent='Создаём...';
+  initPeer(code);
+  var w=setInterval(function(){if(myPeerId){clearInterval(w);showOverlay(
+    '<h1>🏠 Комната</h1><p>Код для друга:</p>'+
+    '<div class="code-box">'+code+'</div>'+
+    '<div class="status">⏳ Ожидание...</div>')}},100);
+}
+function joinRoom(){
+  mode='online';myRole='guest';resetScores();
+  var code=$('ci').value.trim().toUpperCase();
+  if(code.length<4){var st=$('st');st.textContent='Введи код';st.className='status error';return}
+  if(code.indexOf('FB')!==0)code='FB'+code;
+  var st=$('st');st.textContent='Подключаемся...';
+  initPeer();
+  var w=setInterval(function(){if(peer&&peer.open){clearInterval(w);conn=peer.connect(code,{reliable:true});setupConn()}},100);
+}
+function setupConn(){
+  conn.on('open',function(){
+    hideOverlay();
+    c1.style.display='block';c2.style.display='none';
+    resize();reset();
+    runCD(function(){startTimer();running=true;lastT=performance.now();requestAnimationFrame(loop)})
+  });
+  conn.on('data',function(d){handleData(d)});
+  conn.on('close',function(){running=false;msgEl.textContent='⚠️ Соперник вышел';msgEl.style.opacity=1;setTimeout(function(){location.reload()},2500)});
+}
+
+function startTimer(){
+  secs=0;updateTimer();
+  if(mTimer)clearInterval(mTimer);
+  if(gMode==='endless'){timerEl.textContent='∞';return}
+  mTimer=setInterval(function(){secs++;updateTimer();if(secs>=S.duration){clearInterval(mTimer);endMatch()}},1000);
+}
+function updateTimer(){var t=secs*S.timeScale,m=Math.floor(t/60),s=t%60;timerEl.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s}
+function endMatch(){
+  running=false;goalLock=true;
+  var w='НИЧЬЯ!';if(s1>s2)w='🔵 СИНИЕ ПОБЕДИЛИ!';else if(s2>s1)w='🔴 КРАСНЫЕ ПОБЕДИЛИ!';
+  msgEl.textContent=w;msgEl.style.opacity=1;
+  if(s1>best){best=s1;localStorage.setItem('fbRec',best)}
+  setTimeout(function(){location.reload()},3500);
+}
+function reset(){
+  P1.x=W*.3;P1.y=(FT+FB)/2;P2.x=W*.7;P2.y=(FT+FB)/2;
+  P1.vx=P1.vy=0;P2.vx=P2.vy=0;
+  B.x=W/2;B.y=FB-40;B.vx=B.vy=0;goalLock=false;
+}
+function move(P,el,ax,ay,dt){
+  var sp=P.speed;
+  if(S.sprint&&(keys['Shift']||keys['shift']))sp*=1.8;
+  P.vx=ax*sp*dt;P.vy=ay*sp*dt;P.x+=P.vx;P.y+=P.vy;
+  var r=P.size/2;
+  P.x=Math.max(FL+r,Math.min(FR-r,P.x));
+  P.y=Math.max(FT+r,Math.min(FB-r,P.y));
+  if(P.vx>.1)el.classList.add('fr');else if(P.vx<-.1)el.classList.remove('fr');
+}
+function coll(P){
+  var pr=P.size/2,br=B.size/2;
+  var dx=B.x-P.x,dy=B.y-P.y,d=Math.hypot(dx,dy),md=pr+br+2;
+  if(d<md&&d>0){
+    var nx=dx/d,ny=dy/d;
+    B.x=P.x+nx*md;B.y=P.y+ny*md;
+    B.vx=nx*S.power+P.vx*1.2;B.vy=ny*S.power+P.vy*1.2;
+    var sp=Math.hypot(B.vx,B.vy);
+    if(sp>S.maxBall){B.vx=B.vx/sp*S.maxBall;B.vy=B.vy/sp*S.maxBall}
+    if(dx>0)stat1++;else stat2++;
+    if(S.sparks)spawnSpark(B.x,B.y);
+  }
+}
+function spawnSpark(x,y){
+  var s=document.createElement('div');s.className='sp';s.textContent='💥';
+  s.style.left=x+'px';s.style.top=y+'px';game.appendChild(s);
+  setTimeout(function(){s.remove()},400);
+}
+function spawnTrail(x,y){
+  if(!S.trail)return;
+  if(Math.random()>0.5)return;
+  var t=document.createElement('div');t.className='tr';
+  t.style.width='8px';t.style.height='8px';
+  t.style.left=x+'px';t.style.top=y+'px';
+  game.appendChild(t);setTimeout(function(){t.remove()},500);
+}
+function goal(side){
+  if(goalLock)return;goalLock=true;
+  if(side==='left'){s2++;s2El.textContent=s2;showMsg('🔴 ГОЛ!')}
+  else{s1++;s1El.textContent=s1;showMsg('🔵 ГОЛ!')}
+  if(s1>best){best=s1;localStorage.setItem('fbRec',best);rinfoEl.textContent='🏆 Рекорд: '+best}
+  if(mode==='online')send({type:'goal',side:side,s1:s1,s2:s2});
+}
+function showMsg(t){
+  msgEl.textContent=t;msgEl.style.opacity=1;B.vx=0;B.vy=0;
+  setTimeout(function(){msgEl.style.opacity=0;
+    if(gMode==='target'&&(s1>=WIN||s2>=WIN))endMatch();
+    else{reset();if(mode==='online'&&myRole==='host')send({type:'reset',s1:s1,s2:s2})}
+  },S.slowMo?2500:1500);
+}
+function send(d){if(conn&&conn.open)conn.send(d)}
+function handleData(d){
+  if(d.type==='state'){
+    if(myRole==='host'){P2.x=d.p2x;P2.y=d.p2y}else{P1.x=d.p1x;P1.y=d.p1y}
+    B.x=d.bx;B.y=d.by;B.vx=d.bvx;B.vy=d.bvy;
+    s1=d.s1;s2=d.s2;s1El.textContent=s1;s2El.textContent=s2;
+  }else if(d.type==='goal'){
+    if(goalLock)return;goalLock=true;
+    s1=d.s1;s2=d.s2;s1El.textContent=s1;s2El.textContent=s2;
+    showMsg(d.side==='left'?'🔴 ГОЛ!':'🔵 ГОЛ!');
+  }else if(d.type==='reset'){
+    B.x=W/2;B.y=FB-40;B.vx=0;B.vy=0;
+    s1=d.s1;s2=d.s2;s1El.textContent=s1;s2El.textContent=s2;goalLock=false;
+  }
+}
+function sendState(){
+  var d={type:'state',bx:B.x,by:B.y,bvx:B.vx,bvy:B.vy,s1:s1,s2:s2};
+  if(myRole==='host'){d.p1x=P1.x;d.p1y=P1.y}else{d.p2x=P2.x;d.p2y=P2.y}
+  send(d);
+}
+function updateBot(dt){
+  var tx=Math.max(W*.5,Math.min(FR-30,B.x+25)),ty=B.y;
+  var ax=0,ay=0;
+  if(Math.abs(tx-P2.x)>5)ax=tx>P2.x?1:-1;
+  if(Math.abs(ty-P2.y)>5)ay=ty>P2.y?1:-1;
+  move(P2,p2,ax,ay,dt);
+}
+function loop(now){
+  if(!running)return;
+  var dt=Math.min(2,(now-lastT)/16.67)||1;
+  lastT=now;
+  if(paused){requestAnimationFrame(loop);return}
+  ticks++;
+  var d1=Math.hypot(B.x-P1.x,B.y-P1.y),d2=Math.hypot(B.x-P2.x,B.y-P2.y);
+  if(d1<d2)poss1++;else poss2++;
+
+  if(mode==='bot'){
+    var ax=0,ay=0;
+    if(keys['w']||keys['ц']||keys['W'])ay-=1;
+    if(keys['s']||keys['ы']||keys['S'])ay+=1;
+    if(keys['a']||keys['ф']||keys['A'])ax-=1;
+    if(keys['d']||keys['в']||keys['D'])ax+=1;
+    move(P1,p1,ax,ay,dt);
+    updateBot(dt);physics(dt);
+  }else if(mode==='split'){
+    var ax=0,ay=0;
+    if(keys['w']||keys['ц']||keys['W'])ay-=1;
+    if(keys['s']||keys['ы']||keys['S'])ay+=1;
+    if(keys['a']||keys['ф']||keys['A'])ax-=1;
+    if(keys['d']||keys['в']||keys['D'])ax+=1;
+    move(P1,p1,ax,ay,dt);
+    var ax2=0,ay2=0;
+    if(keys['ArrowUp'])ay2-=1;
+    if(keys['ArrowDown'])ay2+=1;
+    if(keys['ArrowLeft'])ax2-=1;
+    if(keys['ArrowRight'])ax2+=1;
+    move(P2,p2,ax2,ay2,dt);
+    physics(dt);
+  }else if(mode==='online'){
+    if(myRole==='host'){
+      var ax=0,ay=0;
+      if(keys['w']||keys['ц']||keys['W'])ay-=1;
+      if(keys['s']||keys['ы']||keys['S'])ay+=1;
+      if(keys['a']||keys['ф']||keys['A'])ax-=1;
+      if(keys['d']||keys['в']||keys['D'])ax+=1;
+      move(P1,p1,ax,ay,dt);physics(dt);sendState();
+    }else{
+      var ax2=0,ay2=0;
+      if(keys['ArrowUp'])ay2-=1;
+      if(keys['ArrowDown'])ay2+=1;
+      if(keys['ArrowLeft'])ax2-=1;
+      if(keys['ArrowRight'])ax2+=1;
+      move(P2,p2,ax2,ay2,dt);physics(dt);sendState();
+    }
+  }
+  draw();requestAnimationFrame(loop);
+}
+function physics(dt){
+  if(mode==='online'&&myRole!=='host')return;
+  var steps=Math.max(1,Math.ceil(Math.hypot(B.vx,B.vy)*dt/4));
+  var subDt=dt/steps;
+  for(var i=0;i<steps;i++){
+    B.x+=B.vx*subDt;B.y+=B.vy*subDt;
+    coll(P1);coll(P2);
+    if(S.trail)spawnTrail(B.x,B.y);
+    var r=B.size/2;
+    if(B.y-r<FT){B.y=FT+r;B.vy=-B.vy*0.7}
+    if(B.y+r>FB){B.y=FB-r;B.vy=-B.vy*0.7}
+    var gh=(FB-FT)*0.5,gT=FB-gh,gB=FB,gD=40;
+    if(B.x-r<gD&&B.y>gT&&B.y<gB){if(!goalLock)goal('left');return}
+    if(B.x+r>W-gD&&B.y>gT&&B.y<gB){if(!goalLock)goal('right');return}
+    if(B.x-r<FL){B.x=FL+r;B.vx=-B.vx*0.7}
+    if(B.x+r>FR){B.x=FR-r;B.vx=-B.vx*0.7}
+  }
+  B.vx*=Math.pow(B.fr,dt);B.vy*=Math.pow(B.fr,dt);
+  if(Math.abs(B.vx)<.05)B.vx=0;
+  if(Math.abs(B.vy)<.05)B.vy=0;
+}
+function draw(){
+  var oy=window._oy||85;
+  p1.style.left=(P1.x-22)+'px';p1.style.top=(P1.y-oy)+'px';
+  p2.style.left=(P2.x-22)+'px';p2.style.top=(P2.y-oy)+'px';
+  ballEl.style.left=(B.x-13)+'px';ballEl.style.top=(B.y-13)+'px';
+}
+
+applyAll();resize();reset();showLobby();
+</script>
+</body>
+</html>
