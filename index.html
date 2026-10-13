@@ -83,7 +83,6 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;f
 .mb-split{background:linear-gradient(135deg,#f59e0b,#d97706)}
 .mb-online{background:linear-gradient(135deg,#4ade80,#22c55e)}
 .mb-back{background:linear-gradient(135deg,#94a3b8,#64748b);min-width:200px;text-align:center!important}
-.mb-set{background:linear-gradient(135deg,#0ea5e9,#0369a1)}
 .gg{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:340px;margin:10px 0}
 .gbtn{padding:18px 10px;border-radius:14px;border:3px solid #fff;font-size:22px;font-weight:bold;color:#fff;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.5);font-family:inherit}
 .gbtn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.5)}
@@ -143,7 +142,7 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;f
 <button id="fullscreen" class="tb" title="Полный экран">⛶</button>
 <button id="statsbtn" class="tb" title="Статистика">📊</button>
 <button id="pause" class="tb" title="Пауза">⏸️</button>
-<button id="gear" class="tb" title="Настройки">⚙️</button>
+<button id="gear" class="tb" title="Админка">⚙️</button>
 <div id="cd"><div id="cdn" style="animation:none">3</div></div>
 <div class="player" id="p1"><div class="bw"><div class="arm-b"></div><div class="leg-b"></div><div class="head"><div class="eye"></div></div><div class="torso"></div><div class="shorts"></div><div class="leg-f"></div><div class="arm-f"></div></div></div>
 <div class="player" id="p2"><div class="bw"><div class="arm-b"></div><div class="leg-b"></div><div class="head"><div class="eye"></div></div><div class="torso"></div><div class="shorts"></div><div class="leg-f"></div><div class="arm-f"></div></div></div>
@@ -251,61 +250,10 @@ statsBtn.addEventListener('click',function(){
   statsBtn.onclick=function(){msgEl.style.opacity=0;statsBtn.textContent='📊';paused=wp;if(!paused)lastT=performance.now();statsBtn.onclick=null};
 });
 
-gearBtn.addEventListener('click',function(){var wr=running;running=false;showSettings(wr)});
+gearBtn.addEventListener('click',function(){var wr=running;running=false;adminLogin(wr)});
 
 function showOverlay(html){overlay.classList.remove('hidden');overlay.style.display='flex';overlay.innerHTML=html}
 function hideOverlay(){overlay.classList.add('hidden');overlay.style.display='none'}
-
-function showSettings(wr){
-  showOverlay(
-  '<div class="ap" style="border-color:#4a9eff">'+
-    '<h1 style="color:#4a9eff!important">⚙️ Настройки</h1>'+
-    '<div class="as" style="border-color:#4a9eff"><h3 style="color:#4a9eff">📏 Размеры</h3>'+
-      '<div class="af"><label>🥅 Ворота</label><select id="sGs">'+
-        '<option value="small" '+(S.goalSize==='small'?'selected':'')+'>🔹 Маленькие</option>'+
-        '<option value="medium" '+(S.goalSize==='medium'?'selected':'')+'>🔸 Средние</option>'+
-        '<option value="large" '+(S.goalSize==='large'?'selected':'')+'>🔶 Большие</option>'+
-      '</select></div>'+
-      '<div class="af"><label>👤 Игроки</label><select id="sPs">'+
-        '<option value="small" '+(S.playerSize==='small'?'selected':'')+'>🔹 Маленькие</option>'+
-        '<option value="medium" '+(S.playerSize==='medium'?'selected':'')+'>🔸 Средние</option>'+
-        '<option value="large" '+(S.playerSize==='large'?'selected':'')+'>🔶 Большие</option>'+
-      '</select></div>'+
-    '</div>'+
-    '<div class="as" style="border-color:#4a9eff"><h3 style="color:#4a9eff">🏃 Скорости</h3>'+
-      '<div class="af"><label>Игроки: <b id="vSp">'+S.speed+'</b></label>'+
-        '<input type="range" id="sSp" min="1" max="10" step="0.5" value="'+S.speed+'" oninput="vSp.textContent=this.value"></div>'+
-      '<div class="af"><label>Бот: <b id="vBt">'+S.botSpeed+'</b></label>'+
-        '<input type="range" id="sBt" min="1" max="10" step="0.5" value="'+S.botSpeed+'" oninput="vBt.textContent=this.value"></div>'+
-    '</div>'+
-    '<div class="as" style="border-color:#4a9eff"><h3 style="color:#4a9eff">⏱️ Время</h3>'+
-      '<div class="af"><label>Длительность (сек)</label><input type="number" id="sDur" min="10" max="600" value="'+S.duration+'"></div>'+
-    '</div>'+
-    '<div class="as" style="border-color:#4a9eff"><h3 style="color:#4a9eff">💥 Физика</h3>'+
-      '<div class="af"><label>Сила удара: <b id="vPw">'+S.power+'</b></label>'+
-        '<input type="range" id="sPw" min="3" max="20" step="1" value="'+S.power+'" oninput="vPw.textContent=this.value"></div>'+
-    '</div>'+
-    '<div class="as" style="border-color:#4a9eff"><h3 style="color:#4a9eff">🎯 Управление</h3>'+
-      '<div class="af"><label class="ck"><input type="checkbox" id="sSr" '+(S.sprint?'checked':'')+'> ⚡ Спринт (Shift)</label></div>'+
-      '<div class="af"><label class="ck"><input type="checkbox" id="sAp" '+(S.autoPause?'checked':'')+'> ⏸️ Автопауза</label></div>'+
-    '</div>'+
-    '<div class="abtns"><button class="asv" onclick="saveSet('+wr+')">💾 Сохранить</button>'+
-    '<button class="acn" onclick="closeSet('+wr+')">← Закрыть</button></div>'+
-    '<button class="ars" onclick="resetSet()">🔄 Сброс</button>'+
-    '<button class="ars" style="background:linear-gradient(135deg,#f59e0b,#d97706);margin-top:8px" onclick="adminLogin('+wr+')">🔐 Админка</button>'+
-  '</div>');
-}
-function saveSet(wr){
-  S.goalSize=$('sGs').value;S.playerSize=$('sPs').value;
-  S.speed=parseFloat($('sSp').value);S.botSpeed=parseFloat($('sBt').value);
-  S.duration=parseInt($('sDur').value);S.power=parseFloat($('sPw').value);
-  S.sprint=$('sSr').checked;S.autoPause=$('sAp').checked;
-  try{localStorage.setItem('fbS',JSON.stringify(S))}catch(e){}
-  applyAll();closeSet(wr);
-}
-function resetSet(){if(!confirm('Сбросить?'))return;for(var k in DEF)S[k]=DEF[k];
-  try{localStorage.setItem('fbS',JSON.stringify(S))}catch(e){};applyAll();closeSet(false);showLobby()}
-function closeSet(wr){hideOverlay();if(wr){running=true;paused=false;lastT=performance.now();requestAnimationFrame(loop)}else showLobby()}
 
 function adminLogin(wr){
   showOverlay(
@@ -313,10 +261,11 @@ function adminLogin(wr){
     '<div class="af"><label>Логин</label><input type="text" id="aL"></div>'+
     '<div class="af"><label>Пароль</label><input type="password" id="aP"></div>'+
     '<div class="abtns"><button class="asv" onclick="tryAdm('+wr+')">Войти</button>'+
-    '<button class="acn" onclick="showSettings('+wr+')">← Назад</button></div>'+
+    '<button class="acn" onclick="closeAdmin('+wr+')">← Закрыть</button></div>'+
     '<div id="aE" style="color:#ff6b6b;font-size:13px;margin-top:12px;min-height:18px"></div>'+
   '</div>');
 }
+function closeAdmin(wr){hideOverlay();if(wr){running=true;paused=false;lastT=performance.now();requestAnimationFrame(loop)}else showLobby()}
 function tryAdm(wr){
   if($('aL').value.trim()==='german'&&$('aP').value.trim()==='r2d2c3po')showAdmin(wr);
   else $('aE').textContent='❌ Неверный логин или пароль';
@@ -324,12 +273,7 @@ function tryAdm(wr){
 function showAdmin(wr){
   showOverlay(
   '<div class="ap"><h1>⚙️ Админка</h1>'+
-    '<div class="as"><h3>🎨 Эффекты</h3>'+
-      '<div class="af"><label class="ck"><input type="checkbox" id="aRb" '+(S.rainbow?'checked':'')+'> 🌈 Радужный мяч</label></div>'+
-      '<div class="af"><label class="ck"><input type="checkbox" id="aTr" '+(S.trail?'checked':'')+'> ✨ След мяча</label></div>'+
-      '<div class="af"><label class="ck"><input type="checkbox" id="aSp" '+(S.sparks?'checked':'')+'> 💥 Вспышки при ударе</label></div>'+
-      '<div class="af"><label class="ck"><input type="checkbox" id="aSm" '+(S.slowMo?'checked':'')+'> 🌀 Slow-mo при голе</label></div>'+
-    '</div>'+
+
     '<div class="as"><h3>📏 Размеры</h3>'+
       '<div class="af"><label>🥅 Ворота</label><select id="aGs">'+
         '<option value="small" '+(S.goalSize==='small'?'selected':'')+'>🔹 Маленькие</option>'+
@@ -342,307 +286,19 @@ function showAdmin(wr){
         '<option value="large" '+(S.playerSize==='large'?'selected':'')+'>🔶 Большие</option>'+
       '</select></div>'+
     '</div>'+
-    '<div class="as"><h3>🏆 Рекорды</h3>'+
-      '<div class="af"><label class="ck"><input type="checkbox" id="aRc" '+(S.showRecord?'checked':'')+'> 📊 Показывать рекорд</label></div>'+
-      '<div class="af"><label>Текущий рекорд: <b style="color:#ffd93d">'+best+'</b></label>'+
-        '<button class="ars" style="margin-top:6px" onclick="if(confirm(\'Сбросить рекорд?\')){best=0;localStorage.setItem(\'fbRec\',\'0\');showAdmin('+wr+')}">🗑️ Сбросить рекорд</button>'+
-      '</div>'+
+
+    '<div class="as"><h3>🏃 Скорости</h3>'+
+      '<div class="af"><label>Игроки: <b id="vSp">'+S.speed+'</b></label>'+
+        '<input type="range" id="aSp" min="1" max="10" step="0.5" value="'+S.speed+'" oninput="vSp.textContent=this.value"></div>'+
+      '<div class="af"><label>Бот: <b id="vBt">'+S.botSpeed+'</b></label>'+
+        '<input type="range" id="aBt" min="1" max="10" step="0.5" value="'+S.botSpeed+'" oninput="vBt.textContent=this.value"></div>'+
+      '<div class="af"><label>Макс. мяча: <b id="vMb">'+S.maxBall+'</b></label>'+
+        '<input type="range" id="aMb" min="10" max="40" step="1" value="'+S.maxBall+'" oninput="vMb.textContent=this.value"></div>'+
     '</div>'+
-    '<div class="abtns"><button class="asv" onclick="saveAdmin('+wr+')">💾 Сохранить</button>'+
-    '<button class="acn" onclick="showSettings('+wr+')">← Назад</button></div>'+
-  '</div>');
-}
-function saveAdmin(wr){
-  S.rainbow=$('aRb').checked;S.trail=$('aTr').checked;S.sparks=$('aSp').checked;S.slowMo=$('aSm').checked;
-  S.goalSize=$('aGs').value;S.playerSize=$('aPs').value;S.showRecord=$('aRc').checked;
-  try{localStorage.setItem('fbS',JSON.stringify(S))}catch(e){}
-  applyAll();alert('✅ Сохранено!');closeSet(wr);
-}
 
-function showLobby(){
-  mode=null;running=false;if(mTimer){clearInterval(mTimer);mTimer=null}
-  c1.style.display='none';c2.style.display='none';
-  showOverlay(
-  '<h1>⚽ ФУТБОЛ 2D</h1>'+
-  '<p>Выбери режим:</p>'+
-  '<button class="mb mb-bot" onclick="chMM(\'bot\')">🤖 С БОТОМ<small>Против компьютера</small></button>'+
-  '<button class="mb mb-split" onclick="chMM(\'split\')">👥 ОДИН ЭКРАН<small>Двое на одном устройстве</small></button>'+
-  '<button class="mb mb-online" onclick="chMM(\'online\')">🌐 ПО СЕТИ<small>Играть с другом</small></button>'+
-  '<button class="mb mb-set" onclick="showSettings(false)" style="margin-top:12px">⚙️ Настройки<small>Размеры, скорость</small></button>');
-}
-function chMM(m){
-  mode=m;
-  showOverlay(
-  '<h1>🏆 До скольки голов?</h1>'+
-  '<div class="gg">'+
-    '<button class="gbtn g1" onclick="chG(1)">1<small>Быстрый</small></button>'+
-    '<button class="gbtn g3" onclick="chG(3)">3<small>Классика</small></button>'+
-    '<button class="gbtn g5" onclick="chG(5)">5<small>Полный</small></button>'+
-    '<button class="gbtn g10" onclick="chG(10)">10<small>Марафон</small></button>'+
-    '<button class="gbtn ge" onclick="chG(\'endless\')">♾️ БЕСКОНЕЧНЫЙ<small>Без конца</small></button>'+
-  '</div>'+
-  '<button class="mb mb-back" onclick="showLobby()">← Назад</button>');
-}
-function chG(n){
-  if(n==='endless'){gMode='endless';WIN=999999}
-  else{gMode='target';WIN=n;S.goals=n}
-  applyAll();
-  if(mode==='bot')startBot();
-  else if(mode==='split')startSplit();
-  else if(mode==='online')onlineMenu();
-}
-function onlineMenu(){
-  showOverlay(
-  '<h1>🌐 Онлайн</h1>'+
-  '<button class="mb mb-online" onclick="createRoom()">🏠 Создать комнату</button>'+
-  '<p style="margin:12px 0;opacity:.7">— или —</p>'+
-  '<input type="text" id="ci" placeholder="КОД" maxlength="6">'+
-  '<button class="mb mb-bot" onclick="joinRoom()">🔗 Подключиться</button>'+
-  '<div class="status" id="st"></div>'+
-  '<button class="mb mb-back" onclick="chMM(\'online\')">← Назад</button>');
-}
+    '<div class="as"><h3>⏱️ Время</h3>'+
+      '<div class="af"><label>Длительность (сек)</label><input type="number" id="aDur" min="10" max="600" value="'+S.duration+'"></div>'+
+      '<div class="af"><label>Ускорение (1 сек = N)</label><input type="number" id="aTs" min="1" max="120" value="'+S.timeScale+'"></div>'+
+    '</div>'+
 
-function startBot(){
-  hideOverlay();
-  mode='bot';myRole='host';resetScores();
-  c1.style.display='block';c2.style.display='none';
-  resize();reset();
-  runCD(function(){startTimer();running=true;lastT=performance.now();requestAnimationFrame(loop)});
-}
-function startSplit(){
-  hideOverlay();
-  mode='split';myRole='host';resetScores();
-  c1.style.display='block';c2.style.display='block';
-  resize();reset();
-  runCD(function(){startTimer();running=true;lastT=performance.now();requestAnimationFrame(loop)});
-}
-function resetScores(){s1=0;s2=0;s1El.textContent=0;s2El.textContent=0;goalLock=false;stat1=0;stat2=0;poss1=0;poss2=0;ticks=0;applyAll()}
-
-function runCD(cb){
-  var n=3;cdEl.classList.add('on');cdnEl.textContent=n;
-  function tick(){
-    if(n>0){cdnEl.textContent=n;n--;cdT=setTimeout(tick,1000)}
-    else{cdnEl.textContent='GO!';cdnEl.style.color='#4ade80';
-      cdT=setTimeout(function(){cdEl.classList.remove('on');cdnEl.style.color='#ffd93d';if(cb)cb()},600)}
-  }
-  tick();
-}
-
-function genCode(){var L='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';var c='FB';for(var i=0;i<4;i++)c+=L[Math.floor(Math.random()*L.length)];return c}
-function initPeer(cid){
-  var id=cid||('fb-'+Math.random().toString(36).substring(2,12));
-  peer=new Peer(id,{host:'1.peerjs.com',port:443,path:'/',secure:true,debug:0,
-    config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},
-    {urls:'turn:openrelay.metered.ca:80',username:'openrelayproject',credential:'openrelayproject'},
-    {urls:'turn:openrelay.metered.ca:443',username:'openrelayproject',credential:'openrelayproject'}]}});
-  setTimeout(function(){if(!myPeerId){var st=$('st');if(st){st.textContent='⚠️ Сервер не отвечает...';st.className='status error'}}},15000);
-  peer.on('open',function(id){myPeerId=id;var st=$('st');if(st){st.textContent='✅ Готово!';st.className='status'}});
-  peer.on('error',function(err){var st=$('st');if(!st)return;st.textContent='⚠️ '+err.type;st.className='status error'});
-  peer.on('connection',function(c){conn=c;setupConn()});
-}
-function createRoom(){
-  mode='online';myRole='host';resetScores();
-  var code=genCode();var st=$('st');st.textContent='Создаём...';
-  initPeer(code);
-  var w=setInterval(function(){if(myPeerId){clearInterval(w);showOverlay(
-    '<h1>🏠 Комната</h1><p>Код для друга:</p>'+
-    '<div class="code-box">'+code+'</div>'+
-    '<div class="status">⏳ Ожидание...</div>')}},100);
-}
-function joinRoom(){
-  mode='online';myRole='guest';resetScores();
-  var code=$('ci').value.trim().toUpperCase();
-  if(code.length<4){var st=$('st');st.textContent='Введи код';st.className='status error';return}
-  if(code.indexOf('FB')!==0)code='FB'+code;
-  var st=$('st');st.textContent='Подключаемся...';
-  initPeer();
-  var w=setInterval(function(){if(peer&&peer.open){clearInterval(w);conn=peer.connect(code,{reliable:true});setupConn()}},100);
-}
-function setupConn(){
-  conn.on('open',function(){
-    hideOverlay();
-    c1.style.display='block';c2.style.display='none';
-    resize();reset();
-    runCD(function(){startTimer();running=true;lastT=performance.now();requestAnimationFrame(loop)})
-  });
-  conn.on('data',function(d){handleData(d)});
-  conn.on('close',function(){running=false;msgEl.textContent='⚠️ Соперник вышел';msgEl.style.opacity=1;setTimeout(function(){location.reload()},2500)});
-}
-
-function startTimer(){
-  secs=0;updateTimer();
-  if(mTimer)clearInterval(mTimer);
-  if(gMode==='endless'){timerEl.textContent='∞';return}
-  mTimer=setInterval(function(){secs++;updateTimer();if(secs>=S.duration){clearInterval(mTimer);endMatch()}},1000);
-}
-function updateTimer(){var t=secs*S.timeScale,m=Math.floor(t/60),s=t%60;timerEl.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s}
-function endMatch(){
-  running=false;goalLock=true;
-  var w='НИЧЬЯ!';if(s1>s2)w='🔵 СИНИЕ ПОБЕДИЛИ!';else if(s2>s1)w='🔴 КРАСНЫЕ ПОБЕДИЛИ!';
-  msgEl.textContent=w;msgEl.style.opacity=1;
-  if(s1>best){best=s1;localStorage.setItem('fbRec',best)}
-  setTimeout(function(){location.reload()},3500);
-}
-function reset(){
-  P1.x=W*.3;P1.y=(FT+FB)/2;P2.x=W*.7;P2.y=(FT+FB)/2;
-  P1.vx=P1.vy=0;P2.vx=P2.vy=0;
-  B.x=W/2;B.y=FB-40;B.vx=B.vy=0;goalLock=false;
-}
-function move(P,el,ax,ay,dt){
-  var sp=P.speed;
-  if(S.sprint&&(keys['Shift']||keys['shift']))sp*=1.8;
-  P.vx=ax*sp*dt;P.vy=ay*sp*dt;P.x+=P.vx;P.y+=P.vy;
-  var r=P.size/2;
-  P.x=Math.max(FL+r,Math.min(FR-r,P.x));
-  P.y=Math.max(FT+r,Math.min(FB-r,P.y));
-  if(P.vx>.1)el.classList.add('fr');else if(P.vx<-.1)el.classList.remove('fr');
-}
-function coll(P){
-  var pr=P.size/2,br=B.size/2;
-  var dx=B.x-P.x,dy=B.y-P.y,d=Math.hypot(dx,dy),md=pr+br+2;
-  if(d<md&&d>0){
-    var nx=dx/d,ny=dy/d;
-    B.x=P.x+nx*md;B.y=P.y+ny*md;
-    B.vx=nx*S.power+P.vx*1.2;B.vy=ny*S.power+P.vy*1.2;
-    var sp=Math.hypot(B.vx,B.vy);
-    if(sp>S.maxBall){B.vx=B.vx/sp*S.maxBall;B.vy=B.vy/sp*S.maxBall}
-    if(dx>0)stat1++;else stat2++;
-    if(S.sparks)spawnSpark(B.x,B.y);
-  }
-}
-function spawnSpark(x,y){
-  var s=document.createElement('div');s.className='sp';s.textContent='💥';
-  s.style.left=x+'px';s.style.top=y+'px';game.appendChild(s);
-  setTimeout(function(){s.remove()},400);
-}
-function spawnTrail(x,y){
-  if(!S.trail)return;
-  if(Math.random()>0.5)return;
-  var t=document.createElement('div');t.className='tr';
-  t.style.width='8px';t.style.height='8px';
-  t.style.left=x+'px';t.style.top=y+'px';
-  game.appendChild(t);setTimeout(function(){t.remove()},500);
-}
-function goal(side){
-  if(goalLock)return;goalLock=true;
-  if(side==='left'){s2++;s2El.textContent=s2;showMsg('🔴 ГОЛ!')}
-  else{s1++;s1El.textContent=s1;showMsg('🔵 ГОЛ!')}
-  if(s1>best){best=s1;localStorage.setItem('fbRec',best);rinfoEl.textContent='🏆 Рекорд: '+best}
-  if(mode==='online')send({type:'goal',side:side,s1:s1,s2:s2});
-}
-function showMsg(t){
-  msgEl.textContent=t;msgEl.style.opacity=1;B.vx=0;B.vy=0;
-  setTimeout(function(){msgEl.style.opacity=0;
-    if(gMode==='target'&&(s1>=WIN||s2>=WIN))endMatch();
-    else{reset();if(mode==='online'&&myRole==='host')send({type:'reset',s1:s1,s2:s2})}
-  },S.slowMo?2500:1500);
-}
-function send(d){if(conn&&conn.open)conn.send(d)}
-function handleData(d){
-  if(d.type==='state'){
-    if(myRole==='host'){P2.x=d.p2x;P2.y=d.p2y}else{P1.x=d.p1x;P1.y=d.p1y}
-    B.x=d.bx;B.y=d.by;B.vx=d.bvx;B.vy=d.bvy;
-    s1=d.s1;s2=d.s2;s1El.textContent=s1;s2El.textContent=s2;
-  }else if(d.type==='goal'){
-    if(goalLock)return;goalLock=true;
-    s1=d.s1;s2=d.s2;s1El.textContent=s1;s2El.textContent=s2;
-    showMsg(d.side==='left'?'🔴 ГОЛ!':'🔵 ГОЛ!');
-  }else if(d.type==='reset'){
-    B.x=W/2;B.y=FB-40;B.vx=0;B.vy=0;
-    s1=d.s1;s2=d.s2;s1El.textContent=s1;s2El.textContent=s2;goalLock=false;
-  }
-}
-function sendState(){
-  var d={type:'state',bx:B.x,by:B.y,bvx:B.vx,bvy:B.vy,s1:s1,s2:s2};
-  if(myRole==='host'){d.p1x=P1.x;d.p1y=P1.y}else{d.p2x=P2.x;d.p2y=P2.y}
-  send(d);
-}
-function updateBot(dt){
-  var tx=Math.max(W*.5,Math.min(FR-30,B.x+25)),ty=B.y;
-  var ax=0,ay=0;
-  if(Math.abs(tx-P2.x)>5)ax=tx>P2.x?1:-1;
-  if(Math.abs(ty-P2.y)>5)ay=ty>P2.y?1:-1;
-  move(P2,p2,ax,ay,dt);
-}
-function loop(now){
-  if(!running)return;
-  var dt=Math.min(2,(now-lastT)/16.67)||1;
-  lastT=now;
-  if(paused){requestAnimationFrame(loop);return}
-  ticks++;
-  var d1=Math.hypot(B.x-P1.x,B.y-P1.y),d2=Math.hypot(B.x-P2.x,B.y-P2.y);
-  if(d1<d2)poss1++;else poss2++;
-
-  if(mode==='bot'){
-    var ax=0,ay=0;
-    if(keys['w']||keys['ц']||keys['W'])ay-=1;
-    if(keys['s']||keys['ы']||keys['S'])ay+=1;
-    if(keys['a']||keys['ф']||keys['A'])ax-=1;
-    if(keys['d']||keys['в']||keys['D'])ax+=1;
-    move(P1,p1,ax,ay,dt);
-    updateBot(dt);physics(dt);
-  }else if(mode==='split'){
-    var ax=0,ay=0;
-    if(keys['w']||keys['ц']||keys['W'])ay-=1;
-    if(keys['s']||keys['ы']||keys['S'])ay+=1;
-    if(keys['a']||keys['ф']||keys['A'])ax-=1;
-    if(keys['d']||keys['в']||keys['D'])ax+=1;
-    move(P1,p1,ax,ay,dt);
-    var ax2=0,ay2=0;
-    if(keys['ArrowUp'])ay2-=1;
-    if(keys['ArrowDown'])ay2+=1;
-    if(keys['ArrowLeft'])ax2-=1;
-    if(keys['ArrowRight'])ax2+=1;
-    move(P2,p2,ax2,ay2,dt);
-    physics(dt);
-  }else if(mode==='online'){
-    if(myRole==='host'){
-      var ax=0,ay=0;
-      if(keys['w']||keys['ц']||keys['W'])ay-=1;
-      if(keys['s']||keys['ы']||keys['S'])ay+=1;
-      if(keys['a']||keys['ф']||keys['A'])ax-=1;
-      if(keys['d']||keys['в']||keys['D'])ax+=1;
-      move(P1,p1,ax,ay,dt);physics(dt);sendState();
-    }else{
-      var ax2=0,ay2=0;
-      if(keys['ArrowUp'])ay2-=1;
-      if(keys['ArrowDown'])ay2+=1;
-      if(keys['ArrowLeft'])ax2-=1;
-      if(keys['ArrowRight'])ax2+=1;
-      move(P2,p2,ax2,ay2,dt);physics(dt);sendState();
-    }
-  }
-  draw();requestAnimationFrame(loop);
-}
-function physics(dt){
-  if(mode==='online'&&myRole!=='host')return;
-  var steps=Math.max(1,Math.ceil(Math.hypot(B.vx,B.vy)*dt/4));
-  var subDt=dt/steps;
-  for(var i=0;i<steps;i++){
-    B.x+=B.vx*subDt;B.y+=B.vy*subDt;
-    coll(P1);coll(P2);
-    if(S.trail)spawnTrail(B.x,B.y);
-    var r=B.size/2;
-    if(B.y-r<FT){B.y=FT+r;B.vy=-B.vy*0.7}
-    if(B.y+r>FB){B.y=FB-r;B.vy=-B.vy*0.7}
-    var gh=(FB-FT)*0.5,gT=FB-gh,gB=FB,gD=40;
-    if(B.x-r<gD&&B.y>gT&&B.y<gB){if(!goalLock)goal('left');return}
-    if(B.x+r>W-gD&&B.y>gT&&B.y<gB){if(!goalLock)goal('right');return}
-    if(B.x-r<FL){B.x=FL+r;B.vx=-B.vx*0.7}
-    if(B.x+r>FR){B.x=FR-r;B.vx=-B.vx*0.7}
-  }
-  B.vx*=Math.pow(B.fr,dt);B.vy*=Math.pow(B.fr,dt);
-  if(Math.abs(B.vx)<.05)B.vx=0;
-  if(Math.abs(B.vy)<.05)B.vy=0;
-}
-function draw(){
-  var oy=window._oy||85;
-  p1.style.left=(P1.x-22)+'px';p1.style.top=(P1.y-oy)+'px';
-  p2.style.left=(P2.x-22)+'px';p2.style.top=(P2.y-oy)+'px';
-  ballEl.style.left=(B.x-13)+'px';ballEl.style.top=(B.y-13)+'px';
-}
-
-applyAll();resize();reset();showLobby();
-</script>
-</body>
-</html>
+   
