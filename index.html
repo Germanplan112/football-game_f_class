@@ -46,32 +46,6 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;f
 .leg-b::after,.leg-f::after{content:'';position:absolute;bottom:-3px;left:-3px;right:-3px;height:7px;background:#222;border-radius:3px 6px 4px 3px}
 .player.fr .bw{transform:scaleX(-1)}
 .player.fr .eye{left:5px;right:auto}
-
-/* ===== ФОРМА 1: КРАСНО-БЕЛАЯ (Спартак) ===== */
-#p1.team-spartak .torso,#p1.team-spartak .arm-b,#p1.team-spartak .arm-f{background:repeating-linear-gradient(90deg,#fff 0 6px,#c53030 6px 12px)}
-#p1.team-spartak .shorts{background:#c53030}
-#p1.team-spartak .torso::after{color:#ffd700;text-shadow:0 0 4px #000,0 0 8px #000}
-
-/* ===== ФОРМА 2: БЕЛО-СИНЯЯ (Динамо) ===== */
-#p2.team-dynamo .torso,#p2.team-dynamo .arm-b,#p2.team-dynamo .arm-f{background:linear-gradient(90deg,#1a5fb4 0 50%,#fff 50% 100%)}
-#p2.team-dynamo .shorts{background:#1a5fb4}
-#p2.team-dynamo .torso::after{color:#fff;text-shadow:0 0 4px #000}
-
-/* Другие варианты */
-#p1.team-blue .torso,#p1.team-blue .arm-b,#p1.team-blue .arm-f{background:#1a5fb4}
-#p1.team-blue .shorts{background:#fff}
-#p1.team-green .torso,#p1.team-green .arm-b,#p1.team-green .arm-f{background:#22a558}
-#p1.team-green .shorts{background:#fff}
-#p1.team-yellow .torso,#p1.team-yellow .arm-b,#p1.team-yellow .arm-f{background:#f5b800}
-#p1.team-yellow .shorts{background:#222}
-#p2.team-red .torso,#p2.team-red .arm-b,#p2.team-red .arm-f{background:#c53030}
-#p2.team-red .shorts{background:#fff}
-#p2.team-black .torso,#p2.team-black .arm-b,#p2.team-black .arm-f{background:#222}
-#p2.team-black .shorts{background:#fff}
-#p2.team-white .torso,#p2.team-white .arm-b,#p2.team-white .arm-f{background:#fff}
-#p2.team-white .shorts{background:#1a5fb4}
-#p2.team-white .torso::after{color:#1a5fb4;text-shadow:0 0 3px #fff}
-
 #ball{position:absolute;width:26px;height:26px;z-index:9}
 #ball::before{content:'';position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:20px;height:6px;background:rgba(0,0,0,.3);border-radius:50%;filter:blur(2px)}
 .bb{width:100%;height:100%;border:2px solid #222;border-radius:50%;box-shadow:0 3px 6px rgba(0,0,0,.5);background:radial-gradient(circle at 35% 30%,#fff,#e0e0e0 60%,#bbb);animation:bsp 2s linear infinite}
@@ -159,17 +133,20 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;f
 .tab{flex:1;padding:8px 12px;background:rgba(0,0,0,.3);border:2px solid #4a5568;border-radius:8px;color:#a0aec0;cursor:pointer;font-weight:bold;font-size:13px;text-align:center;min-width:80px}
 .tab.active{background:#4ade80;color:#1a3d1a;border-color:#4ade80}
 .announce{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;padding:10px;border-radius:8px;margin:8px 0;font-weight:bold;text-align:center;font-size:14px}
-.jersey-preview{display:flex;gap:15px;margin:10px 0;justify-content:center}
-.jersey{width:50px;height:60px;border-radius:8px 8px 4px 4px;position:relative;display:flex;justify-content:center;align-items:center;font-size:18px;font-weight:bold;color:#ffd700;text-shadow:0 0 4px #000;border:2px solid #fff}
-.jersey.spartak{background:repeating-linear-gradient(90deg,#fff 0 8px,#c53030 8px 16px)}
-.jersey.dynamo{background:linear-gradient(90deg,#1a5fb4 0 50%,#fff 50% 100%)}
-.jersey.dynamo::after{color:#fff}
-.jersey.blue{background:#1a5fb4}
-.jersey.green{background:#22a558;color:#fff}
-.jersey.yellow{background:#f5b800;color:#222;text-shadow:none}
-.jersey.red{background:#c53030}
-.jersey.black{background:#222}
-.jersey.white{background:#fff;color:#1a5fb4;text-shadow:none}
+.team-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:340px;margin:5px 0}
+.team-btn{padding:12px 8px;border-radius:10px;border:3px solid #fff;background:rgba(0,0,0,.4);color:#fff;cursor:pointer;font-weight:bold;font-size:13px;font-family:inherit;transition:all .15s}
+.team-btn:hover{background:rgba(74,158,255,.3);transform:scale(1.03)}
+.team-btn.active{background:#4ade80;color:#1a3d1a;border-color:#fff;transform:scale(1.05)}
+.players-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;max-width:340px;margin:5px 0}
+.player-btn{padding:8px 4px;border-radius:10px;border:3px solid #4a9eff;background:rgba(0,0,0,.4);color:#fff;cursor:pointer;font-weight:bold;font-size:14px;font-family:inherit;transition:all .15s}
+.player-btn small{font-size:10px;opacity:.7;font-weight:normal}
+.player-btn:hover{background:rgba(74,158,255,.3);transform:scale(1.03)}
+.player-btn.active{background:#4ade80;color:#1a3d1a;border-color:#4ade80;transform:scale(1.05)}
+.role-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:bold;margin-left:5px}
+.role-admin{background:#ffd93d;color:#1a3d1a}
+.role-mod{background:#4a9eff;color:#fff}
+.role-player{background:#4a5568;color:#ccc}
+.role-banned{background:#f43f5e;color:#fff}
 #cd{position:absolute;inset:0;background:rgba(0,0,0,.75);z-index:90;display:none;justify-content:center;align-items:center;color:#ffd93d;font-size:140px;font-weight:bold;text-shadow:0 0 40px #ffd93d,0 0 80px #ff4444;font-family:'Courier New',monospace}
 #cd.on{display:flex}
 .hidden{display:none!important}
@@ -203,8 +180,8 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;f
 <button id="gear" class="tb" title="Настройки">⚙️</button>
 <button id="logout" class="tb" title="Выйти">🚪</button>
 <div id="cd"><div id="cdn" style="animation:none">3</div></div>
-<div class="player team-spartak" id="p1"><div class="bw"><div class="arm-b"></div><div class="leg-b"></div><div class="head"><div class="eye"></div></div><div class="torso" data-num="9"></div><div class="shorts"></div><div class="leg-f"></div><div class="arm-f"></div></div></div>
-<div class="player team-dynamo" id="p2"><div class="bw"><div class="arm-b"></div><div class="leg-b"></div><div class="head"><div class="eye"></div></div><div class="torso" data-num="10"></div><div class="shorts"></div><div class="leg-f"></div><div class="arm-f"></div></div></div>
+<div class="player" id="p1"><div class="bw"><div class="arm-b"></div><div class="leg-b"></div><div class="head"><div class="eye"></div></div><div class="torso" data-num="9"></div><div class="shorts"></div><div class="leg-f"></div><div class="arm-f"></div></div></div>
+<div class="player" id="p2"><div class="bw"><div class="arm-b"></div><div class="leg-b"></div><div class="head"><div class="eye"></div></div><div class="torso" data-num="10"></div><div class="shorts"></div><div class="leg-f"></div><div class="arm-f"></div></div></div>
 <div id="ball"><div class="bb"></div></div>
 <div id="c1">
 <button class="cb blue pu" data-key="w">▲</button>
@@ -232,6 +209,7 @@ var fieldEl=$('field');
 var ADMIN_LOGIN='german',ADMIN_PASS='r2d2c3po';
 var currentUser=null;
 var isAdmin=false;
+var currentRole='player';
 
 function getUsers(){try{var d=localStorage.getItem('fbUsers');return d?JSON.parse(d):{}}catch(e){return {}}}
 function saveUsers(u){try{localStorage.setItem('fbUsers',JSON.stringify(u))}catch(e){}}
@@ -259,30 +237,29 @@ function doLogin(){
   var err=$('authErr');
   if(!login||!pass){err.textContent='Заполни все поля';return}
   if(login===ADMIN_LOGIN&&pass===ADMIN_PASS){
-    currentUser=login;isAdmin=true;setCurrentUser(login);
+    currentUser=login;isAdmin=true;currentRole='admin';setCurrentUser(login);
     userinfoEl.textContent='👑 '+login+' (админ)';
     enterGame();return;
   }
   var users=getUsers();
-  if(!users[login]){err.textContent='❌ Аккаунт не найден. Обратись к админу';return}
-  if(users[login].banned){err.textContent='🚫 Аккаунт забанен: '+(users[login].banReason||'без причины');return}
+  if(!users[login]){err.textContent='❌ Аккаунт не найден';return}
+  if(users[login].banned){err.textContent='🚫 Забанен: '+(users[login].banReason||'без причины');return}
   if(users[login].pass!==pass){err.textContent='❌ Неверный пароль';return}
-  currentUser=login;isAdmin=false;setCurrentUser(login);
+  currentUser=login;isAdmin=false;
+  currentRole=users[login].role||'player';
+  setCurrentUser(login);
   users[login].lastLogin=Date.now();
   saveUsers(users);
-  userinfoEl.textContent='👤 '+login;
+  var emoji=currentRole==='mod'?'🛡️':'👤';
+  userinfoEl.textContent=emoji+' '+login;
   enterGame();
 }
 function logout(){
-  if(!confirm('Выйти из аккаунта?'))return;
-  currentUser=null;isAdmin=false;setCurrentUser('');
+  if(!confirm('Выйти?'))return;
+  currentUser=null;isAdmin=false;currentRole='player';setCurrentUser('');
   location.reload();
 }
-function enterGame(){
-  hideOverlay();
-  applyAll();
-  showLobby();
-}
+function enterGame(){hideOverlay();applyAll();showLobby()}
 logoutBtn.addEventListener('click',logout);
 
 var DEF={speed:4,duration:60,goals:3,power:8,botSpeed:3.5,maxBall:22,
@@ -292,6 +269,15 @@ team1:'spartak',team2:'dynamo',num1:'9',num2:'10'};
 var S={};for(var k in DEF)S[k]=DEF[k];
 try{var sv=localStorage.getItem('fbS');if(sv){var p=JSON.parse(sv);for(var kk in p)S[kk]=p[kk]}}catch(e){}
 var best=parseInt(localStorage.getItem('fbRec')||'0');
+
+var TEAMS={
+  spartak:{name:'Спартак',emoji:'🔴⚪',main:'repeating-linear-gradient(90deg,#fff 0 6px,#c53030 6px 12px)',shorts:'#c53030',num:'9'},
+  dynamo:{name:'Динамо',emoji:'🔵⚪',main:'linear-gradient(90deg,#1a5fb4 0 50%,#fff 50% 100%)',shorts:'#1a5fb4',num:'10'},
+  zenit:{name:'Зенит',emoji:'🔵',main:'linear-gradient(180deg,#0066b3 0 60%,#00a0e3 60% 100%)',shorts:'#0066b3',num:'7'},
+  cska:{name:'ЦСКА',emoji:'🔴🔵',main:'repeating-linear-gradient(90deg,#c53030 0 8px,#1a5fb4 8px 16px)',shorts:'#c53030',num:'11'},
+  lokomotiv:{name:'Локомотив',emoji:'🟢🔴',main:'linear-gradient(90deg,#22a558 0 60%,#c53030 60% 100%)',shorts:'#22a558',num:'8'},
+  krasnodar:{name:'Краснодар',emoji:'🟢⚫',main:'linear-gradient(180deg,#22a558 0 50%,#222 50% 100%)',shorts:'#222',num:'5'}
+};
 
 var W,H,mode=null,gMode=null,myRole=null,peer=null,conn=null,myPeerId=null;
 var running=false,paused=false,FL,FR,FT,FB;
@@ -311,18 +297,19 @@ function applySizes(){
   grEl.style.width=gs.w+'px';grEl.style.height=gs.h+'px';
 }
 function applyBall(){bbEl.className='bb';if(S.rainbow)bbEl.classList.add('rainbow')}
-function applyField(){
-  fieldEl.className='';
-  if(S.fieldTheme!=='green')fieldEl.classList.add(S.fieldTheme);
-}
+function applyField(){fieldEl.className='';if(S.fieldTheme!=='green')fieldEl.classList.add(S.fieldTheme)}
 function applyTeams(){
-  // Команда 1
-  p1.className='player';
-  p1.classList.add('team-'+S.team1);
+  var t1=TEAMS[S.team1]||TEAMS.spartak;
+  var t2=TEAMS[S.team2]||TEAMS.dynamo;
+  p1.querySelector('.torso').style.background=t1.main;
+  p1.querySelector('.arm-b').style.background=t1.main;
+  p1.querySelector('.arm-f').style.background=t1.main;
+  p1.querySelector('.shorts').style.background=t1.shorts;
   p1.querySelector('.torso').setAttribute('data-num',S.num1||'9');
-  // Команда 2
-  p2.className='player';
-  p2.classList.add('team-'+S.team2);
+  p2.querySelector('.torso').style.background=t2.main;
+  p2.querySelector('.arm-b').style.background=t2.main;
+  p2.querySelector('.arm-f').style.background=t2.main;
+  p2.querySelector('.shorts').style.background=t2.shorts;
   p2.querySelector('.torso').setAttribute('data-num',S.num2||'10');
 }
 function applyAll(){
@@ -373,38 +360,19 @@ pauseBtn.addEventListener('click',function(){
 statsBtn.addEventListener('click',function(){
   if(!running)return;var wp=paused;paused=true;
   var p1p=ticks>0?Math.round(poss1/ticks*100):50,p2p=100-p1p;
-  msgEl.innerHTML='<div style="font-size:20px;line-height:1.6;color:#ffd93d">📊 Статистика<br><span style="color:#4a9eff">🔵 Синие:</span> '+stat1+' ударов, '+p1p+'%<br><span style="color:#ff6b6b">🔴 Красные:</span> '+stat2+' ударов, '+p2p+'%</div>';
+  msgEl.innerHTML='<div style="font-size:20px;line-height:1.6;color:#ffd93d">📊 Статистика<br><span style="color:#4a9eff">🔵 Команда 1:</span> '+stat1+' ударов, '+p1p+'%<br><span style="color:#ff6b6b">🔴 Команда 2:</span> '+stat2+' ударов, '+p2p+'%</div>';
   msgEl.style.opacity=1;msgEl.style.color='#fff';statsBtn.textContent='✖';
   statsBtn.onclick=function(){msgEl.style.opacity=0;statsBtn.textContent='📊';paused=wp;if(!paused)lastT=performance.now();statsBtn.onclick=null};
 });
 
 gearBtn.addEventListener('click',function(){
   var wr=running;running=false;
-  if(isAdmin)showAdmin(wr);
-  else adminLogin(wr);
+  if(currentRole==='admin'||currentRole==='mod')showAdmin(wr);
+  else showPlayerSettings(wr);
 });
 
 function showOverlay(html){overlay.classList.remove('hidden');overlay.style.display='flex';overlay.innerHTML=html}
 function hideOverlay(){overlay.classList.add('hidden');overlay.style.display='none'}
-
-function adminLogin(wr){
-  showOverlay(
-  '<div class="ap"><h1>🔐 Вход в админку</h1>'+
-    '<div class="af"><label>Логин</label><input type="text" id="aL"></div>'+
-    '<div class="af"><label>Пароль</label><input type="password" id="aP"></div>'+
-    '<div class="abtns"><button class="asv" onclick="tryAdm('+wr+')">Войти</button>'+
-    '<button class="acn" onclick="closeAdmin('+wr+')">← Закрыть</button></div>'+
-    '<div id="aE" style="color:#ff6b6b;font-size:13px;margin-top:12px;min-height:18px"></div>'+
-  '</div>');
-}
-function closeAdmin(wr){hideOverlay();if(wr){running=true;paused=false;lastT=performance.now();requestAnimationFrame(loop)}else showLobby()}
-function tryAdm(wr){
-  if($('aL').value.trim()===ADMIN_LOGIN&&$('aP').value.trim()===ADMIN_PASS){
-    currentUser=ADMIN_LOGIN;isAdmin=true;setCurrentUser(ADMIN_LOGIN);
-    userinfoEl.textContent='👑 '+ADMIN_LOGIN+' (админ)';
-    showAdmin(wr);
-  }else $('aE').textContent='❌ Неверный логин или пароль';
-}
 
 var currentTab='users';
 function switchTab(t){currentTab=t;showAdmin(running)}
@@ -413,12 +381,13 @@ function showAdmin(wr){
   var users=getUsers();
   var keys=Object.keys(users);
   var ann=getAnnounce();
+  var isMainAdmin=(currentRole==='admin');
 
   var tabs='<div class="tabs">'+
     '<div class="tab '+(currentTab==='users'?'active':'')+'" onclick="switchTab(\'users\')">👥 Юзеры</div>'+
-    '<div class="tab '+(currentTab==='game'?'active':'')+'" onclick="switchTab(\'game\')">🎮 Игра</div>'+
+    (isMainAdmin?'<div class="tab '+(currentTab==='game'?'active':'')+'" onclick="switchTab(\'game\')">🎮 Игра</div>':'')+
     '<div class="tab '+(currentTab==='visual'?'active':'')+'" onclick="switchTab(\'visual\')">🎨 Вид</div>'+
-    '<div class="tab '+(currentTab==='system'?'active':'')+'" onclick="switchTab(\'system\')">🔧 Система</div>'+
+    (isMainAdmin?'<div class="tab '+(currentTab==='system'?'active':'')+'" onclick="switchTab(\'system\')">🔧 Система</div>':'')+
   '</div>';
 
   var content='';
@@ -432,35 +401,44 @@ function showAdmin(wr){
         var u=keys[i];
         var d=users[u];
         var banned=d.banned?'banned':'';
+        var role=d.role||'player';
+        var roleBadge=role==='mod'?'<span class="role-badge role-mod">МОД</span>':
+                       role==='admin'?'<span class="role-badge role-admin">АДМИН</span>':
+                       '<span class="role-badge role-player">ИГРОК</span>';
+        if(d.banned)roleBadge='<span class="role-badge role-banned">БАН</span>';
         userList+='<div class="user-row '+banned+'">'+
-          '<div><div class="name">'+(d.banned?'🚫 ':'👤 ')+u+'</div>'+
+          '<div><div class="name">'+(d.banned?'🚫 ':'👤 ')+u+roleBadge+'</div>'+
           '<div class="stats">Рекорд: '+(d.best||0)+' • Игр: '+(d.games||0)+' • Побед: '+(d.wins||0)+'</div></div>'+
           '<div class="btns">'+
             (d.banned?
               '<button class="unban" onclick="unbanUser(\''+u+'\')">✅</button>':
               '<button class="ban" onclick="banUser(\''+u+'\')">🔨</button>')+
+            (isMainAdmin?'<button onclick="editRole(\''+u+'\')">👑</button>':'')+
             '<button onclick="editPass(\''+u+'\')">✏️</button>'+
-            '<button class="del" onclick="delUser(\''+u+'\')">🗑️</button>'+
+            (isMainAdmin?'<button class="del" onclick="delUser(\''+u+'\')">🗑️</button>':'')+
           '</div>'+
         '</div>';
       }
     }
     content=
-      '<div class="as">'+
+      (isMainAdmin?'<div class="as">'+
         '<h3>➕ Создать аккаунт</h3>'+
         '<div class="af"><label>Логин</label><input type="text" id="newLogin" placeholder="Логин" maxlength="20"></div>'+
         '<div class="af"><label>Пароль</label><input type="text" id="newPass" placeholder="Пароль" maxlength="30"></div>'+
+        '<div class="af"><label>Роль</label><select id="newRole">'+
+          '<option value="player">👤 Игрок</option>'+
+          '<option value="mod">🛡️ Модератор</option>'+
+        '</select></div>'+
         '<button class="asv" style="width:100%;margin-top:8px" onclick="createUser('+wr+')">✅ Создать</button>'+
         '<div id="createErr" style="color:#ff6b6b;font-size:13px;margin-top:8px;min-height:18px"></div>'+
-      '</div>'+
+      '</div>':'')+
       '<div class="as">'+
         '<h3>👥 Игроки ('+keys.length+')</h3>'+
         userList+
-        (keys.length>0?'<button class="ars" style="margin-top:10px" onclick="if(confirm(\'Удалить ВСЕХ?\')){localStorage.setItem(\'fbUsers\',\'{}\');showAdmin('+wr+')}">🗑️ Удалить всех</button>':'')+
       '</div>';
   }
 
-  else if(currentTab==='game'){
+  else if(currentTab==='game'&&isMainAdmin){
     content=
       '<div class="as"><h3>📏 Размеры</h3>'+
         '<div class="af"><label>🥅 Ворота</label><select id="aGs">'+
@@ -479,8 +457,6 @@ function showAdmin(wr){
           '<input type="range" id="aSp" min="1" max="10" step="0.5" value="'+S.speed+'" oninput="vSp.textContent=this.value"></div>'+
         '<div class="af"><label>Бот: <b id="vBt">'+S.botSpeed+'</b></label>'+
           '<input type="range" id="aBt" min="1" max="10" step="0.5" value="'+S.botSpeed+'" oninput="vBt.textContent=this.value"></div>'+
-        '<div class="af"><label>Макс. мяча: <b id="vMb">'+S.maxBall+'</b></label>'+
-          '<input type="range" id="aMb" min="10" max="40" step="1" value="'+S.maxBall+'" oninput="vMb.textContent=this.value"></div>'+
       '</div>'+
       '<div class="as"><h3>⏱️ Время</h3>'+
         '<div class="af"><label>Длительность (сек)</label><input type="number" id="aDur" min="10" max="600" value="'+S.duration+'"></div>'+
@@ -489,32 +465,28 @@ function showAdmin(wr){
       '<div class="as"><h3>💥 Физика</h3>'+
         '<div class="af"><label>Сила удара: <b id="vPw">'+S.power+'</b></label>'+
           '<input type="range" id="aPw" min="3" max="20" step="1" value="'+S.power+'" oninput="vPw.textContent=this.value"></div>'+
-      '</div>'+
-      '<div class="as"><h3>🎯 Управление</h3>'+
-        '<div class="af"><label class="ck"><input type="checkbox" id="aSr" '+(S.sprint?'checked':'')+'> ⚡ Спринт (Shift)</label></div>'+
-        '<div class="af"><label class="ck"><input type="checkbox" id="aAp" '+(S.autoPause?'checked':'')+'> ⏸️ Автопауза</label></div>'+
       '</div>';
   }
 
   else if(currentTab==='visual'){
     content=
       '<div class="as"><h3>👕 Формы команд</h3>'+
-        '<div class="jersey-preview">'+
-          '<div class="jersey '+(S.team1==='spartak'?'spartak':S.team1)+'">'+(S.num1||'9')+'</div>'+
-          '<div class="jersey '+(S.team2==='dynamo'?'dynamo':S.team2)+'">'+(S.num2||'10')+'</div>'+
-        '</div>'+
         '<div class="af"><label>Команда 1 (слева)</label><select id="aT1">'+
-          '<option value="spartak" '+(S.team1==='spartak'?'selected':'')+'>🔴⚪ Красно-белая (Спартак)</option>'+
-          '<option value="blue" '+(S.team1==='blue'?'selected':'')+'>🔵 Синяя</option>'+
-          '<option value="green" '+(S.team1==='green'?'selected':'')+'>🟢 Зелёная</option>'+
-          '<option value="yellow" '+(S.team1==='yellow'?'selected':'')+'>🟡 Жёлтая</option>'+
+          '<option value="spartak" '+(S.team1==='spartak'?'selected':'')+'>🔴⚪ Спартак</option>'+
+          '<option value="dynamo" '+(S.team1==='dynamo'?'selected':'')+'>🔵⚪ Динамо</option>'+
+          '<option value="zenit" '+(S.team1==='zenit'?'selected':'')+'>🔵 Зенит</option>'+
+          '<option value="cska" '+(S.team1==='cska'?'selected':'')+'>🔴🔵 ЦСКА</option>'+
+          '<option value="lokomotiv" '+(S.team1==='lokomotiv'?'selected':'')+'>🟢🔴 Локомотив</option>'+
+          '<option value="krasnodar" '+(S.team1==='krasnodar'?'selected':'')+'>🟢⚫ Краснодар</option>'+
         '</select></div>'+
         '<div class="af"><label>Номер игрока 1</label><input type="text" id="aN1" maxlength="3" value="'+(S.num1||'9')+'"></div>'+
         '<div class="af"><label>Команда 2 (справа)</label><select id="aT2">'+
-          '<option value="dynamo" '+(S.team2==='dynamo'?'selected':'')+'>🔵⚪ Бело-синяя (Динамо)</option>'+
-          '<option value="red" '+(S.team2==='red'?'selected':'')+'>🔴 Красная</option>'+
-          '<option value="black" '+(S.team2==='black'?'selected':'')+'>⚫ Чёрная</option>'+
-          '<option value="white" '+(S.team2==='white'?'selected':'')+'>⚪ Белая</option>'+
+          '<option value="dynamo" '+(S.team2==='dynamo'?'selected':'')+'>🔵⚪ Динамо</option>'+
+          '<option value="spartak" '+(S.team2==='spartak'?'selected':'')+'>🔴⚪ Спартак</option>'+
+          '<option value="zenit" '+(S.team2==='zenit'?'selected':'')+'>🔵 Зенит</option>'+
+          '<option value="cska" '+(S.team2==='cska'?'selected':'')+'>🔴🔵 ЦСКА</option>'+
+          '<option value="lokomotiv" '+(S.team2==='lokomotiv'?'selected':'')+'>🟢🔴 Локомотив</option>'+
+          '<option value="krasnodar" '+(S.team2==='krasnodar'?'selected':'')+'>🟢⚫ Краснодар</option>'+
         '</select></div>'+
         '<div class="af"><label>Номер игрока 2</label><input type="text" id="aN2" maxlength="3" value="'+(S.num2||'10')+'"></div>'+
       '</div>'+
@@ -526,44 +498,44 @@ function showAdmin(wr){
           '<option value="sand" '+(S.fieldTheme==='sand'?'selected':'')+'>🟡 Песчаное</option>'+
         '</select></div>'+
       '</div>'+
-      '<div class="as"><h3>⚽ Мяч и эффекты</h3>'+
+      '<div class="as"><h3>⚽ Эффекты</h3>'+
         '<div class="af"><label class="ck"><input type="checkbox" id="aRb" '+(S.rainbow?'checked':'')+'> 🌈 Радужный мяч</label></div>'+
         '<div class="af"><label class="ck"><input type="checkbox" id="aTr" '+(S.trail?'checked':'')+'> ✨ След мяча</label></div>'+
         '<div class="af"><label class="ck"><input type="checkbox" id="aSpk" '+(S.sparks?'checked':'')+'> 💥 Вспышки</label></div>'+
         '<div class="af"><label class="ck"><input type="checkbox" id="aSm" '+(S.slowMo?'checked':'')+'> 🌀 Slow-mo</label></div>'+
       '</div>'+
-      '<div class="as"><h3>📢 Объявление</h3>'+
-        '<div class="af"><textarea id="aAnn" placeholder="Например: Турнир в субботу!">'+ann+'</textarea></div>'+
+      (isMainAdmin?'<div class="as"><h3>📢 Объявление</h3>'+
+        '<div class="af"><textarea id="aAnn" placeholder="Турнир в субботу!">'+ann+'</textarea></div>'+
         '<button class="asv" style="width:100%;margin-top:8px" onclick="saveAnnounce()">📢 Сохранить</button>'+
-      '</div>';
+      '</div>':'');
   }
 
-  else if(currentTab==='system'){
+  else if(currentTab==='system'&&isMainAdmin){
     content=
       '<div class="as"><h3>🏆 Рекорды</h3>'+
         '<div class="af"><label class="ck"><input type="checkbox" id="aRc" '+(S.showRecord?'checked':'')+'> 📊 Показывать рекорд</label></div>'+
-        '<div class="af"><label>Рекорд игры: <b style="color:#ffd93d">'+best+'</b></label>'+
-          '<button class="ars" style="margin-top:6px" onclick="if(confirm(\'Сбросить рекорд?\')){best=0;localStorage.setItem(\'fbRec\',\'0\');showAdmin('+wr+')}">🗑️ Сбросить рекорд</button>'+
+        '<div class="af"><label>Рекорд: <b style="color:#ffd93d">'+best+'</b></label>'+
+          '<button class="ars" style="margin-top:6px" onclick="if(confirm(\'Сбросить?\')){best=0;localStorage.setItem(\'fbRec\',\'0\');showAdmin('+wr+')}">🗑️ Сбросить</button>'+
         '</div>'+
       '</div>'+
       '<div class="as"><h3>💾 Экспорт / Импорт</h3>'+
-        '<button class="asv" style="width:100%;margin-top:8px" onclick="exportData()">📥 Скачать базу игроков</button>'+
+        '<button class="asv" style="width:100%;margin-top:8px" onclick="exportData()">📥 Скачать базу</button>'+
         '<div class="af" style="margin-top:10px"><label>Загрузить базу (JSON)</label>'+
           '<input type="file" id="importFile" accept=".json" onchange="importData(event)">'+
         '</div>'+
       '</div>'+
-      '<div class="as"><h3>📊 Общая статистика</h3>'+
-        '<div class="af"><label>Всего игроков: <b>'+keys.length+'</b></label></div>'+
+      '<div class="as"><h3>📊 Статистика</h3>'+
+        '<div class="af"><label>Игроков: <b>'+keys.length+'</b></label></div>'+
         '<div class="af"><label>Всего игр: <b>'+getTotalGames(users)+'</b></label></div>'+
-        '<div class="af"><label>Всего рекордов: <b>'+getTotalGoals(users)+'</b></label></div>'+
       '</div>'+
       '<div class="as"><h3>⚠️ Опасная зона</h3>'+
         '<button class="ars" onclick="if(confirm(\'Сбросить ВСЁ?\')){localStorage.clear();location.reload()}">💥 Полный сброс</button>'+
       '</div>';
   }
 
+  var roleTitle=currentRole==='admin'?'👑 Админ-панель':'🛡️ Модератор';
   showOverlay(
-  '<div class="ap"><h1>👑 Админ-панель</h1>'+
+  '<div class="ap"><h1>'+roleTitle+'</h1>'+
     tabs+
     content+
     '<div class="abtns"><button class="asv" onclick="saveAdmin('+wr+')">💾 Сохранить</button>'+
@@ -571,64 +543,119 @@ function showAdmin(wr){
   '</div>');
 }
 
+function showPlayerSettings(wr){
+  showOverlay(
+  '<div class="ap" style="border-color:#4a9eff;box-shadow:0 0 40px rgba(74,158,255,.4)">'+
+    '<h1 style="color:#4a9eff!important">⚙️ Настройки</h1>'+
+    '<div class="as" style="border-left-color:#4a9eff"><h3 style="color:#4a9eff">👕 Формы команд</h3>'+
+      '<div class="af"><label>Команда 1</label><select id="aT1">'+
+        '<option value="spartak" '+(S.team1==='spartak'?'selected':'')+'>🔴⚪ Спартак</option>'+
+        '<option value="dynamo" '+(S.team1==='dynamo'?'selected':'')+'>🔵⚪ Динамо</option>'+
+        '<option value="zenit" '+(S.team1==='zenit'?'selected':'')+'>🔵 Зенит</option>'+
+        '<option value="cska" '+(S.team1==='cska'?'selected':'')+'>🔴🔵 ЦСКА</option>'+
+        '<option value="lokomotiv" '+(S.team1==='lokomotiv'?'selected':'')+'>🟢🔴 Локомотив</option>'+
+        '<option value="krasnodar" '+(S.team1==='krasnodar'?'selected':'')+'>🟢⚫ Краснодар</option>'+
+      '</select></div>'+
+      '<div class="af"><label>Команда 2</label><select id="aT2">'+
+        '<option value="dynamo" '+(S.team2==='dynamo'?'selected':'')+'>🔵⚪ Динамо</option>'+
+        '<option value="spartak" '+(S.team2==='spartak'?'selected':'')+'>🔴⚪ Спартак</option>'+
+        '<option value="zenit" '+(S.team2==='zenit'?'selected':'')+'>🔵 Зенит</option>'+
+        '<option value="cska" '+(S.team2==='cska'?'selected':'')+'>🔴🔵 ЦСКА</option>'+
+        '<option value="lokomotiv" '+(S.team2==='lokomotiv'?'selected':'')+'>🟢🔴 Локомотив</option>'+
+        '<option value="krasnodar" '+(S.team2==='krasnodar'?'selected':'')+'>🟢⚫ Краснодар</option>'+
+      '</select></div>'+
+    '</div>'+
+    '<div class="as" style="border-left-color:#4a9eff"><h3 style="color:#4a9eff">🎨 Тема поля</h3>'+
+      '<div class="af"><select id="aTh">'+
+        '<option value="green" '+(S.fieldTheme==='green'?'selected':'')+'>🟢 Зелёное</option>'+
+        '<option value="night" '+(S.fieldTheme==='night'?'selected':'')+'>⚫ Ночное</option>'+
+        '<option value="snow" '+(S.fieldTheme==='snow'?'selected':'')+'>⚪ Снежное</option>'+
+        '<option value="sand" '+(S.fieldTheme==='sand'?'selected':'')+'>🟡 Песчаное</option>'+
+      '</select></div>'+
+    '</div>'+
+    '<div class="as" style="border-left-color:#4a9eff"><h3 style="color:#4a9eff">⚽ Эффекты</h3>'+
+      '<div class="af"><label class="ck"><input type="checkbox" id="aRb" '+(S.rainbow?'checked':'')+'> 🌈 Радужный мяч</label></div>'+
+      '<div class="af"><label class="ck"><input type="checkbox" id="aTr" '+(S.trail?'checked':'')+'> ✨ След мяча</label></div>'+
+      '<div class="af"><label class="ck"><input type="checkbox" id="aSpk" '+(S.sparks?'checked':'')+'> 💥 Вспышки</label></div>'+
+      '<div class="af"><label class="ck"><input type="checkbox" id="aSm" '+(S.slowMo?'checked':'')+'> 🌀 Slow-mo</label></div>'+
+    '</div>'+
+    '<div class="abtns"><button class="asv" onclick="savePlayerSettings('+wr+')">💾 Сохранить</button>'+
+    '<button class="acn" onclick="closeAdmin('+wr+')">← Закрыть</button></div>'+
+  '</div>');
+}
+function savePlayerSettings(wr){
+  S.team1=$('aT1').value;S.team2=$('aT2').value;
+  S.fieldTheme=$('aTh').value;
+  S.rainbow=$('aRb').checked;S.trail=$('aTr').checked;S.sparks=$('aSpk').checked;S.slowMo=$('aSm').checked;
+  try{localStorage.setItem('fbS',JSON.stringify(S))}catch(e){}
+  applyAll();alert('✅ Сохранено!');closeAdmin(wr);
+}
+
+function closeAdmin(wr){hideOverlay();if(wr){running=true;paused=false;lastT=performance.now();requestAnimationFrame(loop)}else showLobby()}
+
 function getTotalGames(users){var t=0;for(var k in users)t+=(users[k].games||0);return t}
-function getTotalGoals(users){var t=0;for(var k in users)t+=(users[k].best||0);return t}
 
 function createUser(wr){
   var login=$('newLogin').value.trim();
   var pass=$('newPass').value;
+  var role=$('newRole')?$('newRole').value:'player';
   var err=$('createErr');
   if(!login||!pass){err.textContent='Заполни все поля';return}
   if(login.length<3){err.textContent='Логин мин 3 символа';return}
   if(pass.length<3){err.textContent='Пароль мин 3 символа';return}
-  if(login===ADMIN_LOGIN){err.textContent='Этот логин занят админом';return}
+  if(login===ADMIN_LOGIN){err.textContent='Логин занят админом';return}
   var users=getUsers();
-  if(users[login]){err.textContent='Такой логин уже существует';return}
-  users[login]={pass:pass,created:Date.now(),best:0,games:0,wins:0};
+  if(users[login]){err.textContent='Такой логин уже есть';return}
+  users[login]={pass:pass,role:role,created:Date.now(),best:0,games:0,wins:0};
   saveUsers(users);
-  alert('✅ Аккаунт "'+login+'" создан!');
+  var roleName=role==='mod'?'Модератор':'Игрок';
+  alert('✅ '+roleName+' "'+login+'" создан!');
   showAdmin(wr);
 }
-function delUser(u){
-  if(!confirm('Удалить игрока "'+u+'"?'))return;
-  var users=getUsers();delete users[u];saveUsers(users);
+function editRole(u){
+  var users=getUsers();
+  var newRole=prompt('Роль для "'+u+'"\n\nВведи: admin, mod или player','mod');
+  if(!newRole)return;
+  newRole=newRole.toLowerCase().trim();
+  if(newRole!=='admin'&&newRole!=='mod'&&newRole!=='player'){
+    alert('Неверная роль! Используй: admin, mod, player');
+    return;
+  }
+  users[u].role=newRole;
+  saveUsers(users);
+  alert('✅ Роль обновлена!');
   showAdmin(running);
+}
+function delUser(u){
+  if(!confirm('Удалить "'+u+'"?'))return;
+  var users=getUsers();delete users[u];saveUsers(users);showAdmin(running);
 }
 function banUser(u){
-  var reason=prompt('Причина бана для "'+u+'":','Нарушение правил');
+  var reason=prompt('Причина бана:','Нарушение правил');
   if(reason===null)return;
-  var users=getUsers();
-  users[u].banned=true;users[u].banReason=reason;
-  saveUsers(users);
-  showAdmin(running);
+  var users=getUsers();users[u].banned=true;users[u].banReason=reason;
+  saveUsers(users);showAdmin(running);
 }
 function unbanUser(u){
-  var users=getUsers();
-  users[u].banned=false;delete users[u].banReason;
-  saveUsers(users);
-  showAdmin(running);
+  var users=getUsers();users[u].banned=false;delete users[u].banReason;
+  saveUsers(users);showAdmin(running);
 }
 function editPass(u){
   var np=prompt('Новый пароль для "'+u+'":','');
-  if(!np||np.length<3){alert('Пароль мин 3 символа');return}
-  var users=getUsers();
-  users[u].pass=np;
-  saveUsers(users);
-  alert('✅ Пароль изменён!');
+  if(!np||np.length<3){alert('Мин 3 символа');return}
+  var users=getUsers();users[u].pass=np;saveUsers(users);
+  alert('✅ Изменено!');
 }
 function saveAnnounce(){
   var a=$('aAnn').value.trim();
   try{localStorage.setItem('fbAnnounce',a)}catch(e){}
-  alert('✅ Объявление сохранено!');
+  alert('✅ Сохранено!');
 }
 function exportData(){
-  var users=getUsers();
-  var data=JSON.stringify(users,null,2);
+  var data=JSON.stringify(getUsers(),null,2);
   var blob=new Blob([data],{type:'application/json'});
   var url=URL.createObjectURL(blob);
-  var a=document.createElement('a');
-  a.href=url;a.download='football-users-'+Date.now()+'.json';
-  a.click();
+  var a=document.createElement('a');a.href=url;a.download='football-users.json';a.click();
   URL.revokeObjectURL(url);
 }
 function importData(e){
@@ -637,32 +664,26 @@ function importData(e){
   reader.onload=function(ev){
     try{
       var data=JSON.parse(ev.target.result);
-      if(!confirm('Заменить базу игроков?'))return;
-      saveUsers(data);
-      alert('✅ Импортировано!');
-      showAdmin(running);
-    }catch(err){alert('❌ Ошибка: '+err.message)}
+      if(!confirm('Заменить базу?'))return;
+      saveUsers(data);alert('✅ Импортировано!');showAdmin(running);
+    }catch(err){alert('❌ Ошибка')}
   };
   reader.readAsText(file);
 }
 function saveAdmin(wr){
-  if(currentTab==='game'){
+  if(currentTab==='game'&&currentRole==='admin'){
     S.goalSize=$('aGs').value;S.playerSize=$('aPs').value;
     S.speed=parseFloat($('aSp').value);S.botSpeed=parseFloat($('aBt').value);
-    S.maxBall=parseFloat($('aMb').value);
     S.duration=parseInt($('aDur').value);S.timeScale=parseInt($('aTs').value);
     S.power=parseFloat($('aPw').value);
-    S.sprint=$('aSr').checked;S.autoPause=$('aAp').checked;
   }
   if(currentTab==='visual'){
-    S.team1=$('aT1').value;
-    S.team2=$('aT2').value;
-    S.num1=$('aN1').value.trim()||'9';
-    S.num2=$('aN2').value.trim()||'10';
+    S.team1=$('aT1').value;S.team2=$('aT2').value;
+    S.num1=$('aN1').value.trim()||'9';S.num2=$('aN2').value.trim()||'10';
     S.fieldTheme=$('aTh').value;
     S.rainbow=$('aRb').checked;S.trail=$('aTr').checked;S.sparks=$('aSpk').checked;S.slowMo=$('aSm').checked;
   }
-  if(currentTab==='system'){
+  if(currentTab==='system'&&currentRole==='admin'){
     S.showRecord=$('aRc').checked;
   }
   try{localStorage.setItem('fbS',JSON.stringify(S))}catch(e){}
@@ -672,16 +693,72 @@ function saveAdmin(wr){
 function showLobby(){
   mode=null;running=false;if(mTimer){clearInterval(mTimer);mTimer=null}
   c1.style.display='none';c2.style.display='none';
+  var roleEmoji=currentRole==='admin'?'👑':currentRole==='mod'?'🛡️':'👤';
   showOverlay(
   '<h1>⚽ ФУТБОЛ 2D</h1>'+
-  '<p>Привет, <b style="color:#4ade80">'+currentUser+'</b>!</p>'+
+  '<p>Привет, <b style="color:#4ade80">'+roleEmoji+' '+currentUser+'</b>!</p>'+
   '<p>Выбери режим:</p>'+
   '<button class="mb mb-bot" onclick="chMM(\'bot\')">🤖 С БОТОМ<small>Против компьютера</small></button>'+
   '<button class="mb mb-split" onclick="chMM(\'split\')">👥 ОДИН ЭКРАН<small>Двое на одном устройстве</small></button>'+
   '<button class="mb mb-online" onclick="chMM(\'online\')">🌐 ПО СЕТИ<small>Играть с другом</small></button>');
 }
-function chMM(m){
-  mode=m;
+
+var _tmp={team1:'spartak',team2:'dynamo',num1:'9',num2:'10',player:'messi'};
+var PLAYERS=[
+  {id:'messi',num:'10',name:'Месси'},
+  {id:'ronaldo',num:'7',name:'Роналду'},
+  {id:'neymar',num:'11',name:'Неймар'},
+  {id:'mbappe',num:'9',name:'Мбаппе'},
+  {id:'salah',num:'20',name:'Салах'},
+  {id:'lewa',num:'9',name:'Левандовски'}
+];
+
+function chMM(m){mode=m;showTeamSelect()}
+
+function showTeamSelect(){
+  var t1html='';var keys=Object.keys(TEAMS);
+  for(var i=0;i<keys.length;i++){
+    var id=keys[i],t=TEAMS[id];
+    var active=(_tmp.team1===id)?' active':'';
+    t1html+='<button class="team-btn'+active+'" onclick="selTeam1(\''+id+'\')">'+t.emoji+' '+t.name+'</button>';
+  }
+  var t2html='';
+  for(var i=0;i<keys.length;i++){
+    var id=keys[i],t=TEAMS[id];
+    var active=(_tmp.team2===id)?' active':'';
+    t2html+='<button class="team-btn'+active+'" onclick="selTeam2(\''+id+'\')">'+t.emoji+' '+t.name+'</button>';
+  }
+  var phtml='';
+  for(var i=0;i<PLAYERS.length;i++){
+    var p=PLAYERS[i];
+    var active=(_tmp.player===p.id)?' active':'';
+    phtml+='<button class="player-btn'+active+'" onclick="selPlayer(\''+p.id+'\')">№'+p.num+'<br><small>'+p.name+'</small></button>';
+  }
+  showOverlay(
+  '<h1>🏆 Выбери команды</h1>'+
+  '<p style="font-size:12px;color:#a0aec0;">Команда 1 (слева, синие кнопки)</p>'+
+  '<div class="team-grid">'+t1html+'</div>'+
+  '<p style="font-size:12px;color:#a0aec0;margin-top:12px;">Команда 2 (справа, красные кнопки)</p>'+
+  '<div class="team-grid">'+t2html+'</div>'+
+  '<p style="font-size:12px;color:#a0aec0;margin-top:12px;">👤 Выбери игрока</p>'+
+  '<div class="players-grid">'+phtml+'</div>'+
+  '<button class="mb mb-online" style="margin-top:15px;text-align:center;min-width:280px;" onclick="confirmTeams()">✅ Играть</button>'+
+  '<button class="mb mb-back" onclick="showLobby()">← Назад</button>');
+}
+function selTeam1(id){_tmp.team1=id;_tmp.num1=TEAMS[id].num;showTeamSelect()}
+function selTeam2(id){_tmp.team2=id;_tmp.num2=TEAMS[id].num;showTeamSelect()}
+function selPlayer(id){
+  _tmp.player=id;
+  for(var i=0;i<PLAYERS.length;i++){
+    if(PLAYERS[i].id===id){_tmp.num1=PLAYERS[i].num;break}
+  }
+  showTeamSelect();
+}
+function confirmTeams(){
+  S.team1=_tmp.team1;S.team2=_tmp.team2;
+  S.num1=_tmp.num1;S.num2=_tmp.num2;
+  try{localStorage.setItem('fbS',JSON.stringify(S))}catch(e){}
+  applyAll();
   showOverlay(
   '<h1>🏆 До скольки голов?</h1>'+
   '<div class="gg">'+
@@ -691,7 +768,7 @@ function chMM(m){
     '<button class="gbtn g10" onclick="chG(10)">10<small>Марафон</small></button>'+
     '<button class="gbtn ge" onclick="chG(\'endless\')">♾️ БЕСКОНЕЧНЫЙ<small>Без конца</small></button>'+
   '</div>'+
-  '<button class="mb mb-back" onclick="showLobby()">← Назад</button>');
+  '<button class="mb mb-back" onclick="showTeamSelect()">← Назад</button>');
 }
 function chG(n){
   if(n==='endless'){gMode='endless';WIN=999999}
@@ -788,7 +865,7 @@ function startTimer(){
 function updateTimer(){var t=secs*S.timeScale,m=Math.floor(t/60),s=t%60;timerEl.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s}
 function endMatch(){
   running=false;goalLock=true;
-  var w='НИЧЬЯ!';if(s1>s2)w='🔵 СИНИЕ ПОБЕДИЛИ!';else if(s2>s1)w='🔴 КРАСНЫЕ ПОБЕДИЛИ!';
+  var w='НИЧЬЯ!';if(s1>s2)w='🏆 КОМАНДА 1 ПОБЕДИЛА!';else if(s2>s1)w='🏆 КОМАНДА 2 ПОБЕДИЛА!';
   msgEl.textContent=w;msgEl.style.opacity=1;
   if(s1>best){best=s1;localStorage.setItem('fbRec',best)}
   if(currentUser&&currentUser!==ADMIN_LOGIN){
@@ -965,14 +1042,16 @@ applyAll();resize();reset();
 (function init(){
   var saved=getCurrentUser();
   if(saved==='german'){
-    currentUser='german';isAdmin=true;
+    currentUser='german';isAdmin=true;currentRole='admin';
     userinfoEl.textContent='👑 german (админ)';
     enterGame();
   }else if(saved){
     var users=getUsers();
     if(users[saved]&&!users[saved].banned){
       currentUser=saved;isAdmin=false;
-      userinfoEl.textContent='👤 '+saved;
+      currentRole=users[saved].role||'player';
+      var emoji=currentRole==='mod'?'🛡️':'👤';
+      userinfoEl.textContent=emoji+' '+saved;
       enterGame();
     }else{
       setCurrentUser('');
